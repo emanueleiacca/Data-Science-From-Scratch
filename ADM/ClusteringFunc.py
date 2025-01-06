@@ -13,8 +13,8 @@ def initialize_centroids(data, k, method="random",seed=42):
     if method == "random":
         np.random.seed(seed)  # Set the random seed for reproducibility
         # Randomly select k unique indices
-        indices = np.random.choice(data.shape[0], k, replace=False)
-        return data[indices]
+        indices = np.random.choice(data.shape[0], k, replace=False) # Choose k random points as initial centroids
+        return data[indices] # Return the initial centroids
 
     elif method == "kmeans++":
         np.random.seed(seed)
@@ -22,7 +22,7 @@ def initialize_centroids(data, k, method="random",seed=42):
         centroids = [data[np.random.choice(data.shape[0])]]  # First centroid randomly chosen
         for _ in range(1, k):
             # Compute distances from nearest centroid for all points
-            distances = np.min([np.linalg.norm(data - centroid, axis=1) for centroid in centroids], axis=0)
+            distances = np.min([np.linalg.norm(data - centroid, axis=1) for centroid in centroids], axis=0) 
             # Compute probabilities proportional to squared distances
             probabilities = distances ** 2 / np.sum(distances ** 2)
             # Choose next centroid based on probabilities
@@ -41,20 +41,20 @@ def compute_distance(point, centroids):
 def assign_clusters(data, centroids):
     """Assign each point to the nearest centroid."""
     clusters = []
-    for point in data:
-        cluster_id = compute_distance(point, centroids)
+    for point in data: # Iterate over each point
+        cluster_id = compute_distance(point, centroids) # Find the nearest centroid
         clusters.append(cluster_id)
     return np.array(clusters)
 
 def update_centroids(data, clusters, k):
     """Update centroids as the mean of points in each cluster."""
     new_centroids = []
-    for cluster_id in range(k):
-        cluster_points = data[clusters == cluster_id]
-        if len(cluster_points) > 0:
-            new_centroids.append(cluster_points.mean(axis=0))
+    for cluster_id in range(k): # Iterate over each cluster
+        cluster_points = data[clusters == cluster_id] # Get points in the cluster
+        if len(cluster_points) > 0: # Check if the cluster is non-empty
+            new_centroids.append(cluster_points.mean(axis=0)) # Compute the mean of cluster points
         else:  # Handle empty cluster
-            new_centroids.append(np.zeros(data.shape[1]))
+            new_centroids.append(np.zeros(data.shape[1])) # Set the centroid to zero vector
     return np.array(new_centroids)
 
 def kmeans(data, k, method="random", max_iterations=100, tolerance=1e-4, seed = 42):
