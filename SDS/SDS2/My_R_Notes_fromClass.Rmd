@@ -1,0 +1,764 @@
+---
+title: "SDS2 Class Codes"
+author: "Emanuele Iaccarino"
+date: "2025-05-08"
+output: html_document
+---
+
+# 2025-W-02-simulation-from-a-joint-bivariate-bayesian-model-setup
+
+Example in 1.2.1 p.3 PH Book (Binomial Model)
+20 individuals have been tested for infection in a remote village
+How rare is the disease?
+
+### a) PRIOR ELICITATION FOR A CONJUGATE BINOMIAL MODEL
+
+Find suitable parameters for your prior distributionin a conjugate binomial model so that
+your prior belief reflect the following statements:
+
+- a priori the expected success probability (theta) is 0.1
+- your a priori distribution concentrates roughly 0.70 of its mass in the interval [0.05,0.20]
+
+```{r}
+# Explore the family of Beta distribution by plotting a few examples 
+# ?dbeta
+
+curve(dbeta(x, shape1 = 0.3, shape2 = 0.3), 
+      xlab = expression(theta), 
+      ylab = expression(pi(theta)), 
+      main = "Beta distributions (visual comparison)",
+      ylim = c(0, 8), 
+      col = "red") # U-shaped (very uncertain, high at edges)
+
+curve(dbeta(x, shape1 = 1, shape2 = 1),
+      add = TRUE, col = "blue")  # Uniform prior
+
+curve(dbeta(x, shape1 = 50, shape2 = 1), 
+      add = TRUE, col = "green") #  Skewed towards 1
+
+abline(v = 0.5, lty = 3, col = "gray")
+legend("topright", legend = c("Beta(0.3,0.3)", "Beta(1,1)", "Beta(50,1)"), 
+       col = c("red", "blue", "green"), lty = 1)
+abline(v=0.5,lty=3,col="gray") # prior expectation of theta
+```
+
+```{r}
+# Fix prior mean to mu = 0.5
+mu <- 0.5
+psi <- 2
+
+# Reparameterize Beta:
+my_prior_a <- mu * psi 
+my_prior_b <- (1 - mu) * psi 
+
+# Plot the corresponding Beta(mu*psi, (1-mu)*psi)
+curve(dbeta(x, shape1 = my_prior_a, shape2 = my_prior_b),
+      from = 0, to = 1,
+      n = 1000,
+      xlab = expression(theta),
+      ylab = expression(pi(theta)),
+      ylim = c(0, 10))
+
+```
+
+```{r}
+# weak prior strength (psi parameter)
+psi=1
+curve(dbeta(x,shape1= mu*psi,shape2=(1-mu)*psi),from=0,to=1,ylim=c(0,20),n=500)
+# weaker prior strength parameter 
+psi=0.1
+curve(dbeta(x,shape1= mu*psi,shape2=(1-mu)*psi),from=0,to=1,col="red",lwd=2,n=500,ylim=c(0,10), add = TRUE)
+# stronger prior strength parameter 
+psi=20
+curve(dbeta(x,shape1= mu*psi,shape2=(1-mu)*psi),from=0,to=1,col="blue",lwd=2,n=500, add = TRUE)
+# even stronger prior strength parameter 
+ psi=200
+ curve(dbeta(x,shape1= mu*psi,shape2=(1-mu)*psi),from=0,to=1,col="purple",lwd=2,n=500, add = TRUE)
+```
+All Beta priors share the same mean:
+
+\mu = \alpha / (\alpha + \beta)
+But the strength of belief (concentration) grows with \psi = \alpha + \beta
+
+We visualize how \psi controls the certainty of your belief about \theta. 
+More specifically:
+- Smaller \psi = flat or U-shaped, highly uncertain
+- Larger \psi = sharply peaked around the mean
+
+```{r}
+# Confirm that expectation is preserved
+psi = c(0.1,1,20,200)
+for (try in psi){ 
+  cat("Trying a value of mu for psi = ", try)
+  print(mean(rbeta(100000,shape1= mu*try,shape2=(1-mu)*try)))
+}  
+
+# Seams like a growing psi leads to the theorical expected value, so higher \psi gives lower variance
+```
+
+```{r}
+# Approximate prior mass in [0.05, 0.2] by simulation
+mu = 0.1
+psi = 20 #Trying various value of psi this was the best, we gonna do further tuning later
+# psi = ? we need to tune this value
+random_draw_from_prior=rbeta(100000,shape1=mu*psi,shape2=(1-mu)*psi)
+mean(random_draw_from_prior) # this has to approximate 0.1 = mu
+mean(random_draw_from_prior>= 0.05 & random_draw_from_prior <= 0.2) # this has to approximate a prob of 0.7
+```
+
+```{r}
+# Define a function to compute exact probability mass in [0.05, 0.2]
+prior_prob=function(psi){
+  pbeta(0.20,shape1=mu*psi,shape2=(1-mu)*psi)-pbeta(0.05,shape1=mu*psi,shape2=(1-mu)*psi)
+}
+
+curve(prior_prob(x),0.01,100,xlab=expression(psi),ylab="prob",main="prior prob content of [0.05,0.2] as a function of theta",n=1000)
+
+# which returns the probability content of the target inetrval [0.05,0.2]
+# graphically ....
+abline(h=0.7,col="red",lwd=3)
+```
+Plotting this shows how this probability changes as \psi varies
+
+```{r}
+# Find the \psi that gives exactly 70% mass in [0.05, 0.2]
+#?uniroot
+oo=uniroot(f=lookforpsi,interval=c(0.1,100))
+# str(oo) # it returns a "list" object
+
+# the component of the list we are interested in is oo$root
+my_psi=oo$root
+my_psi
+
+# In fact
+prior_prob(oo$root)
+```
+
+```{r}
+my_prior_a=mu*my_psi
+my_prior_b=(1-mu)*my_psi
+
+# my_prior_a # 2.233386
+# my_prior_b # 20.10048
+
+# let's check graphically 
+par(mfrow=c(2,1))
+curve(prior_prob,from=0.1,to=100,xlab=expression(psi),ylab=expression(prior_prob(psi)))
+abline(h=0.7,lwd=3,lty=3)
+abline(v=oo$root,lwd=3,col="blue",lty=3)
+```
+
+
+### b) POSTERIOR ANALYSIS
+suppose we have observed y_obs=0 successes in a binomial trial out of N=20 attempts (tests)
+```{r}
+# a. PRIOR TO POSTERIOR UPDATE
+# Derive and visualize the whole posterior distribution -------------------
+
+# Those are the parameters previously estimated
+my_prior_a <- 2.233386
+my_prior_b <- 22.33386
+
+# prior prob of [0.05,0.2]
+pbeta(0.2,shape1=my_prior_a,shape2 = my_prior_b)-pbeta(0.05,shape1=my_prior_a,shape2 = my_prior_b) 
+```
+
+```{r}
+y_obs <- 0
+N <- 20
+
+# compute the updated hypeparameter h_post=(a_post,b_post)
+# Beta(a+y,b+n−y)
+my_posterior_a <- my_prior_a + y_obs
+my_posterior_b <- my_prior_b + (N-y_obs)
+
+# plot
+par(mfrow=c(1,1))
+curve(dbeta(x,shape1=my_prior_a,shape2=my_prior_b),from=0,to=1,col="blue",lwd=2,ylim=c(0,25),xlab=expression(theta),ylab=expression(paste(pi(theta),)),n=1000) # prior
+
+curve(dbeta(x,shape1=my_posterior_a,shape2=my_posterior_b),from=0,to=1,add=TRUE,col="orange",lwd=2,n=1000) # posterior
+
+likelihood <- function(theta){
+  choose(N,y_obs)*theta^y_obs*(1-theta)^(N-y_obs)
+}
+
+curve(10*likelihood(x),add=TRUE,col="red",lwd=2) # likelihood shape
+
+# a second test with again no infected people
+# would provide the following posterior
+curve(dbeta(x,shape1=my_prior_a+0+0,shape2=my_prior_b+20+20),from=0,to=1,add=TRUE,col="green",lwd=2,n=1000) # hypothetical: 2nd zero test (posterior after N=40, y=0)
+
+legend("topright",legend=c("prior","posterior"),col=c("blue","orange"),lty=c(1,1))
+#points(mu_0,0,pch=16,cex=1.5,col="blue")
+#points(my_prior_a/(my_prior_a+my_prior_b+20),0,pch=16,cex=1.5,col="orange")
+
+title(main="from-prior-to-posterior in a conjugate Bayesian analysis of a Binomial example")
+
+```
+
+```{r}
+# posterior_mean = best estimate of \theta after seeing the data
+posterior_mean = my_posterior_a/(my_posterior_a+my_posterior_b)
+
+# This is the prior probability that:
+# \theta belong to the interval [0.05,0.2]
+# This tells you what your prior belief was before seeing data about \theta  falling in this interval.
+# Prior belief: P(0.05 ≤ θ ≤ 0.20)
+print("Prior belief: P(0.05 ≤ θ ≤ 0.20)")
+prior_prob_05_20 <- pbeta(0.20, my_prior_a, my_prior_b) - 
+                    pbeta(0.05, my_prior_a, my_prior_b)
+prior_prob_05_20
+# posterior update with 0 successes out of 20 trials
+# Posterior belief: P(0.05 ≤ θ ≤ 0.20)
+print("Posterior belief: P(0.05 ≤ θ ≤ 0.20)")
+post_prob_05_20 <- pbeta(0.20, my_posterior_a, my_posterior_b) - 
+                   pbeta(0.05, my_posterior_a, my_posterior_b)
+post_prob_05_20
+# while if I want to see how much my prior beliefs have been updated about the claim that the spread of the disease is lower that 10% i.e. theta<0.1 ... 
+# Prior P(θ < 0.1)
+print("Prior P(θ < 0.1")
+prior_prob_less_01 <- pbeta(0.1, my_prior_a, my_prior_b)
+prior_prob_less_01
+print("Posterior P(θ < 0.1")
+post_prob_less_01 <- pbeta(0.1, my_posterior_a, my_posterior_b)
+post_prob_less_01
+```
+
+Probability \theta belong to tge interval [0.05,0.2]: The prior probability was approximately 0.686, which decreased to approximately 0.418 in the posterior, indicating reduced belief in \theta being in this interval after observing the data.
+
+Probability \theta < 0.1: The prior probability was approximately 0.634, increasing to approximately 0.920 in the posterior, showing increased belief that \theta is less than 0.1 after the data update.
+
+```{r}
+# Provide basic posterior summaries
+# b. POINT ESTIMATE
+
+# POSTERIOR DISTRIBUTION: 
+# point-estimate ===> synthetic summaries
+
+# Posterior mean:
+print("Posterior mean:")
+print("Exact")
+my_posterior_a/(my_posterior_a+my_posterior_b) # exact
+print("approximate")
+posterior_sim <- rbeta(100000,my_posterior_a,my_posterior_b)
+mean(posterior_sim) # approximate
+
+# Psterior median?
+print("Posterior median:")
+print("Exact")
+qbeta(p=0.5,shape1 = my_posterior_a, shape2 = my_posterior_b) # exactù
+print("approximate")
+median(posterior_sim) # approximate
+
+# Posterior mode? 
+print("Posterior mode:")
+print("Exact")
+(my_posterior_a-1)/(my_posterior_a+my_posterior_b-2) # exact
+print("approximate")
+# Indeed there is an explicit closed-form formula for the mode of a beta density. However, if you don't remember you can find a numerical solution by means of the optim(...)  function
+#?optim
+uu <- optim(fn=dbeta,par = 0.1,control=list(fnscale=-1),shape1=my_posterior_a,shape2=my_posterior_b,method="BFGS")
+
+#str(uu)
+
+bayes_point_estimate_mode <- uu$par
+bayes_point_estimate_mode
+
+#length(unique(posterior_sim))
+#sort(table(posterior_sim),decreasing = TRUE)[1:10]
+
+hist(posterior_sim,prob=TRUE,n=100)
+abline(v = (my_posterior_a-1)/(my_posterior_a+my_posterior_b-2), col = "green" ) # mode
+abline(v = my_posterior_a/(my_posterior_a+my_posterior_b), col = "red" ) # mean
+abline(v = qbeta(p=0.5,shape1 = my_posterior_a, shape2 = my_posterior_b), col = "blue") # median
+curve(dbeta(x,shape1=my_posterior_a,shape2=my_posterior_b),from=0,to=1,add=TRUE,col="orange",lwd=2,n=1000)
+```
+```{r}
+# what about the posterior variance? 
+var(posterior_sim) # empirical way if u don't remember the formula
+
+# this is the formula ...
+my_posterior_a*my_posterior_b/((my_posterior_a+my_posterior_b)^2*(my_posterior_a+my_posterior_b+1))
+```
+
+### c. INTERVAL  ESTIMATE
+
+```{r}
+# Compute ET and HPD interval estimates -----------------------------------
+posterior_cdf <- function(x){
+  pbeta(x,shape1=my_posterior_a,shape2=my_posterior_b)
+}
+# Equal-Tailed Credible Interval (ET CI)
+posterior_qf <- function(x){
+  qbeta(x,shape1=my_posterior_a,shape2=my_posterior_b)
+}
+posterior_icdf <- function(x){
+  qbeta(x,shape1=my_posterior_a,shape2=my_posterior_b)
+}
+
+# POSTERIOR DISTRIBUTION: 
+# interval-estimate ===> equal tail 
+# corresponding to posterior probability 1-alpha
+
+alpha=0.05
+print("Equal-Tailed Credible Interval (ET CI)")
+posterior_qf(alpha/2)
+posterior_qf(1-alpha/2)
+print("Equal Tail CI")
+interval_estimate_equal_tail <- c(
+  posterior_qf(alpha / 2), 
+  posterior_qf(1 - alpha / 2)
+)
+interval_estimate_equal_tail
+
+# APPROXIMATE ??
+print("Approximate Quantile-Based Interval from Simulation")
+quantile(posterior_sim,probs = 0.025)
+quantile(posterior_sim,probs = 0.975)
+# when you don’t have a closed-form posterior, or for non-conjugate priors
+
+```
+
+```{r}
+# POSTERIOR DISTRIBUTION: 
+# iterval-estimate ===> HPD
+
+# if we need to report an interval estimal our best answer is an alpha-level [posterior proabbility] HPD interval 
+# HPD = Highest Posterior Density
+library(TeachingDemos)
+#?hpd
+interval_estimate_hpd <- TeachingDemos::hpd(posterior.icdf=posterior_qf, conf=0.95)
+# The shortest interval that contains 95% of the posterior probability.
+# NOTE: conf corresponds to the posterior probability content 1-alpha
+# check: # Posterior mass inside HPD
+pbeta(interval_estimate_hpd[1],my_posterior_a,my_posterior_b)-
+pbeta(interval_estimate_hpd[2] ,my_posterior_a,my_posterior_b)
+# should return a value very close to 1 - \alpha = 0.95
+print("Width respectively for HPD and ET")
+diff(interval_estimate_hpd)  # width of HPD
+diff(interval_estimate_equal_tail)  # width of ET
+print("HPD Interval")
+interval_estimate_hpd
+```
+
+```{r}
+# Define posterior density
+posterior_density <- function(x) {
+  dbeta(x, shape1 = my_posterior_a, shape2 = my_posterior_b)
+}
+
+# ET and HPD boundaries calculated previously
+et_lower <- interval_estimate_equal_tail[1]
+et_upper <- interval_estimate_equal_tail[2]
+
+hpd_lower <- interval_estimate_hpd[1]
+hpd_upper <- interval_estimate_hpd[2]
+
+# Plot posterior density
+curve(posterior_density(x), from = 0, to = 0.3, n = 1000,
+      xlab = expression(theta), ylab = "Density",
+      main = "Posterior Beta Density with 95% ET and HPD Intervals", lwd = 2)
+
+# Shade ET interval
+polygon(c(seq(et_lower, et_upper, length=100), rev(seq(et_lower, et_upper, length=100))),
+        c(posterior_density(seq(et_lower, et_upper, length=100)), rep(0, 100)),
+        col=rgb(0, 0, 1, 0.3), border=NA)
+
+# Shade HPD interval
+polygon(c(seq(hpd_lower, hpd_upper, length=100), rev(seq(hpd_lower, hpd_upper, length=100))),
+        c(posterior_density(seq(hpd_lower, hpd_upper, length=100)), rep(0, 100)),
+        col=rgb(1, 0.5, 0, 0.3), border=NA)
+
+# Add interval endpoints
+abline(v = c(et_lower, et_upper), col = "blue", lty = 2)
+abline(v = c(hpd_lower, hpd_upper), col = "orange", lty = 2)
+
+# Add legend
+legend("topright", legend = c("Equal-Tailed CI", "HPD Interval"),
+       fill = c(rgb(0, 0, 1, 0.3), rgb(1, 0.5, 0, 0.3)),
+       border = NA)
+
+```
+
+if theta represent the disease prevrealence in the population from which we have tested N=20 people and y_obs=0 resulted infected how can we test whether the disease affects less than 10% of the population? 
+
+### d. HYPOTHESIS TESTING
+
+```{r}
+# What if we already had a prior belief that θ was more likely below 0.1?
+# This is key in Bayesian reasoning. You compute:
+
+# Well apparently TailRank doesn't work
+
+#install.packages("TailRank")
+#install.packages("oompaBase")
+#library(TailRank)  # for dbb()
+
+### 7. Bayes Factor for H0: θ < 0.1 vs θ ≥ 0.1
+### 6. Hypothesis Test: P(θ < 0.1) was calculated prev
+# post_prob_less_01 = pbeta(0.1, my_posterior_a, my_posterior_b)
+prior_odds <- pbeta(0.1, my_prior_a, my_prior_b) / (1 - pbeta(0.1, my_prior_a, my_prior_b))
+posterior_odds <- post_prob_less_01 / (1 - post_prob_less_01)
+BF <- posterior_odds / prior_odds
+BF
+```
+```{r}
+# Compute prior predictive (Beta-Binomial) probabilities
+#install.packages("VGAM")
+library("VGAM")
+N <- 20               # number of trials
+support <- 0:N        # possible values for Y (0 to N)
+
+### Prior Predictive Distribution
+prior_pred <- VGAM::dbetabinom.ab(support, size = N, shape1 = my_prior_a, shape2 = my_prior_b)
+
+# Plot
+plot(support, prior_pred, type = "h", ylab = "Prior predictive probability")
+points(support, prior_pred, pch = 16, col = "red")
+title("Beta-Binomial Prior Predictive")
+
+### Posterior Predictive Distribution
+posterior_pred <- VGAM::dbetabinom.ab(support, size = N, shape1 = my_posterior_a, shape2 = my_posterior_b)
+
+# Plot
+plot(support, posterior_pred, type = "h", ylab = "Posterior predictive probability")
+points(support, posterior_pred, pch = 16, col = "blue")
+title("Beta-Binomial Prior Predictive")
+```
+Prior Predictive Distribution = Most mass is centered around small counts (e.g. 0–3), showing a belief that infections are rare. This aligns with a prior belief of low disease prevalence (mean of \theta = 0.09).
+
+Posterior Predictive Distribution = Now the mass is even more concentrated at 0–2 infections. You are more confident that future tests will result in zero or few positives. This reflects the impact of the observed data.
+```{r}
+### Simulation: Posterior Predictive
+theta_sim <- rbeta(100000, my_posterior_a, my_posterior_b)
+y_sim <- rbinom(100000, N, prob = theta_sim)
+# Mean and variance
+mean(y_sim)
+var(y_sim)
+```
+
+# 2025-W-06-binomial-discrete-parameter-model
+
+Simulation from the joint distr by means of marginal and conditionals sim
+```{r}
+set.seed(123)
+my_prior_a <- 2
+my_prior_b <- 2
+N <- 20
+```
+
+Simulation of a single random vector (theta,Y) from the Bayesian Model Setup
+Bayesian Model setup (theta,Y) ~ j(theta,y)=pi(theta)f(y|theta)
+
+```{r}
+# simulate theta from the prior
+theta <- rbeta(n=1, shape1 = my_prior_a, shape2 = my_prior_b)
+theta[1]
+# given the value simulate theta[1]
+# simulate y[1] fron the conditional distribution of Y|theta[1]
+y <- rbinom(n=1,size=N,prob=theta[1])
+y[1]
+
+cbind(theta,y)
+# is a realization from the joint distribution of the BMS
+```
+
+```{r}
+# Simulation i.i.d. of three random vectors (theta_i,Y_i) from BMS --------
+# repeat the simulations nrep=3 times
+
+num_rep <- 30000
+# Initialize the vectors
+theta <- rep(NA,num_rep)
+y <- rep(NA,num_rep)
+# Simulate from the joint model: theta ~ Beta, y ~ Binomial(theta)
+for(i in 1:num_rep){
+  theta[i] <- rbeta(n = 1, shape1 = my_prior_a, shape2 = my_prior_b)
+  y[i] <- rbinom(n = 1, size = N, prob = theta[i])
+}
+
+# Plot
+hist(theta, probability = TRUE, main = "Simulated vs Theoretical Prior for θ", xlab = "θ", col = "lightgray")
+# theta ~ pi(theta)
+curve(dbeta(x, my_prior_a, my_prior_b), add = TRUE, col = "red", lwd = 2)
+```
+
+```{r}
+# Empirical distribution of simulated Y
+plot(prop.table(table(y)), type = "h", ylab = "Relative Frequency", xlab = "y", main = "Prior Predictive Distribution")
+
+# Theoretical prior predictive (Beta-Binomial)
+support <- 0:N
+prior_pred <- dbinom(support, size = N, prob = my_prior_a / (my_prior_a + my_prior_b)) # Naive binomial approx (not correct)
+
+# Correct Beta-Binomial version
+prior_pred <- choose(N, support) * beta(my_prior_a + support, my_prior_b + N - support) / beta(my_prior_a, my_prior_b)
+
+# Overlay the theoretical probabilities
+points(support, prior_pred, col = "red", pch = 16)
+
+```
+
+```{r}
+# vectorized simulation
+set.seed(123)
+theta_alt <- rbeta(n = num_rep, shape1 = my_prior_a, shape2 = my_prior_b)
+y_alt <- rbinom(n = num_rep, size = N, prob = theta_alt)
+
+# Plot
+hist(theta_alt, probability = TRUE, main = "Vectorized Prior for θ", xlab = "θ")
+curve(dbeta(x, my_prior_a, my_prior_b), add = TRUE, col = "red", lwd = 2)
+
+# Prior predictive for Y
+plot(prop.table(table(y_alt)), type = "h", main = "Vectorized Prior Predictive for Y")
+points(support, prior_pred, col = "red", pch = 16)
+
+```
+
+# 2025-W-06-binomial-discrete-parameter-model
+
+This is a very simple example of a Bayesian model for a Binomial distribution where the unknown parameter of interest is the discrete parameter N rather than theknown probability of success
+
+Binomial capture model
+```{r}
+# tackling a Bayesian model with a discrete parameter, specifically inferring N (the unknown population size) from a Binomial capture-recapture model where the success probability p=0.3 is known
+
+# Simulate data from the model with fixed (known) parameter ---------------
+set.seed(123)
+y <- s_obs <- rbinom(n=100,size=20,prob=0.3)
+
+# we use diff values of n
+# dbinom(x=s_obs,size=11,p=0.3)
+# dbinom(x=s_obs,size=12,p=0.3)
+# dbinom(x=s_obs,size=13,p=0.3)
+
+# how can I interpret the above quantities? 
+# This gives the probability of observing s_obs=5 successes in N trials, each with success probability p=0.3.
+# are they likelihood evaluations? 
+# You are evaluating the likelihood function at different values of the unknown parameter N
+```
+
+- general ideas for likelihood function evaluation with a single as well as multiple observations
+
+```{r}
+likelihood <- function(N){
+  out <- dbinom(x=s_obs,size=N,p=0.3)
+  return(out)
+}
+
+# N is in the parameter set {1,2,3,...,N_max}
+N_max <- 200
+N_grid <- 1:N_max
+ 
+#likelihood(N_grid)
+# length(likelihood(N_grid)) # 200
+# You estimate N_MLE by finding the maximum of the likelihood:
+N_mle <- N_grid[which.max(likelihood(N_grid))]  # 17
+# This gives value of N that best explains the observed s_obs given p=0.3
+plug_in_N <- floor(s_obs / 0.3)
+# The MLE for N is approximately S_obs/p, rounded down
+
+# instead of N_grid let us use Theta_support
+Theta_support <- N_grid
+#likelihood(Theta_support)
+
+plot(Theta_support,likelihood(Theta_support),type="h",main="Likelihood function",sub=paste("n =",length(s_obs),ifelse(length(s_obs)>1,"observations","observation")),ylab=expression(L(N)),xlab=expression(N))
+```
+
+```{r}
+# Compare each value of plug-in estimates to MLE
+table(plug_in_N == N_mle)  # how many are equal
+table(plug_in_N)
+
+diffs <- abs(plug_in_N - N_mle)
+mean(diffs)          # average distance from MLE
+summary(diffs)       # summary stats of deviation
+
+hist(plug_in_N, breaks=seq(min(plug_in_N)-0.5, max(plug_in_N)+0.5, 1),
+     col="lightblue", main="Plug-in Estimates vs MLE", xlab="Estimated N")
+abline(v=N_mle, col="red", lwd=2)
+legend("topright", legend=c("MLE"), col="red", lwd=2)
+
+```
+
+```{r}
+# Generalize the likelihood evaluation to the multiple n observations context
+
+# This is the correct way to go for a single evaluation of the likelihood function 
+# at a single parameter N
+likelihood_N <- function(N,observed_counts,p){
+  out <- prod(dbinom(x=observed_counts, prob=p,size=N))
+  return(out)
+}
+# Properly vectorized version over N
+likelihood_N_vec <- Vectorize(likelihood_N, vectorize.args = "N")
+
+N_grid <- 1:200 # parameter support
+# Compute likelihood values over the grid
+lik_values <- likelihood_N_vec(N_grid, observed_counts = s_obs, p = 0.3)
+
+# Plot the likelihood
+plot(N_grid, lik_values, type = "h",
+     main = "Likelihood Function for N",
+     xlab = expression(N), ylab = expression(L(N)),
+     lwd = 2, col = "darkblue")
+
+# Add MLE
+N_MLE <- N_grid[which.max(lik_values)]
+abline(v = N_MLE, col = "red", lwd = 2)
+legend("topright", legend = c("MLE"), col = c("red"), lty = 1, lwd = 2)
+```
+The graph shows exactly the numerical underflow problem that occurs when you compute the product of binomial densities with many observations or over a large support for N. Even though we used N_max = 100, the range of values is so small that everything seems to disappear except for a peak around the MLE.
+
+- handling overflow of the likelihood function and its appropriate rescaling when the likelihood function must be evaluated in the presence of many observations
+
+```{r}
+# Log-likelihood version
+log_likelihood_N <- function(N, observed_counts, p) {
+  sum(dbinom(x = observed_counts, size = N, prob = p, log = TRUE))
+}
+# Properly vectorized version over N
+log_likelihood_vec <- Vectorize(log_likelihood_N, vectorize.args = "N")
+log_lik_vals <- log_likelihood_vec(N_grid, observed_counts = s_obs, p = 0.3)
+
+# MLE: max log-verosimiglianza
+N_MLE <- N_grid[which.max(log_lik_vals)]
+# N_MLE # 20
+plot(N_grid, log_lik_vals, type = "h", col = "blue",
+     main = "Log-Likelihood Function for N",
+     xlab = expression(N), ylab = expression(log~L(N)))
+
+abline(v = N_MLE, col = "red", lwd = 2)
+legend("topright", legend = "MLE", col = "red", lty = 1, lwd = 2)
+```
+
+```{r}
+# Calcolo della verosimiglianza da log-verosimiglianza (numeri piccoli -> stabilità)
+likelihood_vals <- exp(log_lik_vals - max(log_lik_vals))  # Rescaling numerically stable
+
+# Assumiamo prior uniforme su N
+prior_vals <- rep(1, length(N_grid))
+
+# Calcolo della distribuzione posteriore discreta su N
+unnormalized_posterior <- likelihood_vals * prior_vals
+posterior <- unnormalized_posterior / sum(unnormalized_posterior)
+plot(N_grid, posterior, type = "h", col = "darkgreen", lwd = 2,
+     main = "Posterior Distribution of N",
+     xlab = expression(N), ylab = "Posterior Probability")
+
+# Aggiungi il valore MAP (modalità della posteriore)
+N_MAP <- N_grid[which.max(posterior)]
+abline(v = N_MAP, col = "red", lwd = 2)
+legend("topright", legend = "MAP", col = "red", lty = 1, lwd = 2)
+
+```
+
+- summaries of discrete posterior distributions
+
+Bayesian analysis by means of the posterior distribution (dicrete prob. distr.)
+
+Let us now introduce the problem of combining the likelihood and the prior
+in order to get the appropriate quantities related to the Bayes formula 
+i.e. the posterior *probability* masses which are proportional to the product of the likelihood and the prior AND they sum up to 1 (since they correspond to a discrete probability distribution)
+
+
+### Issue #01: Normalization ---- 
+```{r}
+p = 0.3
+# -------------------------------
+# FUNZIONI DI LIKELIHOOD
+# -------------------------------
+
+likelihood_N <- function(N, observed_counts, p) {
+  prod(dbinom(x = observed_counts, size = N, prob = p))
+}
+likelihood_N_vec <- Vectorize(likelihood_N, vectorize.args = "N")
+
+# -------------------------------
+# PRIOR (UNIFORME)
+# -------------------------------
+
+prior_N <- function(N) 1 / N_max
+prior_N_vec <- Vectorize(prior_N)
+
+# Alternativa: prior proporzionale a 1/N
+prior_N_up_to_const <- function(N) 1 / N
+prior_N_up_to_const_vec <- Vectorize(prior_N_up_to_const)
+
+# Normalizzazione del prior proporzionale
+prior_N_normalized_vec <- function(N) {
+  prior_N_up_to_const_vec(N) / sum(prior_N_up_to_const_vec(N_grid))
+}
+
+# -------------------------------
+# POSTERIOR (NON NORMALIZZATO)
+# -------------------------------
+
+posterior_N_vec_up_to_const <- function(N, observed_counts, p) {
+  likelihood_N_vec(N, observed_counts, p) * prior_N_up_to_const_vec(N)
+}
+
+# POSTERIOR NORMALIZZATO
+posterior_N_vec_normalized <- function(N, observed_counts, p) {
+  unnormalized <- posterior_N_vec_up_to_const(N, observed_counts, p)
+  unnormalized / sum(unnormalized)
+}
+
+# -------------------------------
+# POSTERIOR PLOT
+# -------------------------------
+
+posterior_values <- posterior_N_vec_normalized(N_grid, s_obs, p)
+
+plot(N_grid, posterior_values, type = "h",
+     ylab = "Posterior Probability", main = "Posterior Distribution of N")
+# Aggiungi probabilità a posteriori che N >= 15
+points(15:N_max, posterior_values[15:N_max], type = "h", col = "red")
+
+```
+
+```{r}
+# -------------------------------
+# POSTERIOR MEAN E MEDIAN
+# -------------------------------
+
+# Posterior mean
+post_mean <- sum(N_grid * posterior_values)
+
+# Posterior median
+post_cumsum <- cumsum(posterior_values)
+post_median <- min(N_grid[post_cumsum >= 0.5])
+
+# Plotta la CDF posteriore
+plot(N_grid, post_cumsum, type = "s", main = "Posterior CDF",
+     xlab = "N", ylab = "Cumulative Posterior Probability")
+
+# Aggiungi linee di riferimento
+abline(h = 0.5, col = "red", lty = 2)
+legend("bottomright", legend = c("Median", "Mean"), 
+       col = c("blue", "orange"), lty = 3, bty = "n")
+
+
+```
+
+```{r}
+# -------------------------------
+# COMPARAZIONE: POSTERIORI
+# -------------------------------
+
+# Non normalizzato
+plot(N_grid,
+     posterior_N_vec_up_to_const(N_grid, s_obs, p),
+     type = "h", ylab = "Unnormalized Mass",
+     main = "Posterior Up To Constant")
+
+# Normalizzato
+plot(N_grid, posterior_values,
+     type = "h", ylab = "Posterior Probability",
+     main = "Normalized Posterior")
+
+```
+
+- carry out Bayesian inference in case of a discrete data model
+
+### Issue #02: Overflow

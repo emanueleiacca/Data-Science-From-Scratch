@@ -1,0 +1,553 @@
+---
+title: "Moodle Exercise"
+author: "Emanuele Iaccarino"
+date: "2025-03-07"
+output: html_document
+---
+
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 01
+font-family: Garamond
+
+Our beloved little exercise...
+========================================================
+
+A new computer virus can enter the system through e-mail or through the internet. 
+
+- There is a 30% chance of receiving this virus through e-mail. 
+
+- There is a 40% chance of receiving it through the internet. 
+
+- Also, the virus enters the system simultaneously through e-mail and the internet with probability 0.15. 
+
+What is the probability that the virus does not enter the system at all?
+
+```{r}
+P_e = 0.3
+P_i = 0.4
+P_e_int_i = 0.15
+# ? = (P_e_union_i)c
+# 
+P_e_union_i = P_e + P_i - P_e_int_i
+P_e_union_iC = 1 - P_e_union_i
+P_e_union_iC
+```
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 02
+font-family: Garamond
+
+Our second (but always beloved) little exercise...
+========================================================
+
+If at least one child in a family with 2 children is a boy, what is the probability that both children are boys?
+
+```{r}
+P_2ndBoy_1stBoy = 0.25
+P_atleastoneboy = 3/4
+P_2ndBoy_1stBoy_given_P_atleastoneboy = P_2ndBoy_1stBoy /  P_atleastoneboy
+P_2ndBoy_1stBoy_given_P_atleastoneboy
+```
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 03
+font-family: Garamond
+
+Our third (unexpected) little exercise (I)
+========================================================
+
+A standard [*XOR* logic gate](https://en.wikipedia.org/wiki/Exclusive_or) is given by the table below 
+where $C = A \; XOR \; B$:
+
+  $A$  |  $B$  |  $C$ 
+-------|-------|-------
+    0  |    0  |   0
+    0  |    1  |   1
+    1  |    0  |   1
+    1  |    1  |   0
+
+If we observe that the output of the *XOR* gate is $0$, 
+what can we say about $A$ and $B$? In this case, either $A$ and $B$ were both $0$, or $A$ and $B$ were both $1$. This means we don’t know which state $A$ was in -- it could equally likely have been $1$ or $0$.
+
+Our third (unexpected) little exercise (II)
+========================================================
+
+Now consider the following "soft" version of the *XOR* gate table
+
+|   $A$  |  $B$  |  P(C = 1 | (A = a) ∩ (B = b)) |
+|:------:|:-----:|:---------------------------:|
+|    0   |   0   |                 0.10        |
+|    0   |   1   |                 0.99        |
+|    1   |   0   |                 0.80        |
+|    1   |   1   |                 0.25        |
+
+where, for example, 
+
+0.10 = P(C = 1 | (A = 0) ∩ (B = 0)).
+
+The question is: can you *already* evalute the following probability
+P(A = 1 | C = 0) = ?
+or do you need other information/assumptions?
+
+```{r}
+# Convert P(C=1 | A, B) to P(C=0 | A, B)
+prob_C_given_A0B0 = 0.1
+prob_C_given_A0B1 = 0.99
+prob_C_given_A1B0 = 0.8
+prob_C_given_A1B1 = 0.25
+prob_C0_given_A0B0 = 1 - prob_C_given_A0B0
+prob_C0_given_A0B1 = 1 - prob_C_given_A0B1
+prob_C0_given_A1B0 = 1 - prob_C_given_A1B0
+prob_C0_given_A1B1 = 1 - prob_C_given_A1B1
+# Assume uniform priors: P(A, B) = 1/4 for each combination
+prob_AB = 1/4
+# P(C = 0) using Law of total prob
+P_C0 <- (prob_C0_given_A0B0 * prob_AB) + (prob_C0_given_A0B1 * prob_AB) + (prob_C0_given_A1B0 * prob_AB) + (prob_C0_given_A1B1 * prob_AB)
+# P(A=1 | C=0) using Bayes' Theorem
+P_A1_C0 <- (prob_C0_given_A1B0 * prob_AB + prob_C0_given_A1B1 * prob_AB) / P_C0
+P_A1_C0
+```
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 04
+font-family: Garamond
+
+A Bridge Connection (1/2)
+========================================================
+
+![my image](circuito.png)
+The figure above shows a circuit $S$ that consists of components $e_i$, $i \in \{1,\ldots,7\}$ which work (and fail) independently of each other. 
+Note that the connection of component $e_7$ is neither parallel nor serial.
+
+A Bridge Connection (2/2)
+========================================================
+
+The components are operational in some time interval $T$ with probabilities given in the following table.
+
+**Component**  |  $e_1$  |  $e_2$  |  $e_3$  |  $e_4$  |  $e_5$  |  $e_6$  |  $e_7$  |
+-----------|---------|---------|---------|---------|---------|---------|---------|
+**Prob of work** |   0.3   |   0.8   |   0.2   |   0.2   |   0.5   |   0.6   |   0.4   |
+
+**Q: What is the posterior odds of $e_7$ working, given the information that circuit $S$ is operational?**
+
+```{r}
+e1 = 0.3
+e2 = 0.8
+e3 = 0.2
+e4 = 0.2
+e5 = 0.5
+e6 = 0.6
+e7 = 0.4
+# We start by identifying paths
+# prob it works is given by multiplication
+# a path is functional if at least one of those is function (p_top, p_bottom, e7)
+p_top = e2 * e3
+p_bottom = e4 * e5
+# prob of a single side to work
+# We have to check that the entrance component (e1 for left, e6 for right) is working and at least one functional path is workìng
+# for inclusion-exclusion principle
+P_any_path_works_no_exclusions = p_top + p_bottom + e7
+# Since for us it matter that at least one path works, we avoid double counting
+P_double_counting = p_top * p_bottom + p_top * e7 + p_bottom * e7 - p_bottom * p_top * e7
+P_any_path_works_at_least_once = P_any_path_works_no_exclusions - P_double_counting
+p_left = e1 * P_any_path_works_at_least_once
+p_right = e6 * P_any_path_works_at_least_once
+# Prob of the entire circuit to be operational
+P_S1_e7_1 = p_left * p_right
+
+# Case when e7 is off
+P_double_counting_e7off = (p_top + p_bottom - p_top * p_bottom)
+p_left_e7off = e1 * P_double_counting_e7off
+p_right_e7off = e6 * P_double_counting_e7off
+P_S1_e7_0 = p_left_e7off * p_right_e7off
+
+# Posterior odds
+# P_e7_1_given_S1 / P_e7_0_given_S1
+# We can't obtain it so we levarage on Bayes Theorem
+# P_e7_1_given_S1 = (P_S1_e7_1 * e7) / P_S1
+# P_e7_1_given_S1 = (P_S1_e7_0 * (1 - e7) / P_S1
+# Ofc we simplify the denominator so we don't need to calculate the P_S1 with Law of total probabilities, in the end we have
+posterior_odds = (P_S1_e7_1 * e7) / (P_S1_e7_0 * (1 - e7))
+posterior_odds
+```
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 05
+font-family: Garamond
+
+Our fifth (distracting) little exercise
+========================================================
+
+Consider the function
+f(x∣c)=c⋅x for x in the interval [0,1],
+
+f(x∣c)=c⋅x+2 for x in the interval [1,2],
+
+f(x∣c)=0 otherwise,
+
+Find $c$ in such a way that f(x|c)$ is a PDF.
+
+```{r}
+# We assume non negativity since on paper we found out this is not a valid PDF
+#in fact we got 
+c = -1/2
+
+# Define func in R
+f_x_given_c = function (x,c) {
+  if (x>=0 && x<=1) {
+    return(c*x)
+  }
+  if (x>1 && x <=2) {
+    return(c*x+2)
+  }
+  else {
+    return(0)
+  }
+}
+x_values = seq(-2, 4, length.out = 1000)
+y_values <- sapply(x_values, function(x) f_x_given_c(x, -0.5)) # apply func element-wise
+
+# Plot
+plot(x_values, y_values, type = "l", xlab = "x", ylab = "f(x|-0.5)", main = "Plot of f(x|c) for c = -0.5")
+grid()
+# Since for some values is negative we can claim PDF is not valid for any c
+```
+
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 06
+font-family: Garamond
+
+Let's go with the sixth little exercise
+========================================================
+
+The PDF of a continuous r.v. $X$ is given by:
+
+f(x∣c)=c⋅x+3 for x in the interval [−3,−2].
+
+f(x∣c)=3−c⋅x for x in the interval [2,3].
+
+f(x∣c)=0 otherwise.
+
+- Compute $c$.
+- Find the CDF of $X$ and plot it in R together with the PDF above.
+- Find the median.
+- Find the $10^{th}$--percentile. 
+
+```{r}
+c = 1 
+# solved analytically on paper
+```
+
+```{r}
+# PDF
+f_x_given_c = function(x,c) {
+  
+  if (x>= -3 && x<= -2) {
+    return(c*x + 3)
+  }
+  if (x>=2 && x<= 3) {
+    return(3-c*x)
+  }
+  else {
+    return(0)
+  }
+}
+
+x_values = seq(-4, 4, length.out = 1000)
+pdf_vals <- sapply(x_values, function(x) f_x_given_c(x, 1)) # apply func element-wise
+
+# Plot
+plot(x_values, pdf_vals, type = "l", xlab = "x", ylab = "f(x|1)", main = "Plot of f(x|c) for c = 1")
+grid()
+
+# We ensure visually that is valid
+```
+```{r}
+# CDF
+f_x_given_c_cdf = function(x) {
+  
+  if (x< -3) {
+    return(0)
+  }
+  if (x>= -3 && x<= -2) {
+    return((x^2)/2 + 3*x + 9/2)
+  }
+  if (x>-2 && x<2) {
+    return(1/2)
+  }
+  if (x>=2 && x<= 3) {
+    return(3*x - (x^2)/2 - 7/2 + 1/2)
+  }
+  else {
+    return(1)
+  }
+}
+#?Vectorize
+f_x_given_c_cdf_vec = Vectorize(f_x_given_c_cdf)
+x_vals <- seq(-4, 4, length.out = 1000)
+cdf_vals <- sapply(x_vals, f_x_given_c_cdf_vec)
+
+# Plot
+plot(x_vals, cdf_vals, type = "l", col = "blue",
+     xlab = "x", ylab = "Cumulative Probability", main = "CDF of X")
+grid()
+
+# Regarding median we have seen in our CDF that any m in [-2,2] is a valid median
+```
+
+```{r}
+# Plot the PDF and CDF together
+plot(x_vals, pdf_vals, type = "l", col = "red", lwd = 2,
+     xlab = "x", ylab = "Density / Cumulative Probability", 
+     main = "PDF and CDF of X", ylim = c(0,1))  
+
+lines(x_vals, cdf_vals, col = "blue", lwd = 2)  
+
+legend("topleft", legend = c("PDF", "CDF"), col = c("red", "blue"), lwd = 2)
+grid()
+
+```
+
+```{r}
+F_p10 = -2.553
+# Solved analitycally on paper
+```
+
+Seventh little exercise
+========================================================
+
+Nina and Mr P. arrival times at Friday class is uniformly distributed between 12:00 and 1:00 (sic!). Their times do not influence each other. 
+
+If $Y$ is the first of the two times and $X$ is the second, on a scale of $0-1$, then the joint PDF of $X$ and $Y$ is 
+
+fX,Y(x,y)={ 2 for 0<y<x<1,
+            0 otherwise   }
+
+- Is $f_{X,Y}(\cdot,\cdot)$ a valid joint PDF? Explain.
+- Determine the marginal density of $X$ and plot it with `R`.
+- Determine the conditional density of $Y$ given $X$ and plot it with `R`.
+- Determine the conditional probability that $Y$ is between $0$ and $0.3$, given that $X$ is equal to $0.5$.
+- Are X and Y independent? Explain.
+
+```{r}
+# PDF is valid, demostrated on paper
+# Marginal density is 2x for every 0<x<1, 0 otherwise, also demostrated on paper
+f_X <- function(x) {
+  if (x>0 && x <1) {
+    return(2*x)
+  }
+  else {
+    return(0)
+  }
+}
+
+# Generate x-values
+x_vals <- seq(-0.1, 1.1, length.out = 500)
+
+# Compute f_X(x)
+f_X_vals <- sapply(x_vals, f_X)
+
+# Plot
+plot(x_vals, f_X_vals, type = "l", col = "blue", lwd = 2,
+     xlab = "x", ylab = "Density", main = "Marginal PDF of X",
+     ylim = c(0, 2))
+grid()
+
+```
+```{r}
+# conditional density is 1/x for every 0<y<x (found analytically)
+
+f_y_given_x <- function(y,x) {
+  if (y>0 && y <x) {
+    return(1/x)
+  }
+  else {
+    return(0)
+  }
+}
+x_fixed <- 0.5
+y_vals <- seq(-0.1, 1.1, length.out = 500)
+f_Y_vals <- sapply(y_vals, function(y) f_y_given_x(y, x_fixed))
+# Plot
+plot(x_vals, f_Y_vals, type = "l", col = "blue", lwd = 2,
+     xlab = "x", ylab = "Density", main = "Conditional PDF",
+     ylim = c(0, 2))
+grid()
+```
+```{r}
+# By CHATGPT
+# It shows clearly how conditional PDF works, showing diff values of fixed X
+# Define conditional PDF f_Y_given_X(y|x)
+f_y_given_x <- function(y, x) {
+  ifelse(y > 0 & y < x, 1 / x, 0)
+}
+
+# Define x values (a few representative values)
+x_vals <- c(0.2, 0.4, 0.6, 0.8)  # Different values of x for multiple curves
+
+# Generate y-values for plotting
+y_vals <- seq(0, 1, length.out = 500)
+
+# Plot setup
+plot(NULL, xlim = c(0, 1), ylim = c(0, 3),
+     xlab = "y", ylab = "Density", 
+     main = "Conditional PDF f(Y|X) for different X values")
+
+# Colors for different x-values
+colors <- c("red", "blue", "green", "purple")
+
+# Loop over different x-values and plot f(Y|X)
+for (i in seq_along(x_vals)) {
+  f_Y_vals <- sapply(y_vals, function(y) f_y_given_x(y, x_vals[i]))
+  lines(y_vals, f_Y_vals, col = colors[i], lwd = 2)
+}
+
+# Add legend
+legend("topright", legend = paste("X =", x_vals), col = colors, lwd = 2)
+grid()
+
+```
+```{r}
+# P(0<Y<0.3|X = 0.5) = 0.6, solved on paper
+# It was also proved it's not indipendent by paper
+```
+
+End of Class Exercise
+========================================================
+author: Pierpaolo Brutti  •  Statistical Methods for Data Science I
+date: Exercise 08
+font-family: Garamond
+
+Eight longer-than-usual exercise 1/3
+========================================================
+
+- Simulate $M = 1000$ samples from the distribution of a "mysterious" random variable $Y$ as follow:
+
+```{r, results='hide', eval = FALSE}
+set.seed(34243) # for reproducibility
+M   = 1000 
+lam = 0.287
+X_samp = runif(M) # Generate Y from Exp(lambda)
+Y_samp = -lam * log(X_samp) # Transforming Uniform(0,1) to Exp(lambda)
+```
+
+  Plot the histogram of the simulated values. Prove that the theoretical distribution of $Y$ is exponential with a suitable rate and then plot this theoretical PDF. What is the relation between the theoretical curve of the density of $Y$ and the graph of the histogram?
+
+```{r}
+y_vals <- seq(0, max(Y_samp), length.out = 1000)
+theoretical_pdf <- (1/lam) * exp(-y_vals/lam)  # Theoretical PDF of Exp(lambda)
+
+hist(Y_samp, breaks = 30, probability = TRUE, col = "lightblue",
+     main = "Histogram of Simulated Y and Theoretical Exponential PDF",
+     xlab = "Y", border = "black", ylim = c(0, max(theoretical_pdf) * 1.1))
+
+lines(y_vals, theoretical_pdf, col = "red", lwd = 2)
+
+legend("topright", legend = c("Simulated Data", "Theoretical Exp(λ) PDF"), 
+       col = c("lightblue", "red"), lwd = 2)
+grid()
+
+```
+```{r}
+# The histogram represents empirical observations of the variable Y obtained via simulation.
+# The shape is right-skewed, meaning more values are concentrated near 0, with a decreasing probability for larger values, This matches the expected shape of an exponential distribution
+# The theoretical curve smoothly follows the shape of the histogram, confirming that the empirical distribution approximates the true exponential distribution
+```
+
+Eight longer-than-usual exercise 2/3
+========================================================
+
+- Suppose now that our $Y$ is part of a bivariate random vector $(Z,Y)$. First of all, what does the joint density $f_{Z,Y}(z,y)$ represent and what properties does it satisfy? Then, how can you derive (in formula) the distribution of $Z$ from the joint?
+```{r}
+W_samp = rnorm(M, mean = 0, sd = 1) # Generate W from N(0,1)
+Z_samp = Y_samp * W_samp # Compute Z = Y * W
+
+# Plot histogram of Z
+hist(Z_samp, breaks = 30, probability = TRUE, col = "lightblue",
+     main = "Simulated Marginal Distribution of Z", xlab = "Z", border = "black")
+grid()
+# Has heavier tails than a normal distribution, characteristic of a Laplace-like distribution
+```
+```{r}
+# W is symmetric, Z is also symmetric around 0.
+Z_density <- density(Z_samp) # density estimation to approximate the shape of the marginal PDF of Z
+# Plot the density
+plot(Z_density, col = "red", lwd = 2, main = "Estimated PDF of Z",
+     xlab = "Z", ylab = "Density")
+grid()
+# The shape resemble a Generalized Laplace distribution
+```
+- Now suppose that, conditionally on each simulated $(Y_i = y_i)$ $i \in \{1,2,\ldots,M\}$, we set $Z_i = y_i \cdot W_i$ where $W_i$ is distributed as a standard Normal and it is *independent* of $Y_i$. What is the conditional distribution of $(Z\,|\,Y = y)$? 
+```{r}
+# specific Y values for conditional analysis
+Y_fixed <- c(0.1, 0.2, 0.3)  
+colors <- c("red", "blue", "green")  
+
+# Plot 
+par(mfrow = c(1, length(Y_fixed)))  
+
+for (i in seq_along(Y_fixed)) {
+  y_val <- Y_fixed[i]
+  Z_given_Y <- Z_samp[abs(Y_samp - y_val) < 0.05]  # Select Z for Y ≈ y_val
+
+  # Plot histogram of conditional Z | Y = y
+  hist(Z_given_Y, breaks = 30, probability = TRUE, col = "lightblue",
+       main = paste("Z | Y =", y_val), xlab = "Z", border = "black", ylim = c(0, 5))
+  
+  # Overlay theoretical Normal(0, y^2) density
+  z_vals <- seq(min(Z_given_Y), max(Z_given_Y), length.out = 100)
+  theoretical_pdf <- dnorm(z_vals, mean = 0, sd = y_val)
+  lines(z_vals, theoretical_pdf, col = colors[i], lwd = 2)
+}
+
+# Reset plot layout
+par(mfrow = c(1, 1))
+
+# As Y increases, the empirical histogram of Z∣Y=y starts deviating more from the ideal N(0,y^2)
+# as Y increase, Z values become more extreme, For small Y, Z is tightly concentrated around 0.
+
+
+```
+
+
+Eight longer-than-usual exercise 3/3
+========================================================
+
+- Under the same setup of the previous part, can you provide a simulation from the marginal distribution of $Z$? And what about an approximation of the marginal distribution of $Z$? Can you figure out how to get it? Finally, how could you derive/write the joint distribution of $(Z,Y)$?
+
+```{r}
+# it Laplace Distribution (Manually)
+mu_hat <- median(Z_samp)  # Laplace location parameter (median)
+b_hat <- mad(Z_samp) / sqrt(2)  # Scale parameter estimation
+
+# Laplace PDF function
+laplace_pdf <- function(z, mu, b) {
+  return((1 / (2 * b)) * exp(-abs(z - mu) / b))
+}
+
+# Plot
+hist(Z_samp, breaks = 50, probability = TRUE, col = "lightblue",
+     main = "Simulated Marginal Distribution of Z", xlab = "Z", border = "black")
+
+# Generate values for theoretical Laplace PDF
+z_vals <- seq(min(Z_samp), max(Z_samp), length.out = 500)
+laplace_vals <- laplace_pdf(z_vals, mu_hat, b_hat)
+
+# Overlay Laplace distribution
+lines(z_vals, laplace_vals, col = "green", lwd = 2, lty = 2)
+
+legend("topright", legend = c("KDE Estimate", "Fitted Laplace"),
+       col = c("red", "green"), lwd = 2, lty = c(1, 2))
+grid()
+
+
+```
+

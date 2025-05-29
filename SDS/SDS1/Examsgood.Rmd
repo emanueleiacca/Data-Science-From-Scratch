@@ -1,0 +1,329 @@
+---
+title: "Stats"
+author: "Emanuele Iaccarino"
+date: "2025-01-29"
+output: html_document
+---
+
+# 20 Dec 2016
+
+```{r}
+# to calculate confidence interval
+alpha = 0.1
+z_score <- qnorm(1 - alpha/2)
+```
+
+##### A
+
+```{r}
+# Data
+xx <- c(1.1, 1.7, 2.0, 9.3, 1.4, 1.2)
+# MLE functions
+a.hat <- function(x) length(x)/sum(log(x))
+se.hat <- function(x) abs(length(x)/sum(log(x)))/sqrt(length(x))
+# Evaluate the CI
+cat('--- MLE -------------\n')
+round(a.hat(xx), 3)
+cat('--- SE --------------\n')
+round(se.hat(xx), 3)
+cat('--- CI(0.99) --------\n')
+round(
+c(lower = a.hat(xx) - qnorm(1-alpha/2)*se.hat(xx),
+upper = a.hat(xx) + qnorm(1-alpha/2)*se.hat(xx)), 3)
+```
+
+##### C
+
+```{r}
+mle <- a.hat(xx)
+# CDF function
+cdf = function(x, alpha) (1 - x^(-alpha))*(x >= 1)
+# Plot: very few datapoints, endorsing every parametric model is a risky biz!
+curve( cdf(x, mle), from = -2, to = 12, lwd = 4, col = "orchid", ylim = c(0,1),
+xlab = expression(alpha), ylab = "CDF function")
+plot(ecdf(xx), cex = .7, add = T)
+grid()
+```
+```{r}
+# Sampling
+rquest <- function(n, alpha){
+u <- runif(n)
+out <- ((u)^(1/alpha))^(-1)
+return(out)
+}
+```
+
+```{r}
+# Parametric Boostrap
+n <- length(xx) # Sample size
+B <- 1000 # Bootstrap size
+a.boot <- rep(NA, B) # Init
+set.seed(123)
+for(b in 1:B){
+x.boot <- rquest(n, a.hat(xx))
+a.boot[b] <- a.hat(x.boot)
+}
+# Bias via Parametric Bootstrap
+cat('--- PBoot / Bias ----\n')
+round(mean(a.boot) - a.hat(xx), 3)
+# SE via Parametric Bootstrap
+cat('--- PBoot / SE ------\n')
+round(sd(a.boot), 3)
+# Parametric bootstrap CI
+cat('--- PBoot CI(0.90) --\n')
+round(
+c(lower = a.hat(xx) - qnorm(1-0.01/2)*sd(a.boot),
+upper = a.hat(xx) + qnorm(1-0.01/2)*sd(a.boot)), 3)
+```
+# 2020 February 13 Exam-03 - Part I (Probability)
+
+##### A
+Theory Question:
+Independence between events: Briefly explain the different types of independence between two or more events and their relations.
+
+```{r}
+# Pairwise indipendence (between 2 events)
+Two events A and B are independent if the Prob of their intersection is equal to the product of the prob of each event. 
+# P(A intersect B) = P(A) * P(B)
+An example is to toss a fair coin, where the prob of tossing a Head on first event is equal to the one of tossing Head also on the second attempt, so the prob of tossing Head twice is just their product
+# P(A intersect B) = 1/2 * 1/2 = 1/4 and it match
+
+#  Mutual (Joint) Independence
+We consider more than 2 events in this case.
+Back to the Coin problem, if we want to obtain head a third time we can follow a similar approac 
+# P(A intersect B intersect C) = (1/2)^3
+Mutual independence implies pairwise independence, but pairwise independence does not necessarily imply mutual independence.
+
+# Conditional Independence
+so they are independent only given a third event C
+
+# P(A interesect B∣C)=P(A∣C)P(B∣C)
+his means that if we know C has occurred, then the probability of (A intersect B) is just the product of their individual probabilities given C
+```
+
+You enter a League of Legends tournament where your probability of winning a game is 0.3 against half the players (call them Type 1), 0.4 against a quarter of the players (call them Type 2) and 0.5 against the remaining quarter of the players (call them Type 3).
+You play a game against a randomly chosen opponent.
+
+1. What is the probability of winning the game?
+```{r}
+p1 = 1/2 # P (T_1)
+p2 = 1/4 # P (T_2)
+p3 = 1/4 # P (T_3)
+
+P_W_given_T1 = 0.3 # P (W|T_1)
+P_W_given_T2 = 0.4 # P (W|T_2)
+P_W_given_T3 = 0.5 # P (W|T_3)
+
+# Using Law of total probabilities
+PW = P_W_given_T1 * p1 + P_W_given_T2 * p2 + P_W_given_T3 * p3
+PW
+```
+Suppose you win. What is the probability that you had an opponent of Type 1?
+```{r}
+# P(T_1|W) using Bayes Theorem
+PT1_W = P_W_given_T1 * p1 / PW
+PT1_W
+```
+##### B
+
+```{r}
+Fx = function(x) 3*(4/3 - 2/x)*(x >= 3/2)*(x < 2) + (x >= 2)
+curve(Fx(x), from =1, to = 2.5, n = 300)
+```
+
+##### C
+Theory Question:
+Mean vs Median: contrast these two distribution summaries in terms of their main properties.
+
+```{r}
+The mean is the sum of all the observation divided by the total number of observation.
+It consider all the data points so it is affected by outliers.
+
+The median is the middle point of the ordered dataset, if the number of data points is odd, the median is the middle value, instead if the number is even, the median is the average between the two middle values.
+It is more robust for outliers, so we prefer median over mean in skewed distribution, instead for symmetric distribution we prefer the mean since computationally is less expensive.
+```
+
+```{r}
+ell <- 1  # Stick length
+n <- 10^6  # Number of simulations
+
+# Generate X1 (first break point)
+X1 <- runif(n, min = 0, max = ell)
+
+# Generate X2 (second break point, inside X1)
+X2 <- runif(n, min = 0, max = X1)
+
+# Compute expected value from simulation
+E_X2_simulated <- mean(X2)
+
+E_X1 = ell / 2 # we break at a random point, so mean is the avg
+
+# Compute theoretical expectation
+E_X2_theoretical <- E_X1 * 1/2 # we divide once again by half 
+
+round(E_X2_simulated, 3)
+round(E_X2_theoretical, 3)
+
+```
+
+
+# 2020 February 13 Exam-03 - Part II (Statistics)
+
+##### A
+Theory Question:
+Point Estimation: describe a general decision theoretical framework to evaluate/compare point estimators. Then provide a specific example.
+
+```{r}
+1. We define an estimator:
+  is a function of observed data that provides a single best guess for an    unknown population parameter
+#Ex:
+To estimate the population mean mu, our estimator will be the sample mean mu_hat so we do the mean of the sum of all the observed data points
+2. Loss function:
+  cost of an estimation error
+# Ex:
+We can use squared error loss to penalize more larger errors
+Or we can use absoluted error loss to deal with outliers
+3. Risk function:
+  Expected loss under the true population parameter
+# Ex:
+For squared error loss:
+# R(θ_hat,θ) = E[( θ_hat − θ)^2 ] 
+so the mean of the difference between population and sample parameter (squared in this case)
+# = Var(θ_hat ) + (Bias (θ_hat) )^2
+from the bias-variance decomposition
+
+4. Comparing Estimators
+We use Mean Squared Error (MSE)
+# MSE( θ_hat )=E[( θ_hat −θ)^2 ]
+# = Var( θ_hat )+Bias( θ_hat )^2
+A better estimator has a lower MSE.
+
+```
+
+```{r}
+func0 = function(mu, n) mu^2 * (1/(n+1)^2) + n/(n+1)^2
+funcXn = function(mu, n) 1/n
+n = 100
+
+#n = 10 works with any value of n
+mu_values = seq(-2, 2, length.out = n)
+
+y_values0 = func0(mu_values, n)
+plot(y_values0)
+abline(h = funcXn(mu_values, n))
+# neither dominates the other
+```
+
+##### B
+
+The dataset kill_bill.RData contains the times (in minutes from the beginning) at which a swear-word/blasphemy is said during the first hour of Quentin Tarantino’s Kill Bill saga.
+For the sake of this exercise, assume they are independent realizations of a Gamma random variable X with rate parameter β and shape parameter α both unknown.
+with E(X) = α/β and Var(X) = α/β^2
+```{r}
+kill_bill <- read.csv2("C:/Users/emanu/Downloads/kill_bill.csv", sep="")
+kill_bill$time_in_minutes <- as.numeric(kill_bill$time_in_minutes) # idk why was given in character type
+View(kill_bill)
+```
+```{r}
+X <- kill_bill$time_in_minutes
+
+# Compute sample statistics
+X_bar <- mean(X)      # Sample mean
+X_var <- var(X)       # Sample variance
+
+# Compute estimates
+alpha_hat <- round((X_bar^2 / X_var),3) # shape
+beta_hat <- round((X_bar / X_var),3) # rate
+# even easier, no need to create functions
+```
+
+```{r}
+alpha_hat
+beta_hat
+```
+
+Is it a good fit? Detail your answer using suitable plots and stats.
+```{r}
+hist(kill_bill$time_in_minutes, prob = T) # actual data
+curve( dgamma(x, shape = ab_mom[1], rate = ab_mom[2]), add = T) #gamma fit
+```
+```{r}
+#PDF
+hist(kill_bill$time_in_minutes, prob = T) # actual data
+curve( dgamma(x, shape = alpha_hat, rate = beta_hat), add = T, col = "red") #gamma fit
+# T allows to compare on same graph actual data and gamma fit
+```
+```{r}
+# CDF
+curve( pgamma(x, shape = alpha_hat, rate = beta_hat), from = min(kill_bill), to = max(kill_bill), col = "red")
+
+plot(ecdf(kill_bill$time_in_minutes), add = T)
+```
+
+```{r}
+# Q-Q plot
+n <- length(kill_bill$time_in_minutes)
+
+qqplot(
+  qgamma(ppoints(n), shape = alpha_hat, rate = beta_hat),  # Theoretical quantiles
+  kill_bill$time_in_minutes,  # Observed data
+)
+qqline(
+  kill_bill$time_in_minutes,
+  distribution = function(p) qgamma(p, shape = alpha_hat, rate = beta_hat),
+  col = "red"
+)
+
+```
+Comment: Since I didn't had access to the original data of the Exam I asked ChatGPT to create my same, he uses a poisson distribution with a rate of 1.5 swear word per minute in a 60 minutes time frame. Nonetheless we managed somehow to approximate the distribution in a valuable way, results are encouraging
+
+##### C
+
+use the parametric bootstrap to provide a 95% confidence interval for the population mean.
+```{r}
+B = 1000
+mu_boot = rep(NA, B) # Initialize
+set.seed(1234)
+for (b in 1:B){ # for each Bootstrap b
+  x_boot = rgamma(n, shape = alpha_hat, rate = beta_hat) # Generate bootstrap sample
+  mu_boot[b] = mean(x_boot) # Save mean under index b
+}
+# mu_boot shows mean for each bootstrap sample
+# Confidence intervals
+alpha <- 0.05 
+zz <- -qnorm(alpha/2) # zscore value for alpha parameter (95% of normal distribution)
+# also qnorm(1-(alpha/2))
+# Now we calculate critical value 
+# CI (confidence interval) = [mu-z(alpha/2)*SE,mu+z(alpha/2)*SE]
+# mu is sample mean, z(alpha/2) is zz previously calculated, SE is standard error, that we estimate as the standard deviation of all the Bootstap samples
+low = round(mean(kill_bill$time_in_minutes) - zz*sd(mu_boot),3) # Lower Bound
+up = round(mean(kill_bill$time_in_minutes) + zz*sd(mu_boot),3) # Upper Bound
+
+low
+up
+```
+
+Double check the previous result by building a pivotal, nonparametric bootstrap based, confidence interval at the same level for the population mean. Compare the two results.
+
+Theory:
+parametric bootstrap assumes a Gamma distribution for resampling, 
+nonparametric bootstrap simply resamples directly from the observed data without assuming an underlying distribution
+
+pivotal method constructs the confidence interval using the empirical quantiles of the bootstrap means, adjusting the sample mean accordingly
+```{r}
+mu_nboot = rep(NA, B) # Initialize a new one
+for (b in 1:B) {
+  x_nboot = sample(kill_bill$time_in_minutes, replace = TRUE)  # Resample from observed data
+  mu_nboot[b] = mean(x_nboot)  # Compute mean of bootstrap sample
+}
+# Get bootstrap quantiles
+nlow = round( quantile (mu_nboot, (alpha/2)),3) # Lower Bound
+nup = round( quantile (mu_nboot, (1 - alpha/2)),3) # Upper Bound
+
+nlow
+nup
+```
+Comment:
+Quite similar to each other, since non parametric Bootstrap is data driven it doesn't assume any specific distribution so it's more robust when data distribution is unknown, Parametric Bootstrap ofc is more efficient if the Gamma distribution assumption is correct
+
+

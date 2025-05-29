@@ -1,0 +1,624 @@
+---
+title: "SDS2"
+author: "Emanuele Iaccarino"
+date: "2025-05-07"
+output: html_document
+---
+
+# Midterm 2021.1
+
+### .B
+
+In a Bayesian conjugate analysis for a Bernoulli trial, the larger the sample size, the smaller the influence of the prior mean elicitation on the posterior mean.
+
+```{r}
+#?rbinom
+teta = 0.7
+a = 2
+b = 4
+try = c(10,100,1000)
+for (n in try)
+{
+  y = rbinom(n ,size = 1, prob = teta)
+  y_sum = sum(y)
+  y_mu = mean(y)
+  p_a = a + y_sum
+  p_b = b + n - y_sum
+  p_mu = p_a / (p_a + p_b)
+  pr_mean = a / (a+b)
+  
+  print(n)
+  print(y_mu)
+  print(p_mu)
+  print(pr_mean)
+}
+
+# At small sample sizes , the posterior mean is closer to the prior.
+# As sample size increases, the posterior mean moves closer to the sample mean, until they nearly match
+```
+So the answer is TRUE
+
+### .D
+
+```{r}
+x_sim = rbinom(10000, size = 1, prob = 0.4) # Simulation from Bernoulli
+# Simulation of \theta values
+theta_sim = rnorm(n=10000,
+    mean = x_sim * 2 + (1 - x_sim) * (-3), # for x = 1
+    sd   = sqrt(5) * x_sim + sqrt(4) * (1 - x_sim)) # for x = 0
+joint_vect_sim_matrix = cbind(x_sim, theta_sim) # matrix with two columns (x_i,\theta_i)
+theta_given_x0  = joint_vect_sim_matrix[x_sim == 0, 2] # we take second column (ony \theta values) where x_i = 0
+cat("Empirical mean:", mean(theta_given_x0), "\n")
+cat("Empirical sd:", sd(theta_given_x0), "\n")
+
+hist(theta_given_x0, probability = TRUE) # empirical distr
+curve(dnorm(x, mean = -3, sd = 2), col = "red", add = TRUE) # theorical curve
+```
+This demostrate that It is the realization of i.i.d. random variables drawn from the conditional distribution of θ∣X=0
+So the answer D is correct
+
+
+### .E
+```{r}
+y_obs = c(3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 3, 0, 2, 3, 0, 2, 1, 0, 3, 4, 1, 2, 0)
+n = length(y_obs)
+# Yi is distr as a Poisson, i.i.d. with \theta > 0
+# Also we know from the problem
+prior_mu = 2.1
+prior_sd = 3
+
+# We now have to obtait the prior gamma
+# we solve a sistem of equation where
+# \theta is distr as a gamma (a, b)
+# and where
+# E[\theta] = a/b = 2.1
+# var[\theta] = a / b^2 = 9
+
+# 2.1 * b / b^2 = 9 -> 2.1 / b = 9 - > 
+b =  prior_mu / prior_sd^2
+a = b * prior_mu
+
+# P prior  \theta < 1
+pgamma(1, shape = a, rate = b)
+```
+
+
+# Midterm 2021.2
+
+
+### .A
+```{r}
+y_obs = c(0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1)
+success = sum(y_obs) 
+n = length(y_obs)
+failures = n - success
+# Prior: Beta (4,5)
+a = 4
+b = 5
+curve(dbeta(x,a,b))
+# unimodal
+```
+
+```{r}
+# Posterior distribution
+a_post = a + success
+b_post = b + failures
+# Posterior median
+print("Posterior median")
+qbeta(0.5, a_post, b_post)
+# 80% credible interval
+print("80% credible interval")
+alpha = 0.2
+a_mezzi = alpha / 2
+print("lower")
+qbeta(a_mezzi, a_post, b_post)
+print("upper")
+qbeta(1 - a_mezzi, a_post, b_post)
+```
+
+```{r}
+# Posterior probability that \theta > 0.4
+print("Posterior probability that \theta > 0.4")
+post_prob = 1 - pbeta(0.4, a_post, b_post)
+post_prob
+post_odds = post_prob / (1 - post_prob)
+
+# Prior odds that \theta > 0.4
+print("Prior odds that \theta > 0.4")
+prior_prob = 1 - pbeta(0.4, a, b)
+prior_odds = prior_prob / (1 - prior_prob)
+# prior_prob
+prior_odds
+print("Bayesian Factor")
+BF = post_odds / prior_odds
+BF
+```
+
+### .B
+
+```{r}
+obs_succ = 12
+p_succ = 0.45
+# size = ? , parameter of the Binomial
+N_max = 200
+# Prior: uniform over all N between 12 and 200
+N_vals = obs_succ:N_max # values from : to
+prior = rep(1 / length(N_vals), length(N_vals))
+# Rembember when asked to Retrieve values for N = 12
+
+# Likelihood is the prob of having 12 successes given Nmax and p_succ = 
+# (N on 12) * p_succ ^ obs_succ * (1 - p_succ)^ ( N_max - obs_succ)
+# That more simply on R is:
+print("likelihood n12")
+likelihood = dbinom(obs_succ, size = N_vals, prob = p_succ)
+likelihood_n12 = dbinom(obs_succ, size = 12, prob = p_succ)
+likelihood_n12
+#likelihood
+# Posterior (unnormalized)
+print("Posterior (unnormalized)")
+unnormalized_post = likelihood * prior
+#unnormalized_post
+# Normalize
+print(" Normalize posterior n12")
+posterior = unnormalized_post / sum(unnormalized_post)
+posterior_n12 = posterior[which(N_vals == 12)] # should be first index since we start counting from obs_succ on N_vals, btw let's keep this "general" approach
+posterior_n12
+# Posterior mean
+print("Posterior mean")
+post_mean = sum(N_vals * posterior)
+post_mean
+# Posterior mode (N with highest posterior probability)
+print("Posterior mode (N with highest posterior probability)")
+post_mode = N_vals[which.max(posterior)]
+post_mode
+# Posterior median
+cumulative = cumsum(posterior)
+print("Posterior median")
+post_median = N_vals[which(cumulative >= 0.5)[1]]
+post_median
+```
+
+### .C
+
+```{r}
+# Yi are distr as a N(mean = \theta = ? unknown , var = sigma^2 = 100)
+# From table when Normal(θ, σ^2) and we have (known σ^2):
+# θ ∼ Normal(µ0, τ0^2) as Posterior hyperparameter
+sigma2  = 100
+y_obs = c(
+  68.443, 72.576, 84.826,
+  69.255, 55.383, 68.454, 68.678,
+  79.598, 75.484, 74.460, 77.024,
+  79.574, 85.889, 63.586,
+  76.228, 62.234, 82.880,
+  75.368, 72.744, 71.131, 46.112,
+  61.266, 70.219, 74.881,
+  66.126, 63.556, 77.263, 67.144, 71.113, 64.156
+)
+# From now on there might be some error cause I didn't copied exactly the y_obs cause the pic was blurry and we talk about 10 decimals, let's say an approximation here is good
+n = length(y_obs)
+mu0 = 75
+tau2   = 1.25
+theta = seq(70, 80, length.out = 1000)
+
+# Prior density
+prior_density = dnorm(theta, mean = mu0, sd = sqrt(tau2))
+
+# Plot
+plot(theta, prior_density)
+# tribution is simmetric
+```
+
+```{r}
+y_mean = mean(y_obs)
+# Posterior calculations
+post_var = 1 / (n / sigma2 + 1 / tau2) # 1/k on the tables
+post_sd = sqrt(post_var)
+# It's the first formula
+post_mean = post_var * ( mu0 / tau2 + sum(y_obs) / sigma2 ) 
+print("Posterior mode")
+post_mean # Since the distribution is simmetric post_mean = post_mode
+
+# 95% credible interval for Normal
+print("lower")
+qnorm(0.025, post_mean,post_sd)
+print("upper")
+qnorm(0.975, post_mean,post_sd)
+# Posterior probability \theta < x
+x = 72.3296748
+print("Posterior probability \theta < x")
+posterior_prob = pnorm(x, mean = post_mean, sd = post_sd)
+posterior_prob
+# Prior probability \theta < x
+print("Prior probability \theta < x")
+prior_prob = pnorm(x, mean = mu0, sd = sqrt(tau2))
+prior_prob
+# Odds
+posterior_odds = posterior_prob / (1 - posterior_prob)
+prior_odds = prior_prob / (1 - prior_prob)
+# Bayes Factor
+print("Bayesian Factor")
+BF = posterior_odds / prior_odds
+BF
+```
+Is the conclusion based on the Bayes Factor in agreement with the one based on posterior probability?
+
+Yes. even though the posterior probability of H0 is small, it's larger than expected under the prior, and that's why the Bayes Factor is > 1 in favor of H0.
+
+# Midterm 2023
+
+### .A
+
+```{r}
+prop_post_masses = c(0.000, 0.001, 0.003, 0.007, 0.012, 0.018, 
+                      0.026, 0.034, 0.043, 0.051, 0.057, 0.062, 
+                      0.065, 0.066, 0.065, 0.063)
+theta_vals = 0:15
+# Normalize Posterior
+post_probs = prop_post_masses / sum(prop_post_masses)
+print("Posterior mean")
+post_mean = sum(theta_vals * post_probs)
+post_mean
+print("Posterior Median")
+post_cdf = cumsum(post_probs)
+post_median = theta_vals[which(post_cdf >= 0.5)[1]]
+post_median
+print("Posterior Mode")
+post_mode = theta_vals[which.max(post_probs)]
+post_mode
+# 80% ET credible set
+# we’re trimming 10% from each side
+print("lower")
+lower_bounds = theta_vals[which(post_cdf <= 0.1)]
+#lower_bounds
+lower_bound = tail(lower_bounds, 1) + 1 # +1 cause in R indexes start from 0
+lower_bound
+print("upper")
+upper_bounds = theta_vals[which(post_cdf <= 0.9)]
+# <= cause it has not to exceed 90%, that's why we can't use the method used for the lower bound
+#upper_bounds
+upper_bound = tail(upper_bounds, 1) + 1 # we take the largest value of this vector, that still belong to that central 80%
+upper_bound # any larger value of θ would go beyond the 80% interval
+```
+
+I was told JUST NOW that we are allowed to use libraries, so here is the easy way to compute the intervals
+
+```{r}
+#install.packages("coda")
+library(coda)
+# Simulate posterior samples (large number = good approximation)
+samples = sample(theta_vals, size = 100000, replace = TRUE, prob = post_probs)
+samples_mcmc = as.mcmc(samples) # Convert to mcmc object
+print("80% equal-tailed")
+quantile(samples, probs = c(0.1, 0.9))  # for 80% equal-tailed
+print("95% HPD")
+HPDinterval(samples_mcmc, prob = 0.95) # for 95% HPD
+
+```
+
+```{r}
+# unnormalized prior vector
+prop_prior_masses = c(0.128, 0.112, 0.092, 0.073, 0.056, 0.042,
+                       0.031, 0.022, 0.016, 0.011, 0.008, 0.005,
+                       0.004, 0.002, 0.002, 0.001)
+
+theta_vals = 0:15
+# Normalize the prior
+prior_probs = prop_prior_masses / sum(prop_prior_masses)
+# Prior mean and sd
+prior_mean = sum(theta_vals * prior_probs)
+print("Prior Sd")
+prior_sd = sqrt(sum((theta_vals - prior_mean)^2 * prior_probs))
+prior_sd
+# Compute the MLE of \theta
+# Since it's based only on the prior (no data), MLE is not about likelihood
+print("MLE of \theta")
+theta_mle = theta_vals[which.max(prop_post_masses)] 
+theta_mle # ? Review cause I think is wrong
+```
+
+### .B
+
+```{r}
+# conjugate normal-normal Bayesian model
+
+y_obs = c(75.66, 89.76, 79.44, 93.03, 93.71, 98.32, 83.79, 77.93, 81.93, 56.91, 72.09, 88.15, 81.02, 85.68, 70.93)
+n = length(y_obs)
+y_bar = mean(y_obs)
+sigma2 = 100
+tau2 = 1.25
+mu0 = 75
+# plot tr
+# Plot range
+x_vals = seq(70, 80, length.out = 500)
+prior_density = dnorm(x_vals, mean = mu0, sd = sqrt(tau2))
+
+# Plot
+plot(x_vals, prior_density)
+# is symmetric
+```
+
+```{r}
+# Posterior variance and mean (Normal-Normal conjugate formulas)
+posterior_var = 1 / (1 / tau2 + n / sigma2 ) # 1/k on cheatsheet
+posterior_sd = sqrt(posterior_var)
+posterior_mean = posterior_var * ( mu0 / tau2 + sum(y_obs) / sigma2)
+
+# Posterior mode = posterior mean in Normal case (distribution is symmetric)
+posterior_mode = posterior_mean
+print("Posterior Mode")
+posterior_mode
+```
+
+```{r}
+# 90% credible interval (equal-tailed since Normal is symmetric)
+print("90% credible interval")
+qnorm(0.05, posterior_mean, posterior_sd)
+qnorm(0.95, posterior_mean, posterior_sd)
+print("Posterior probability \theta < x")
+x = 74.6258756
+posterior_prob = pnorm(x, posterior_mean, posterior_sd)
+posterior_prob
+posterior_prob_greater = 1 - posterior_prob
+posterior_odds = posterior_prob / posterior_prob_greater
+
+print("Prior Odds \theta < x")
+prior_prob_less = pnorm(x, mu0 , sqrt(tau2)) # P(\theta < x)
+prior_prob_greater = 1 - prior_prob_less # P(\theta > x)
+prior_odds = prior_prob_less / prior_prob_greater
+prior_odds
+
+print("Bayesian Factor")
+BF = posterior_odds / prior_odds
+BF
+```
+
+The posterior probability that \theta < x(74.6258756) is low (~0.077), which means we do not support H0.
+The Bayes Factor BF is 0.1428431, much less than 1, indicating evidence in favor of H1 ( i.e., \theta > x(74.6258756) ).
+
+### .C
+
+```{r}
+set.seed(5419)
+y_obs <- rbinom(11, size = 1, prob = 0.75)
+sum(y_obs)  # number of successes
+# that’s a Beta(1,1) prior
+# Posterior calculation
+a_post <- 1 + sum(y_obs)
+b_post <- 1 + (11 - sum(y_obs))
+# 0.85 equal-tailed credible interval
+# qbeta(c(0.075, 0.925), a_post, b_post)
+# This is "wrong" cause it does not provide the SHORTEST CI
+
+# Find the shortest credible interval for the posterior with 85% probability
+# We are gonna try an empirical approach to reach the shortest CI
+samples <- rbeta(1e6, shape1 = a_post, shape2 = b_post)
+
+# Function 
+get_HPD <- function(samples, cred_mass = 0.85) {
+  sorted <- sort(samples)
+  n <- length(sorted)
+  interval_idx <- floor(cred_mass * n)
+  widths <- sorted[(interval_idx+1):n] - sorted[1:(n - interval_idx)]
+  min_idx <- which.min(widths)
+  c(sorted[min_idx], sorted[min_idx + interval_idx])
+}
+
+get_HPD(samples, cred_mass = 0.85)
+
+# Method used by the professor in his demos
+# install.packages("TeachingDemos")
+library(TeachingDemos)
+
+# posterior distribution (Beta posterior in our case)
+posterior_icdf <- function(p) {
+  qbeta(p, shape1 = a_post, shape2 = b_post)
+}
+
+HPD_interval <- hpd(p = posterior_icdf, conf = 0.85)
+HPD_interval
+```
+
+```{r}
+# system of equations
+target_mean <- 0.75 # \alpha / (\alpha + \Beta)
+target_prob <- 0.95 # P(θ > 0.5)
+
+# Use optimization
+objective <- function(par) {
+  # We compute how far α and β are from satisfying both constraints
+  alpha <- par[1]
+  beta <- par[2]
+  
+  mean_error <- (alpha / (alpha + beta) - target_mean)^2
+  prob_error <- (1 - pbeta(0.5, alpha, beta) - target_prob)^2
+  
+  return(mean_error + prob_error) # we minimize the total squared error
+}
+
+# Initial guess: c(2, 1)
+result <- optim(c(2, 1), objective, method = "L-BFGS-B", lower = c(0.1, 0.1))
+# We search for values of α and β that make the total error as close to 0 as possible
+# Extract solution
+alpha <- result$par[1]
+beta <- result$par[2]
+alpha
+beta
+```
+### .D
+
+```{r}
+# Observed failure times
+y <- c(0.6, 4.6, 4.6, 2.2, 39.0, 0.5, 14.5, 7.0, 4.1, 
+       5.5, 2.8, 12.2, 22.4, 6.9, 8.5, 57.8, 12.1, 13.9, 
+       21.3, 19.4)
+n = length(y)
+# Prior parameters
+alpha_prior <- 20 # rate
+beta_prior <- 20 # shape
+# Posterior parameters
+# Gamma(a + y, b + n)
+alpha_post <- alpha_prior + n
+beta_post <- beta_prior + sum(y)
+# Median of posterior distribution (Gamma)
+# REMEMBER: shape goes first, than rate
+lambda_median <- qgamma(0.5, beta_post, alpha_post)
+# median of the posterior \theta is reciprocal of the expected failure time (since the data is modeled as exponential with rate \theta)ù
+
+# median of θ = 1/λ
+theta_median <- 1 / lambda_median
+print("median of θ = 1/λ")
+theta_median
+```
+
+# Midterm 2024.1
+
+### .A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# [2024] Quizzes on conjugate Bayesian analysis of discrete data models (Bernoulli, binomial, Poisson)
+
+Suppose we have observed the following 14 conditionally i.i.d. Bernoulli random variables with unknown success probability \theta (theta)
+
+y_obs
+
+##  [1] 0 1 0 0 0 0 0 0 0 0 0 0 0 0
+
+and we want to carry out some conjugate Bayesian analysis using as a tribution a Beta(4,4)
+
+The tribution is
+
+```{r}
+y_obs = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+n = length(y_obs)
+success = 1
+failure = n-success
+a = 4
+b = 4
+# plot prio distr
+curve(dbeta(x,a,b))
+# answer is unimodal
+# no flat, it would have been fir beta (1,1)
+# not wrong surely
+# not improper cause it integrate to 1
+```
+
+```{r}
+# Yi | \theta distr as a Bernoulli (\theta)
+# Prior: \theta distr Beta (a=4,b=4)
+pr_mean = a / (a+b)
+pr_var = (a*b) / ( (a+b)^2 * (a+b+1) )
+print("Prior mean and var")
+pr_mean
+pr_var
+
+# Posterior: \theta distr Beta(a + y, b + n - y) where y = success
+# \theta distr Beta(4+1, 4+14-1) = Beta (5,17)
+a_p = 5 # a + succ
+b_p = 17 # b + failures
+post_mean = a_p / (a_p + b_p)
+post_var = (a_p * b_p) / ( (a_p + b_p)^2 * (a_p + b_p +1) ) 
+print("Posterior mean and var")
+post_mean
+post_var
+
+# Posterior median
+print("Posterior median")
+qbeta(0.5, a_p, b_p)
+# Confidence interval at 90%
+alpha = 0.1
+a_half = alpha/2
+print("lower")
+qbeta(a_half, a_p, b_p)
+print("upper")
+qbeta(1 - a_half, a_p, b_p)
+# Posterior probability that \theta > 0.4
+p = 0.4
+print("Posterior probability that \theta > 0.4")
+post_prob = 1 - pbeta(p, a_p, b_p)
+post_prob
+post_odds = post_prob / (1 - post_prob)
+# Prior odds for \theta > 0.4
+print("Prior odds for \theta > 0.4")
+prior_prob = 1 - pbeta(p, a, b)
+a
+prior_odds = prior_prob / (1-prior_prob)
+prior_odds
+#Bayesian Factor
+BF = post_prob / prior_odds
+print("Bayesian Factor")
+BF
+```
+
+Suppose we have observed the following counts of daily complaints received at 30 different stores of the same food supermakets.
+
+```{r}
+y_obs = c(12, 3, 7, 11, 7, 7, 12, 7, 8, 8, 4, 11, 5, 3, 6, 12, 11, 9, 8, 15, 8, 9, 7, 8, 6, 4, 12, 11, 9, 9)
+```
+
+Suppose we have some prior opinion on the expected value of the number of complaints which is represented by a Gamma distribution with rate parameter 0.8 and shape parameter 2.
+```{r}
+n = length(y_obs)
+sum_y = sum(y_obs)
+# Prior: \theta distr as a Gamma (a = shape = 2, b = rate = 0.8)
+a = 2
+b = 0.8
+```
+
+Consider as a suitable statistical model for non negative counts the Poisson distribution and compute the median of the posterior distribution.
+
+```{r}
+# We model as a Poisson distr
+# Posterior: \theta | y_obs distr as a Gamma (a + n, b + sum_y)
+a_p = a + sum_y
+b_p = b + n
+
+post_mean = a_p / b_p
+post_median = qgamma(0.5, a_p, b_p)
+post_mode = (a_p - 1 ) / b_p
+post_median
+```
+# [2024] Quizzes on simulation, MC approximations and predictive distributions [**NEW**]
+
+Use the following R code to provide a Monte Carlo approximation of the expectation of the posterior predictive distribution for the future observable Y_{21}
+
+```{r}
+# R code for approximating Bayesian inference via Monte Carlo approach
+# conjugate Poisson model
+set.seed(123)
+theta_star = 4
+y_obs = rpois(20,lambda = theta_star)
+y_obs
+##  [1] 3 6 3 6 7 1 4 7 4 4 8 4 5 4 2 7 3 1 3 8
+mcsize = 100000
+# prior = teta
+prior_sim = rgamma(mcsize,shape=2,rate=2) # gamma (shape, rate)
+# posterior = teta|X
+posterior_sim=rgamma(mcsize,shape=2+sum(y_obs),rate=2+20) # gamma (shape + n(X), rate + n)
+```
+
+```{r}
+hist(prior_sim, col = "red") # asymm right tail distr
+hist(posterior_sim, add = TRUE, col = "blue") # normal distr
+```
+
+```{r}
+y21_sim = rpois(mcsize, lambda = posterior_sim)
+# Approximate E[Y_21 | y_obs]
+mean(y21_sim)
+```

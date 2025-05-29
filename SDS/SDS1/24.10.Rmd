@@ -1,0 +1,47 @@
+---
+title: 'Lab 6: MonteCarlo'
+author: "Emanuele Iaccarino"
+date: "2024-10-24"
+output: html_document
+---
+# Lab 7 of 24/10 : MonteCarlo Simulation
+
+```{r}
+n = 15 #sample size
+#?rgamma is the population we sample from (remember to check parametrization)
+# GT = true expectation (|E)
+
+#study the distribution of the sample avg via simulation on as the sample "n" gets larger and larger
+
+#Remark: in our terms, we are studying the distribution of very specific transoformation of a Random vector: XX = {X_1, ... X_n} >>> r(XX) = (1/n)*(X_1, ... X_n)
+#
+
+set.seed(42)
+alpha = 3
+beta = 1/2
+GT = alpha / beta #true expecation
+curve (dgamma(x, shape = alpha, rate = beta), 0, 20)
+points(GT, 0)
+sample = rgamma(n, shape = alpha, rate = beta )
+avg = mean(sample)
+avg
+```
+```{r}
+M = 1000 # if we could go to \inf we could recover the true distribution of that specific transformation (this is not possible by simulation)
+avg_vec = rep (NA, M)
+for ( m in 1:M){
+  samp = rgamma(n, shape = alpha, rate = beta )
+  avg = mean(samp)
+  avg_vec[m] = avg
+}
+# Plotting the histogram of the average values
+hist(avg_vec, probability = TRUE, 
+     main = "Histogram of Average Values from Gamma Distribution",
+     xlab = "Average Value",
+     col = "lightblue", border = "black")
+
+# Adding a vertical line for the ground truth value
+abline(v = GT, lty = 2, lwd = 2, col = "red")
+
+```
+
