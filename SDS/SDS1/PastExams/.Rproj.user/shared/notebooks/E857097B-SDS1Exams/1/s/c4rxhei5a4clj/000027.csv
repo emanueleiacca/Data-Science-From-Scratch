@@ -1,0 +1,5 @@
+"0","# Density function"
+"0","dmy <- function(x, psi) (x/psi^2)*exp(-x^2/(2*psi^2))*(x >= 0)"
+"0","# Plot"
+"0","psi.seq = c(1, 5, 10)"
+"0","curve(dmy(x,psi.seq[1]), from = 0, to = 30, n = 300, col=""red"")"

@@ -1,0 +1,49 @@
+"0","install.packages(""r4ds.tutorials"")"
+"2","WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+"
+"2","Installazione pacchetto in ‘C:/Users/emanu/AppData/Local/R/win-library/4.3’
+(perché ‘lib’ non è specificato)
+"
+"2","si installano anche le dipendenze ‘parsermd’, ‘tutorial.helpers’
+
+"
+"2","apertura URL 'https://cran.rstudio.com/bin/windows/contrib/4.3/parsermd_0.1.3.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 596592 bytes (582 KB)
+"
+"2","downloaded 582 KB
+
+"
+"2","apertura URL 'https://cran.rstudio.com/bin/windows/contrib/4.3/tutorial.helpers_0.3.1.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 196964 bytes (192 KB)
+"
+"2","downloaded 192 KB
+
+"
+"2","apertura URL 'https://cran.rstudio.com/bin/windows/contrib/4.3/r4ds.tutorials_0.3.0.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 2209326 bytes (2.1 MB)
+"
+"2","downloaded 2.1 MB
+
+"
+"1","pacchetto ‘parsermd’ aperto con successo con controllo somme MD5
+"
+"1","pacchetto ‘tutorial.helpers’ aperto con successo con controllo somme MD5
+"
+"1","pacchetto ‘r4ds.tutorials’ aperto con successo con controllo somme MD5
+"
+"1","
+"
+"1",""
+"1","I pacchetti binari scaricati sono in
+	C:\Users\emanu\AppData\Local\Temp\RtmpgNXM85\downloaded_packages"
+"1",""
+"1","
+"

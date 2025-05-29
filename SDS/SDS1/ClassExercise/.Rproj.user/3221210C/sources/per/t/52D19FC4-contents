@@ -1,0 +1,321 @@
+---
+title: "SDS"
+author: "Emanuele Iaccarino"
+date: "2024-09-26"
+output: html_document
+---
+
+# Introduction
+
+```{r}
+?NaN # Not avaible number, usually it's returned from not possible math operation
+#if u add ? to a known function in R u can ask for help to R
+?NA # so not avaible
+?NULL # not existent
+
+#is.na() # return a vector of booleans
+```
+
+# Univariate Distribution
+
+###Basic Notation
+
+```{r}
+# d-acro | PDF or PMF
+# p-acro | CDF or Survival Fun (1-CDF)
+# q-acro | Quantile
+# r-acro | Simulating *pseudo* random number
+#?dbinom
+#?dgeom
+#?dpois
+#?dunif
+#?dexp
+```
+
+### Binomial Distribution
+
+```{r}
+# Pick colors
+colo <- c(
+  rgb(32 / 255, 74 / 255, 135 / 255, 0.7),
+  rgb(204 / 255, 0, 0, 0.7),
+  rgb(200 / 255, 141 / 255, 0, 0.7),
+  rgb(78 / 255, 153 / 255, 6 / 255, 0.7)
+)
+
+# Set parameters
+pp <- c(0.5, 0.7)
+nn <- c(20, 40)
+
+# Plot PMF
+plot(0:nn[1], dbinom(0:nn[1], nn[1], pp[1]),
+     xlim = c(0, 40), ylim = c(0, 0.25),
+     type = "b", lty = 3,
+     xlab = "", ylab = "",
+     col = gray(0.8), pch = 21, bg = colo[1])
+lines(0:nn[1], dbinom(0:nn[1], nn[1], pp[2]),
+      type = "b", lty = 3,
+      col = gray(0.8), pch = 21, bg = colo[2])
+lines(0:nn[2], dbinom(0:nn[2], nn[2], pp[1]),
+      type = "b", lty = 3,
+      col = gray(0.8), pch = 21, bg = colo[3])
+lines(0:nn[2], dbinom(0:nn[2], nn[2], pp[2]),
+      type = "b", lty = 3,
+      col = gray(0.8), pch = 21, bg = colo[4])
+grid()
+legend("topleft",
+       c("p = 0.5, n = 20", "p = 0.7, n = 20",
+         "p = 0.5, n = 40", "p = 0.7, n = 40"),
+       col = colo, pch = 19,
+       bty = "n", cex = 0.8)
+```
+
+```{r}
+#Plot CDF
+
+# Plot CDF for different combinations of p and n
+plot(stepfun(0:nn[1], c(0, pbinom(0:nn[1], nn[1], pp[1])), right = FALSE),
+     xlim = c(0, 40), do.points = TRUE, verticals = FALSE,
+     col = colo[1], pch = 19, main = "", xlab = "", ylab = "")
+
+# Add second CDF line to the same plot
+plot(stepfun(0:nn[1], c(0, pbinom(0:nn[1], nn[1], pp[2])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col = colo[2], pch = 19, add = TRUE)
+
+# Add third CDF line to the same plot
+plot(stepfun(0:nn[2], c(0, pbinom(0:nn[2], nn[2], pp[1])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col = colo[3], pch = 19, add = TRUE)
+
+# Add fourth CDF line to the same plot
+plot(stepfun(0:nn[2], c(0, pbinom(0:nn[2], nn[2], pp[2])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col = colo[4], pch = 19, add = TRUE)
+
+grid()
+
+```
+
+### Geometric Distribution
+
+```{r}
+# Pick colors
+colo <- c(
+  rgb(32 / 255, 74 / 255, 135 / 255, 0.7),
+  rgb(204 / 255, 0, 0, 0.7),
+  rgb(200 / 255, 141 / 255, 0, 0.7),
+  rgb(78 / 255, 153 / 255, 6 / 255, 0.7)
+)
+
+# Set parameters
+pp <- c(0.2, 0.5, 0.8, 1.0)
+xmax <- 10
+
+# Plot PMF
+plot(1:(xmax + 1), dgeom(0:xmax, pp[1]),
+     xlim = c(0, xmax), ylim = c(0, 1),
+     type = "b", lty = 3,
+     xlab = "", ylab = "", col = gray(0.8),
+     pch = 21, bg = colo[1], xaxt = "n")
+axis(1, 0:(xmax + 1), 0:(xmax + 1))
+lines(1:(xmax + 1), dgeom(0:xmax, pp[2]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[2])
+lines(1:(xmax + 1), dgeom(0:xmax, pp[3]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[3])
+lines(1:(xmax + 1), dgeom(0:xmax, pp[4]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[4])
+abline(v = 0:(xmax + 1), col = "lightgray", lty = "dotted", lwd = par("lwd"))
+abline(h = seq(0, 1, 0.2), col = "lightgray", lty = "dotted", lwd = par("lwd"))
+legend("top", c("p = 0.2", "p = 0.5", "p = 0.8", "p = 1.0"), col = colo, pch = 19, bty = "n", cex = 0.8)
+```
+
+```{r}
+# Plot CDF
+plot(stepfun(1:(xmax + 1), c(0, pgeom(0:xmax, pp[1])), right = FALSE),
+     xlim = c(0, xmax), ylim = c(0, 1),
+     do.points = TRUE, verticals = FALSE,
+     col.hor = colo[1], col.points = colo[1], pch = 19, main = "",
+     xlab = "", ylab = "", xaxt = "n")
+axis(1, 0:(xmax + 1), 0:(xmax + 1))
+
+# Keep plotting additional CDFs
+plot(stepfun(1:(xmax + 1), c(0, pgeom(0:xmax, pp[2])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col.hor = colo[2], col.points = colo[2], pch = 19, add = TRUE)
+plot(stepfun(1:(xmax + 1), c(0, pgeom(0:xmax, pp[3])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col.hor = colo[3], col.points = colo[3], pch = 19, add = TRUE)
+plot(stepfun(1:(xmax + 1), c(0, pgeom(0:xmax, pp[4])), right = FALSE),
+     do.points = TRUE, verticals = FALSE,
+     col.hor = colo[4], col.points = colo[4], pch = 19, add = TRUE)
+
+# Reference lines
+abline(v = 0:(xmax + 1), col = "lightgray", lty = "dotted", lwd = par("lwd"))
+abline(h = seq(0, 1, 0.2), col = "lightgray", lty = "dotted", lwd = par("lwd"))
+
+```
+
+### Poisson Distribution
+
+```{r}
+# Pick colors
+colo <- c(
+  rgb(32 / 255, 74 / 255, 135 / 255, 0.7),
+  rgb(204 / 255, 0, 0, 0.7),
+  rgb(200 / 255, 141 / 255, 0, 0.7),
+  rgb(78 / 255, 153 / 255, 6 / 255, 0.7)
+)
+
+# Set parameters
+pp <- c(0.8, 1, 4, 10)
+xmax <- 20
+
+# Plot PMF
+plot(0:xmax, dpois(0:xmax, pp[1]),
+     xlim = c(0, xmax), ylim = c(0, 0.5),
+     type = "b", lty = 3,
+     xlab = "", ylab = "", col = gray(0.8),
+     pch = 21, bg = colo[1])
+lines(0:xmax, dpois(0:xmax, pp[2]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[2])
+lines(0:xmax, dpois(0:xmax, pp[3]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[3])
+lines(0:xmax, dpois(0:xmax, pp[4]),
+      type = "b", lty = 3, col = gray(0.8),
+      pch = 21, bg = colo[4])
+grid()
+legend("top",
+       c(as.expression(bquote(mu == .(0.8))),
+         as.expression(bquote(mu == .(1.0))),
+         as.expression(bquote(mu == .(4.0))),
+         as.expression(bquote(mu == .(10.0)))),
+       col = colo, pch = 19, bty = "n", cex = .8)
+```
+
+```{r}
+# Plot CDF
+plot(stepfun(0:xmax, c(0, ppois(0:xmax, pp[1])), right = FALSE),
+     xlim = c(0, xmax), ylim = c(0, 1),
+     do.points = TRUE, verticals = FALSE,
+     col.hor = colo[1], col.points = colo[1], pch = 19,
+     main = "", xlab = "", ylab = "")
+
+lines(stepfun(0:xmax, c(0, ppois(0:xmax, pp[2])), right = FALSE),
+      do.points = TRUE, verticals = FALSE,
+      col.hor = colo[2], col.points = colo[2], pch = 19)
+lines(stepfun(0:xmax, c(0, ppois(0:xmax, pp[3])), right = FALSE),
+      do.points = TRUE, verticals = FALSE,
+      col.hor = colo[3], col.points = colo[3], pch = 19)
+lines(stepfun(0:xmax, c(0, ppois(0:xmax, pp[4])), right = FALSE),
+      do.points = TRUE, verticals = FALSE,
+      col.hor = colo[4], col.points = colo[4], pch = 19)
+
+
+grid()
+
+```
+
+### Uniform Distribution
+
+```{r}
+# Set parameters
+a <- 0
+b <- 1
+xmid <- (b - a) / 2
+ymx <- max(dunif(xmid, a, b))
+
+# Graphical parameters
+par(mfrow = c(2, 1), mar = c(0, 0, 0, 0))
+
+# Plot PDF
+curve(dunif(x, a, b), from = a - 2, to = b + 2, n = 500,
+      type = "p", cex = 0.5, pch = 15,
+      ylim = c(-0.05, 1),
+      col = rgb(0.69019, 0.24313, 0.47843, 0.3),
+      axes = FALSE, xlab = "", ylab = "")
+abline(h = -0.015, lwd = 1, lty = 1, col = rgb(0, 0, 0, 0.4))
+text(xmid, ymx, "1 / (b - a)", pos = 1, cex = 0.8)
+segments(c(a, b), 0, c(a, b), ymx, lwd = 1, lty = 3, col = rgb(0, 0, 0, 0.4))
+segments(c(a, b), 0, c(a, b), -10, lwd = 1, lty = 3, col = rgb(0, 0, 0, 0.4))
+legend(a - 2, ymx / 2, expression(f[X](x)),
+       col = rgb(0.69019, 0.24313, 0.47843, 0.3),
+       pch = 19, bty = "n")
+# Plot CDF
+curve(punif(x, a, b), from = a - 2, to = b + 2, n = 101,
+      lwd = 4, type = "l", col = rgb(0.69019, 0.24313, 0.47843, 0.3),
+      ylim = c(-0.05, 1), axes = FALSE, xlab = "", ylab = "")
+abline(h = -0.015, lwd = 1, lty = 1, col = rgb(0, 0, 0, 0.4))
+text(c(a, b), 0, labels = c(a, b), pos = 1, cex = 0.8)
+segments(c(a, b), 0, c(a, b), 10, lwd = 1, lty = 3, col = rgb(0, 0, 0, 0.4))
+text(b + 2, 1, "1", pos = 1)
+text(a - 2, 0, "0", pos = 3)
+legend(a - 2, 0.5, expression(F[X](x)),
+       col = rgb(0.69019, 0.24313, 0.47843, 0.3),
+       lwd = 6, bty = "n")
+```
+
+### Exponential Distribution
+
+```{r}
+# Pick colors
+colo <- c(
+  rgb(32 / 255, 74 / 255, 135 / 255, 0.7),
+  rgb(204 / 255, 0, 0, 0.7),
+  rgb(200 / 255, 141 / 255, 0, 0.7),
+  rgb(78 / 255, 153 / 255, 6 / 255, 0.7)
+)
+
+# Plot PDF
+curve(dexp(x, 0.5), from = 0, to = 5,
+      xlab = "", ylab = "",
+      ylim = c(0, 1.6),
+      lwd = 6, col = colo[1])
+curve(dexp(x, 1.0),
+      lwd = 6, col = colo[2],
+      add = TRUE)
+curve(dexp(x, 1.5),
+      lwd = 6, col = colo[3],
+      add = TRUE)
+curve(dexp(x, 2.0), 
+      lwd = 6, col = colo[4],
+      add = TRUE)
+grid()
+legend("top",
+       c(as.expression(bquote(lambda == .(0.5))),
+         as.expression(bquote(lambda == .(1.0))),
+         as.expression(bquote(lambda == .(1.5))),
+         as.expression(bquote(lambda == .(2.0)))),
+       col = colo, lwd = 6, bty = "n")
+```
+
+```{r}
+# Plot CDF
+curve(pexp(x, 0.5), from = 0, to = 5,
+      ylim = c(0, 1),
+      xlab = "", ylab = "",
+      lwd = 6, col = colo[1])
+curve(pexp(x, 1.0),
+      lwd = 6, col = colo[2],
+      add = TRUE)
+curve(pexp(x, 1.5),
+      lwd = 6, col = colo[3],
+      add = TRUE)
+curve(pexp(x, 2.0),
+      lwd = 6, col = colo[4],
+      add = TRUE)
+grid()
+
+legend("bottom",
+       c(as.expression(bquote(lambda == .(0.5))),
+         as.expression(bquote(lambda == .(1.0))),
+         as.expression(bquote(lambda == .(1.5))),
+         as.expression(bquote(lambda == .(2.0)))),
+       col = colo, lwd = 6, bty = "n")
+
+```

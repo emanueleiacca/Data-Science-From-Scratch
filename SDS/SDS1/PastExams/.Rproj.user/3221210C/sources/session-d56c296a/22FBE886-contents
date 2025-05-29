@@ -1,0 +1,262 @@
+---
+title: "SDS2 Esonero"
+author: "Emanuele Iaccarino"
+date: "2025-05-09"
+output: html_document
+---
+
+# intermediate test - part #01
+
+Let prop_post_masses be the vector of unnormalized posterior probability masses for a discrete parameter \theta taking values in \Theta=\{0,1,...,15\}
+```{r}
+# prop_post_masses
+prop_post_masses = c(0.010, 0.010, 0.011, 0.016, 0.032, 0.075, 0.171, 0.356, 0.666, 1.128, 1.733, 2.412, 3.019, 3.327, 3.083, 2.141)
+
+normalized_masses = prop_post_masses / sum(prop_post_masses)
+
+data.frame(theta = 0:15,
+           unnormalized = prop_post_masses,
+           normalized = normalized_masses)
+```
+
+```{r}
+# Vector of support
+theta = 0:15
+# Posterior mean
+print("Posterior mean")
+post_mean = sum(theta * normalized_masses)
+post_mean
+# Posterior median
+cumulative_probs = cumsum(normalized_masses)
+print("Posterior median")
+post_median = theta[which.min(abs(cumulative_probs - 0.5))]
+post_median
+# Posterior mode
+print("Posterior mode")
+post_mode = theta[which.max(normalized_masses)]
+post_mode
+# 90% Equal-Tailed credible interval
+print("Equal-Tailed credible interval")
+
+print("Lower Bound")
+lower_bound = theta[which(cumulative_probs >= 0.05)[1]]
+lower_bound
+print("Upper Bound")
+upper_bound = theta[which(cumulative_probs >= 0.95)[1]]
+upper_bound
+```
+
+
+
+Let prop_prior_masses be the vector of unnormalized prior probability masses for the discrete parameter \theta,
+```{r}
+# prop_prior_masses
+prop_prior_masses = c(0.128, 0.112, 0.092, 0.073, 0.056, 0.042, 0.031, 0.022, 0.016, 0.011, 0.008, 0.005, 0.004, 0.002, 0.002, 0.001)
+
+# Normalize prior
+normalized_prior = prop_prior_masses / sum(prop_prior_masses)
+
+# Prior summary statistics
+prior_mean = sum(theta * normalized_prior)
+prior_var = sum((theta - prior_mean)^2 * normalized_prior)
+prior_sd = sqrt(prior_var)
+print("Prior Standard Deviation")
+prior_sd
+
+# MLE = theta that maximizes the likelihood = max posterior mass 
+print("MLE")
+mle_theta = which.max(prop_post_masses) - 1  # adjust for index
+```
+
+```{r}
+# Observed failure times
+y = c(0.6, 4.6, 4.6, 2.2, 39.0, 0.5, 14.5, 7.0, 4.1,
+       5.5, 2.8, 12.2, 22.4, 6.9, 8.5, 57.8, 12.1, 13.9,
+       21.3, 19.4)
+
+# Gamma(shape = 20, rate = 20)
+prior_a = 20
+prior_b = 20
+
+# 
+# Posterior: Gamma(a + n, b + sum(y))
+n = length(y)
+sum_y = sum(y)
+
+post_a = prior_a + n
+post_b = prior_b + sum_y
+
+# Median of posterior Gamma distribution
+post_median = qgamma(0.5, shape = post_a, rate = post_b)
+post_median
+# the same question was asked on Test #02 as well, nothing changed in the data so I just copy and pasted the answer
+```
+
+```{r}
+normalizing_constant = 1 / sqrt(pi)
+normalizing_constant 
+
+expected_value = 0.5
+expected_value
+
+quantile_10 = qnorm(0.1, mean = 0.5, sd = sqrt(0.5))
+quantile_10  
+
+```
+
+Let's see an empirical approach also:
+
+```{r}
+# unnormalized density function
+unnormalized_density = function(theta) {
+  exp(-theta^2 + theta)
+}
+
+# Sample from proposal distribution using a Normal 
+theta_grid = seq(-5, 6, length.out = 10000)
+dens_vals = unnormalized_density(theta_grid)
+
+# Normalize to get empirical probabilities
+norm_constant = sum(dens_vals) * (theta_grid[2] - theta_grid[1]) 
+normalized_density_vals = dens_vals / norm_constant
+
+#Sample empirically using prob
+samples = sample(theta_grid, size = 1e5, replace = TRUE, prob = normalized_density_vals)
+
+empirical_norm_constant = 1 / norm_constant
+empirical_norm_constant
+
+empirical_mean = mean(samples)
+empirical_mean  
+
+empirical_quantile_10 = quantile(samples, probs = 0.1)
+empirical_quantile_10  
+```
+
+Expected value and quantile results match, for the normalizing constant I trust the empirical results more cause I may have done some miscalculation in the theory results (first cell block)
+
+# intermediate test - part #02
+
+Set as a seed for your simulation seed = 10397 and, immediately after, simulate 6 i.i.d. Bernoulli random variables with success probability equal to 0.4 using appropriately the function rbinom(...).
+
+Which of the following is the conjugate family of prior distributions for the Bernoulli model?
+```{r}
+set.seed(10397)
+
+# Simulate Bernoulli
+y <- rbinom(6, 1, prob = 0.4)
+n <- length(y)
+successes <- sum(y)
+
+# Prior: 
+# Beta(1, 1)  uniform
+alpha_prior <- 1
+beta_prior <- 1
+
+# Posterior: 
+# Beta(1 + succ, 1 + fail)
+alpha_post <- alpha_prior + successes
+beta_post <- beta_prior + (n - successes)
+
+# Simulate from posterior
+posterior_samples <- rbeta(100000, alpha_post, beta_post)
+
+library(HDInterval)
+
+hpd_interval <- hdi(posterior_samples, credMass = 0.8)
+hpd_interval  
+```
+```{r}
+target_mean <- 0.8         # mean
+target_prob <- 0.95        # P(\theta > 0.5)
+
+# Loss function: squared error from both constraints
+objective <- function(par) {
+  alpha <- par[1]
+  beta <- par[2]
+  
+  # mean of Beta
+  mean_error <- (alpha / (alpha + beta) - target_mean)^2
+  
+  # tail probability above 0.5
+  prob_error <- (1 - pbeta(0.5, alpha, beta) - target_prob)^2
+  
+  return(mean_error + prob_error)
+}
+
+# Optimize to minimize the total constraint violation
+result <- optim(c(2, 2), objective, method = "L-BFGS-B", lower = c(0.1, 0.1))
+
+# best parameters
+result$par[1] # alpha
+result$par[2] # beta
+```
+
+```{r}
+# Check to see if those values are actually fitting allright
+alpha <- result$par[1]
+beta <- result$par[2]
+
+# Check the mean
+alpha / (alpha + beta)
+
+# 2. Check P(\theta > 0.5)
+1 - pbeta(0.5, alpha, beta)
+```
+
+Suppose we have observed the following 10 conditionally i.i.d. normal random variables with unknown mean \theta (theta) and known variance \sigma^2=100
+```{r}
+y_obs <- c(103.08, 66.5, 73.65, 77.04, 65.83, 75.84, 74.36, 68.52, 71.32, 70.33)
+n <- length(y_obs)
+sigma2 <- 100         # known variance
+mu0 <- 75             # prior mean
+tau2 <- 1.25          # prior variance
+```
+
+```{r}
+theta <- seq(70, 80, length.out = 1000)
+prior_density <- dnorm(theta, mu0, sd = sqrt(tau2))
+plot(theta, prior_density)
+# So SUBJECTIVE is right
+```
+
+
+```{r}
+# Posterior 
+post_var <- 1 / (n / sigma2 + 1 / tau2)
+post_sd <- sqrt(post_var)
+
+# Posterior mean
+y_mean <- mean(y_obs)
+print("Posterior mean")
+post_mean <- post_var * (mu0 / tau2 + n * y_mean / sigma2)
+post_mean
+# Posterior mode = Posterior mean (normal is symmetric)
+post_mode <- post_mean
+
+# 80% credible interval
+print("80% credible interval")
+print("Lower Bound")
+ci_lower <- qnorm(0.1, mean = post_mean, sd = post_sd)
+ci_lower
+print("Upper Bound")
+ci_upper <- qnorm(0.9, mean = post_mean, sd = post_sd)
+ci_upper
+# Posterior probability that \theta < 73.5377528
+x <- 73.5377528
+posterior_prob <- pnorm(x, mean = post_mean, sd = post_sd)
+print("Posterior probability that \theta < 73.5377528")
+posterior_prob
+# Prior odds that \theta < 73.5377528
+prior_prob <- pnorm(x, mean = mu0, sd = sqrt(tau2))
+prior_odds <- prior_prob / (1 - prior_prob)
+print("Prior Odds that \theta < 73.5377528")
+prior_odds
+# Odds and Bayes Factor
+posterior_odds <- posterior_prob / (1 - posterior_prob)
+print("Bayes Factor")
+BF <- posterior_odds / prior_odds
+BF
+# YES I KNOW HOW TO CALCULATE THE BF, I DIDN'T READ CAREFULLY THE QUESTION IN TEST # 01 Pls be kind with me <3 :)
+ifelse(BF > 1, "Yes", "No")
+```

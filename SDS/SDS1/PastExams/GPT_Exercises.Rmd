@@ -1,0 +1,1248 @@
+---
+title: "Chatgpt exercises"
+author: "Emanuele Iaccarino"
+date: "2025-01-31"
+output: html_document
+---
+
+# Introduction Basic Level
+
+1. Normal Distribution
+The normal (Gaussian) distribution is one of the most fundamental probability distributions, characterized by its mean (μ) and standard deviation (σ).
+
+1.1 Generate and Analyze a Sample
+Generate 1000 random numbers from a normal distribution with:
+Mean (μ) = 50
+Standard deviation (σ) = 10
+Compute and print:
+The sample mean and sample standard deviation (to verify if they match the expected values).
+The minimum and maximum values observed in the sample.
+1.2 Probability Calculation
+Compute the probability that a randomly drawn value from this distribution is greater than 60.
+Compute the probability that a randomly drawn value falls between 40 and 60.
+👉 Hint: Use the cumulative distribution function (CDF) to solve this.
+
+1.3 Visualizing the Distribution
+Create a histogram of the sampled data.
+Overlay the true normal density curve on the histogram.
+
+```{r}
+rn = rnorm(1000, mean = 50, sd =10)
+#rn
+```
+
+```{r}
+mean(rn)
+```
+```{r}
+sqrt(var(rn)) #sd
+```
+
+```{r}
+# P(X>60) 
+prob_greater_60 <- 1 - pnorm(60, mean = 50, sd = 10)
+prob_greater_60
+```
+
+```{r}
+prob_between_40_60 <- pnorm(60, mean = 50, sd = 10) - pnorm(40, mean = 50, sd = 10)
+prob_between_40_60
+```
+
+```{r}
+hist(rn)
+```
+2. Binomial Distribution
+The binomial distribution models the number of successes in a sequence of n independent Bernoulli trials, each with probability p of success.
+
+2.1 Simulating a Coin Flip Experiment
+Simulate 1000 trials of flipping a biased coin where:
+The probability of getting heads (p) is 0.3.
+The number of flips in each trial (n) is 10.
+Compute the mean and variance of the resulting distribution.
+Plot a bar chart of the frequency of different numbers of heads.
+2.2 Probability Calculation
+Compute the probability of getting exactly 3 heads in 10 flips.
+Compute the probability of getting at least 5 heads in 10 flips.
+👉 Hint: Use the probability mass function (PMF) and cumulative distribution function (CDF).
+
+
+```{r}
+bn = binomial()
+bn
+```
+```{r}
+P_H = 0.3
+n = 10
+m = 1000
+rb = rbinom(m, n, P_H)
+mean(rb)
+var(rb)
+```
+
+```{r}
+freq_table = table(rb)
+barplot(freq_table)
+```
+3. Poisson Distribution
+The Poisson distribution models the probability of a given number of events occurring in a fixed interval of time or space, assuming the events occur with a known constant mean rate.
+
+3.1 Modeling Call Center Data
+Assume that a call center receives an average of 5 calls per hour.
+Simulate 1000 hours of call arrivals.
+Compute and print:
+The mean and variance of the generated data.
+The probability of receiving exactly 3 calls in an hour.
+The probability of receiving more than 6 calls in an hour.
+👉 Hint: Use the Poisson PMF and CDF.
+
+```{r}
+lambda = 5
+m=1000
+rp = rpois(m, lambda)
+```
+
+```{r}
+mean(rp)
+var(rp)
+```
+```{r}
+#P(\lambda = 3) = [\lambda ^ k * e^(-\lambda)] / k!
+k=3
+P_L3 = (lambda^k * exp(1)^(-lambda))/factorial(k)
+P_L3
+```
+```{r}
+prob_3_calls <- dpois(3, lambda = lambda)
+prob_3_calls
+# also like this
+```
+```{r}
+prob_greater_6 <- 1 - dpois(6, lambda = lambda)
+prob_greater_6
+```
+
+```{r}
+freq_table = table(rp)
+barplot(freq_table)
+```
+4. Exponential Distribution
+The exponential distribution is often used to model the time between events in a Poisson process.
+
+4.1 Simulating Waiting Times
+Suppose that in a system, the average waiting time between events is 2 minutes.
+Generate a sample of 1000 random waiting times from an exponential distribution with a rate λ = 1/2.
+Compute and print:
+The sample mean and compare it with the theoretical expectation.
+The probability of waiting more than 3 minutes.
+Create a histogram of the waiting times.
+
+```{r}
+E_wt = 2 #waiting time
+m = 1000
+lambda = 1/E_wt #rate parameter
+re = rexp(m, rate = lambda)
+```
+
+```{r}
+mean(re)
+```
+Close to 2 (E_wt)
+
+```{r}
+#P(wt>3)
+
+# PDF f(X;\lambda) =  λe^(−λx) for every x >= 0
+x=3
+P_wt_greater3 = lambda  * exp(1)^(-lambda*x)
+P_wt_greater3
+```
+```{r}
+hist(re)
+```
+```{r}
+x_vals <- seq(0, max(rb))
+y_vals <- dexp(x_vals, rate = lambda)
+plot(x_vals, y_vals)
+lines(x_vals,y_vals)
+```
+5. Uniform Distribution
+The uniform distribution represents equally likely outcomes over an interval.
+
+5.1 Random Number Generation
+Generate 500 random numbers from a uniform distribution between 5 and 15.
+Compute and print:
+The mean and variance of the sample.
+The probability of drawing a number less than 8.
+5.2 Visualizing the Uniform Distribution
+Create a histogram of the generated data.
+Overlay the true uniform density curve
+
+```{r}
+m = 500
+lower = 5
+upper = 15
+ru = runif(m, min = lower, max = upper)
+mean(ru)
+var(ru)
+```
+```{r}
+#P(X <8) = (X-a)/b-a where a is lower and b is upper bound
+PX_smaller8 =(8 - lower)/(upper - lower)
+PX_smaller8
+```
+
+```{r}
+hist(ru)
+```
+```{r}
+x_val = seq (lower, upper)
+y_val = dunif(x_val, min = lower, max = upper)
+plot(x_val, y_val)
+lines(x_val, y_val)
+```
+
+# Next Step: Second level more complex
+
+1.1 Normal Distribution
+A random variable X∼N(10,4), where mean μ=10 and variance 𝜎^2=4
+Compute the probability density function (PDF) at X=12.
+Compute the cumulative distribution function (CDF) at X=12.
+Find the median of this distribution.
+Find P(8≤X≤12).
+Find the quantile Q(p) such that P(X≤Q(p))=0.75.
+👉 Hint: Use dnorm(), pnorm(), and qnorm().
+
+```{r}
+mu = 10
+var = 4
+sd = sqrt(var)
+m = 1000
+rn = rnorm(m, mean = mu, sd = sd) # if I want to create random 
+```
+
+```{r}
+#PDF X = 12
+pdf12 = dnorm(12, mean = mu, sd = sd) # density for PDF
+pdf12
+```
+```{r}
+cdf12 = pnorm(12, mean = mu, sd = sd) # distribution function for CDF
+cdf12
+```
+```{r}
+plot(pdf12)
+```
+```{r}
+median(pdf12)
+```
+
+```{r}
+mean(pdf12)
+```
+Median and mean are close but not equal. By definition a normal distribution must have same value for n -> \inf . The fact they are not equal is called sample variability
+
+```{r}
+# P(8≤X≤12) = P(X<=12) - P(X<=8) = (CDF(12) - CDF(8)
+p_bet_8_12 = pnorm(12, mean = mu, sd = sd) - pnorm(8, mean = mu, sd = sd)
+p_bet_8_12
+```
+```{r}
+# P(X≤Q(p))=0.75 
+Q75 = qnorm(0.75, mean = mu, sd = sd)
+Q75
+```
+1.2 Uniform Distribution
+
+We are given that X follows a uniform distribution between 2 and 8.
+(1) Compute the Probability Density Function (PDF) at X = 5.  
+(2) Compute the Cumulative Distribution Function (CDF) at X = 5.  
+(3) Compute P(4 ≤ X ≤ 6).  
+(4) Compute the expected value E[X].  
+(5) Compute the variance Var(X).  
+
+```{r}
+#P(X = 5)
+lower = 2
+upper = 8
+uPDF5 = dunif(5, min=lower, max = upper)
+uPDF5
+```
+
+```{r}
+uCDF5 = punif(5, min=lower, max = upper)
+uCDF5
+
+```
+```{r}
+# P(4 ≤ X ≤ 6) = P(X<=6) - P(X<=4) = CDF(6) - CDF(4)
+uP4_6 = punif(6, min=lower, max = upper) - punif(4, min=lower, max = upper)
+uP4_6
+```
+```{r}
+# E[X] = (a+b)/2 for unif
+EX = (lower + upper) / 2
+EX
+```
+
+```{r}
+# Var(X) = E[X^2] - (E[X]) ^ 2 = ((b - a)^2)/12
+VarX = ((upper - lower)^2) /12
+VarX
+
+```
+2.1 Binomial Distribution  
+
+A fair die is rolled 10 times. Define X as the number of times a 6 appears, so X follows a Binomial distribution with parameters n = 10 and p = 1/6.  
+
+(1) Compute the Probability Mass Function (PMF) for X = 3.  
+```{r}
+n = 10
+#X = #(X=6)
+# X is distributed as a Bin distrib 
+p = 1/6
+x = 3
+
+# PMF: P(X = k) = (n choose k) * p^k * (1 - p)^(n - k)
+P_X_3 = choose(n,x) * p^k * (1-p)^(n-k)
+P_X_3
+#
+P_X_3_alt = dbinom(3,n, prob = p) # easier way
+P_X_3_alt
+```
+
+(2) Compute P(X ≤ 2) using the Cumulative Distribution Function (CDF).  
+```{r}
+# CDF = sum(i from 0 to x) of PMF (X = i)
+sum = 0
+for (i in 0:2) {
+  PMF = dbinom(i, n, prob = p)
+  sum = sum + PMF
+}
+sum
+```
+```{r}
+# also like this
+CDF = pbinom(2,n, prob = p)  
+# pbinom take the cumulative (sum) of all the PMF <= x
+CDF
+```
+
+(3) Compute P(X > 4).  
+```{r}
+PX_greater_4 = 1 - pbinom(4,n, prob = p)  
+PX_greater_4 
+```
+(4) Compute the expected value E[X].  
+```{r}
+#E[X] = n * p 
+EX = n*p
+EX
+```
+
+(5) Compute the variance Var(X).  
+```{r}
+#Var(X) = n * p * (1 - p)  
+VarX = n*p*( 1 - p )
+VarX
+```
+2.2 Poisson Distribution  
+
+A hospital receives an average of 4 emergency cases per hour. Let X follow a Poisson distribution with parameter λ = 4.  
+```{r}
+lambda = 4
+```
+
+(1) Compute the Probability Mass Function (PMF) for X = 5. 
+```{r}
+PMF_X5 = dpois (5, lambda)
+PMF_X5
+```
+
+
+(2) Compute P(X ≤ 3) using the Cumulative Distribution Function (CDF).  
+```{r}
+CDF_X_smaller3 = ppois (3, lambda)
+CDF_X_smaller3
+```
+
+(3) Compute P(X > 6).  
+```{r}
+CDF_X_greater6 = 1 - (ppois (6, lambda))
+CDF_X_greater6
+```
+(4) Compute the expected value E[X].  
+```{r}
+#E[X] = \lambda 
+EX = lambda
+EX
+# variance is also \lambda
+```
+
+3.1 Exponential Distribution  
+
+The waiting time (in minutes) for a bus follows an exponential distribution with rate λ = 1/5.  
+```{r}
+lambda = 1/5 #rate
+```
+
+
+(1) Compute the Probability Density Function (PDF) at X = 4.  
+```{r}
+PDF_X4 = dexp(4, rate = lambda)
+PDF_X4
+```
+```{r}
+#f(x) = λ * e^(-λx) for x ≥ 0  
+x = 4
+PDF_X4sol = lambda * exp(1)^(- lambda * x)
+PDF_X4sol
+```
+
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 4.  
+
+```{r}
+# this is for X<= dumbass
+for (i in 0:4) {
+  PMF = dexp(i, rate = lambda)
+  sum = sum + PMF
+}
+sum
+```
+
+```{r}
+# F(x) = 1 - e^(-λx) for x ≥ 0  
+CDF_X4 = 1 - exp(1)^(- lambda * x)
+CDF_X4
+```
+
+
+```{r}
+CDF_X4 = pexp(4, rate = lambda) # easier way
+CDF_X4
+```
+
+(3) Compute P(X > 7).  
+```{r}
+PX_greater_7 = 1 - pexp(7, rate = lambda) 
+PX_greater_7
+```
+
+
+(4) Compute the expected value E[X].  
+```{r}
+#[EX] = 1 / \lambda
+EX = 1 / lambda
+EX
+```
+
+(5) Compute the variance Var(X).  
+
+```{r}
+# Var(X) = 1 / \lambda ^ 2
+varX = 1 / (lambda^2)
+varX
+```
+3.2 Gamma Distribution  
+
+A machine breaks down following a Gamma distribution with shape parameter k = 3 and rate parameter λ = 2.  
+```{r}
+k = 3
+lambda = 2
+```
+
+(1) Compute the Probability Density Function (PDF) at X = 2.  
+```{r}
+x=2
+PDF_x2 = dgamma(x, k, rate = lambda)
+PDF_x2
+```
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 2.  
+```{r}
+CDF_x2 = pgamma(x, k, rate = lambda)
+CDF_x2
+```
+
+(3) Compute P(X > 4).  
+```{r}
+x = 4
+PX_greater_4 = 1 - pgamma(x, k, rate = lambda)
+PX_greater_4
+```
+
+(4) Compute the expected value E[X].  
+```{r}
+# E(X)=ασ where \alpha is shape and \sigma is scale
+
+scale = 1/lambda # lambda is rate
+shape = k
+EX = scale * shape
+EX
+```
+
+(5) Compute the variance Var(X).  
+
+```{r}
+#Var(X)=ασ^2 where \alpha is shape and \var is scale ^2
+varX = (scale^2) * shape
+varX
+```
+# Harder Questions
+
+#### **1. Normal Distribution**
+A random variable X follows a normal distribution N(20, 9), where the mean is 20 and the variance is 9.
+```{r}
+mu = 20
+var = 9
+sd = sqrt(var)
+```
+
+(1) Compute the Probability Density Function (PDF) at X = 25.  
+```{r}
+x = 25
+dnorm(x, mean = mu, sd = sd)
+```
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 25.  
+```{r}
+pnorm(x, mean = mu, sd = sd)
+```
+
+(3) Compute P(18 ≤ X ≤ 22).  
+```{r}
+pnorm(22, mean = mu, sd = sd) - pnorm(18, mean = mu, sd = sd)
+```
+
+(4) Find the value of X such that P(X ≤ x) = 0.9.  
+```{r}
+plot(dnorm)
+```
+```{r}
+# this solution is wrong, it would work only in discret case like binomial or poisson
+# In this specific case since we are dealing with continuous variable i should use a integer
+sum = 0
+for (i in 0:30) {
+  PDF = dnorm(i, mean=mu, sd = sd)
+  sum = PDF + sum
+  if (sum >= 0.9)
+    x = i
+  else
+    break
+}
+x
+# Furthermore solution is not efficient at all
+```
+```{r}
+qnorm(0.9, mean = mu, sd = sd)
+```
+
+
+(5) If Y = 3X + 5, determine E[Y] and Var(Y).  
+
+```{r}
+# E[Y] = 3 * E[X] + 5 => E[X] = mu
+EY = 3 * 20 + 5
+EY
+# variance scaling property => a^2 * var(X)
+varY = 3^2 * var
+varY
+```
+#### **2. Uniform Distribution**
+A random variable X follows a uniform distribution U(5, 15).
+```{r}
+a = 5
+b = 15
+```
+
+(1) Compute the Probability Density Function (PDF) at X = 9.  
+```{r}
+dunif(9, a, b)
+```
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 9.  
+```{r}
+punif(9,a,b)
+```
+
+(3) Compute P(7 ≤ X ≤ 12).  
+```{r}
+punif(12,a,b) - punif(7,a,b)
+```
+
+(4) Find the 75th percentile of the distribution.  
+```{r}
+qunif(0.75,a,b)
+```
+
+(5) If Z = X², determine E[Z] using the definition of expectation.  
+```{r}
+# fz(z) = 1/(b - a) \integrale from a to b of x^2 dx given that a < b
+#z =  1 - (b- a)  [x^3/3] a to b
+1/ (b-a) #0.1
+z = 0.1 * ((b^3- a^3)/3)
+z
+```
+```{r}
+E_X2 <- (a^2 + a*b + b^2) / 3 # uniform second moment formula
+E_X2
+```
+
+#### **3. Binomial Distribution**
+A biased coin has a probability of heads p = 0.4. The coin is flipped 15 times, and X represents the number of heads.
+```{r}
+p = 0.4
+size = 15
+```
+
+(1) Compute the Probability Mass Function (PMF) for X = 5.  
+```{r}
+dbinom(5,size,p)
+```
+
+(2) Compute P(X ≤ 7) using the Cumulative Distribution Function (CDF).  
+```{r}
+pbinom(7,size,p)
+```
+
+(3) Compute P(4 ≤ X ≤ 9).  
+```{r}
+pbinom(9,size,p) - pbinom(4,size,p)
+```
+
+(4) Compute P(X is even).  
+```{r}
+z = seq(0, 14, by = 2)
+P_X_even = sum(dbinom(x = z, size, p))
+P_X_even          
+```
+
+(5) Compute the mode (most likely value) of the distribution.  
+```{r}
+Mode = floor((size + 1) * p) # return integer: remove decimal by "difetto" 
+Mode
+```
+
+#### **4. Poisson Distribution**
+A factory machine produces defects at an average rate of 2 per hour. Let X be the number of defects in an hour.
+```{r}
+lambda = 2
+```
+
+(1) Compute the Probability Mass Function (PMF) for X = 3.  
+```{r}
+x = 3
+dpois(x, lambda)
+```
+
+(2) Compute P(X ≥ 4).  
+```{r}
+x = 3
+1 - ppois(x, lambda)
+```
+
+(3) Compute P(1 ≤ X ≤ 4).  
+```{r}
+ppois(4, lambda) - ppois(0, lambda)
+```
+
+(4) If the machine operates for 3 hours, what is the probability that exactly 5 defects are produced in that period?  
+```{r}
+t = 3
+defects = 5
+new_lambda = lambda * t
+ppois(defects, new_lambda)
+```
+
+(5) The factory introduces a new quality control process that reduces the defect rate by 30%. Compute the new expected value and variance.  
+```{r}
+λ_new = lambda * (1 - 0.3) 
+λ_new
+# we know that E[X] and var (X) are equal to lambda
+```
+
+#### **5. Exponential Distribution**
+A company receives customer service calls at an average rate of 1 every 8 minutes. Let X be the waiting time between consecutive calls.
+```{r}
+rate = 1/8
+```
+
+(1) Compute the Probability Density Function (PDF) at X = 10 minutes.  
+```{r}
+x = 10
+dexp(x, rate)
+```
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 10 minutes.  
+```{r}
+pexp(x, rate)
+```
+
+(3) Compute P(X > 12).  
+```{r}
+1-pexp(12, rate)
+```
+
+(4) Compute P(5 ≤ X ≤ 15).  
+```{r}
+pexp(15, rate) - pexp(5, rate)
+```
+
+(5) If the company introduces a new automated system that decreases the average waiting time to 5 minutes, compute the new probability of waiting more than 10 minutes.  
+```{r}
+rate2 = 1/5
+x  = 10
+new = pexp(x, rate2)
+old = pexp(x,rate)
+old
+new
+```
+
+#### **6. Gamma Distribution**
+A device’s lifespan follows a gamma distribution with shape parameter k = 4 and rate λ = 0.5.
+```{r}
+shape = 4
+rate = 0.5
+```
+
+(1) Compute the Probability Density Function (PDF) at X = 6.  
+```{r}
+x = 6
+dgamma(x,shape,rate)
+```
+
+(2) Compute the Cumulative Distribution Function (CDF) at X = 6.  
+```{r}
+pgamma(x,shape,rate)
+```
+
+(3) Compute P(X > 10).  
+```{r}
+x = 10
+1 - pgamma(x,shape,rate)
+```
+
+(4) Compute the expected lifespan of the device.  
+```{r}
+#E[X] = 1/ lambda
+EX = shape/rate
+EX
+```
+
+(5) Compute the probability that the device lasts longer than twice the expected lifespan.  
+```{r}
+EXx2 = EX * 2 # Expected lifespan is mean value of x
+# 1 - cause we want to calc the prob that is >, remember CDF in R calculate =<
+1 - pgamma(EXx2, shape, rate)
+```
+# Advanced Probability Distribution Challenges
+
+##### 1. Normal Distribution – Extreme Probability & Transformations  
+A machine produces items with weights following a normal distribution X ~ N(50, 16), where the mean is 50 and variance is 16.
+```{r}
+m = 50
+var = 16
+sd = sqrt(var)
+```
+
+(1) Compute P(X > 58) without using pnorm(). Instead, use the standard normal transformation and numerical integration.  
+```{r}
+x = 58
+1 - pnorm(x, m, sd)
+```
+```{r}
+# z = (X - mean)/sd
+z = (58 - m)/sd 
+# P(z<=2) is output
+# we see 1 - P(z>2) on standard normal table
+1 - pnorm(z) # automatically done here
+```
+Results match
+
+(2) Let Y = 3X - 10. Compute P(Y < 100) using transformation rules for means and variances.  
+```{r}
+#E[Y] = 3 E[X] - 10
+m_y <- 3 * m - 10
+# VAR(y) = 3**2 var(X) - 10
+var_y = 3^2 * var
+sd_y = sqrt(var_y)
+x = 100
+pnorm(x, mean = m_y, sd = sd_y)
+```
+
+(3) Find the probability that a randomly chosen item weighs more than 90 percent of all produced items.  
+```{r}
+q = qnorm(0.9, m, sd)
+1 - pnorm(q, m, sd)
+```
+
+(4) Compute the skewness of the normal distribution using the formula:  
+    Skewness = E[(X - mu)^3] / sigma^3  
+```{r}
+sk = rnorm(100000, m, sd)
+skewness = mean((sk - m)^3 / sd^3)
+skewness # close to 0 cause it's a normal distribution
+# for n -> to \inf it converge to 0
+```
+
+(5) Suppose each item is weighed twice, and the two measurements are independent. Compute the probability that the maximum of the two measurements is greater than 55.
+```{r}
+p = pnorm(55, m, sd)
+1 - p^2
+```
+
+,##### 2. Uniform Distribution – Nonlinear Transformations & Order Statistics  
+Let X ~ U(3, 9).
+```{r}
+a = 3
+b = 9
+```
+
+(1) Compute E[X^3] using integration, not just the uniform moment formula.  
+```{r}
+(b^4 - a^4) / (4 * (b - a))
+```
+
+(2) If Y = X^2, find the PDF of Y by transforming the uniform density function.  
+```{r}
+# so we have x = sqrt(y): derivate and we obtain 1/(2 * sqrt(y)) 
+# 12 is obtained by 1/(b-a) that gives 1/6 multiplied by that 2 at denominator
+fy <- function(y) ifelse(y >= a^2 & y <= b^2, 1 / (12 * sqrt(y)), 0)
+```
+
+(3) Suppose you take 5 independent samples from U(3,9). Compute the expected value of the maximum sample.  
+```{r}
+n = 5 
+#E[Xmax] = (n*b - a)/n+1
+(n*b - a)/(n+1)
+```
+
+(4) Compute P(X_2 > X_1) for two independent uniform variables X_1, X_2 ~ U(3,9).  
+```{r}
+# we run Montecarlo simulation, we prove this empirically
+X1 <- runif(100000, min = a, max = b)
+X2 <- runif(100000, min = a, max = b)
+mean(X2 > X1) # should be close to 0.5 since they are identical distributed
+```
+
+(5) Find the entropy of the uniform distribution, defined as:  
+    H(X) = - ∫ f(x) log f(x) dx  
+```{r}
+# e
+log(b - a)
+```
+
+##### 3. Binomial Distribution – Tail Bounds & Large-n Approximation  
+A test has 50 questions, and each answer is guessed randomly with a probability of correct answer = 0.2. Let X be the number of correct answers.
+```{r}
+n = 50
+p = 0.2
+```
+
+(1) Use the Chernoff bound to approximate P(X > 15).  
+```{r}
+x = 15
+1 - pbinom(x, n, p)
+```
+```{r}
+mu <- n * p  # Expected value
+delta <- (X / mu) - 1  
+
+# Compute Chernoff bound
+chernoff_bound <- exp(- (delta^2 * mu) / 3)
+chernoff_bound
+```
+Chernoff bound overestimates the probability
+
+(2) Approximate P(X ≥ 12) using the normal approximation to the binomial.  
+```{r}
+x = 12
+1 - (pbinom(x, n, p) - dbinom(x,n,p))
+```
+
+```{r}
+var = mu * (1 - p) # variance
+sigma <- sqrt(var)  # Standard deviation
+z_score <- (x - mu) / sigma  # Standard normal transformation
+
+# Compute probability using normal distribution
+1 - pnorm(z_score)
+
+```
+normal approximation underestimates the probability
+
+
+(3) Let Y = X^2. Compute E[Y] without summing over all values.  
+```{r}
+# E[Y] = E[X^2] => from variance property
+# E[X^2] = var(X) + (E[X])^2
+# = np(1-p) + (np)^2
+n*p*(1-p) + (n*p)^2
+```
+
+(4) If we introduce a bias where the first 10 questions are twice as likely to be correct, recompute P(X > 20) considering this change.  
+```{r}
+p1 = 0.2
+p2 = 0.2*2
+n = 50
+n2 = 10
+n1 = n -n2
+x = 20
+mu1 = n1 * p1
+mu2 = n2 * p2
+mu = mu1 + mu2
+var1 = mu1*(1-p1)
+var2 = mu2*(1-p2)
+var = var1 + var2
+sd = sqrt(var)
+1 - pnorm(x, mu, sd) # Central limit theorem
+```
+
+```{r}
+# Empirical demostration: Montecarlo simulations
+p_x1 <- rbinom(100000, size = n1, prob = p1)
+p_x2 <- rbinom(100000, size = n2, prob = p2)
+
+# Total number of correct answers
+X_total <- p_x1 + p_x2
+
+# Compute probability P(X ≤ 20)
+p_x_leq_20 <- mean(X_total <= 20)
+
+# Compute P(X > 20)
+1 - p_x_leq_20
+```
+
+
+(5) Suppose the test has an infinite number of questions (Poisson limit theorem). Approximate P(X > 15) using the Poisson approximation to the binomial.
+```{r}
+lambda <- n * p  # Poisson mean
+1 - ppois(15, lambda = lambda)
+```
+
+##### 4. Poisson Distribution – Compound & Convolutions  
+A website receives visitors according to a Poisson(4) process per hour.
+```{r}
+lambda = 4
+```
+
+(1) Compute the probability that at least one visitor arrives every hour in a 24-hour period.  
+```{r}
+h = 24
+x = 0 # I calculate the prob to have exactly(dpois) 0 visitor, so 1 - ... is the prob of having at least one
+# This consider only one hour so we ^ by h
+(1 - dpois(x, lambda)) ^ h
+```
+
+```{r}
+# Using original formula
+# dpois is ((exp(1)^(- lambda) ) * lambda^ x)) / factorial (x)
+(1 - ((exp(1)^(- lambda) ) * (lambda^ x)) / factorial (x))^h
+```
+
+
+(2) Let X_1, X_2 ~ Poisson(4) be independent. Compute P(X_1 + X_2 = 8) using convolution.  
+```{r}
+# Poisson are indipendent if their sum x+ + x2 so 2 poisson lambda = 4 are like a Poisson of lambda = 8
+lambda2 = 4+4
+x = 8
+dpois(x, lambda2)
+dpois(x,lambda) + dpois(x,lambda)
+# It follows additive property of Poisson
+```
+
+```{r} 
+set.seed(42)
+# Empirical demostration
+n <- 100000  
+# Simulate X1 and X2
+X1 <- rpois(n, lambda)
+X2 <- rpois(n, lambda)
+
+mean((X1 + X2)==8)
+```
+
+```{r}
+# Compute theoretical Poisson(8) probability
+dpois(8, lambda2)
+
+```
+We claim there is independence
+
+(3) Suppose each visitor makes a random number of purchases, where the number of purchases follows a Poisson(3) distribution. Compute the probability that exactly 10 purchases occur in an hour.  
+```{r}
+# lambda takes into consideration the number of visitors x hour
+# each visitor makes # purchases, we obtain the value by product of lambda1 * lambda2
+lambda_purch = 3 * lambda
+x = 10
+dpois(x,lambda_purch)
+```
+
+(4) Find the moment-generating function M_X(t) of the Poisson(4) distribution and compute M_X(2).  
+```{r}
+#Mx(t) = exp(1)^(lambda*((exp(1)^t)-1)
+lambda = 4
+t = 2
+exp(lambda*(exp(t)-1))
+```
+(5) Suppose the rate changes every 6 hours, alternating between Poisson(2) and Poisson(6). Compute the total variance over a 24-hour day.
+```{r}
+ch = 6
+lambda1 = 2
+lambda2 = 6
+h = 24
+changes = h/ch
+var = (lambda1+lambda2)*2 #X_1+X_2+X_3+X_4
+var # variance is equal to its mean
+```
+
+##### 5. Exponential Distribution – Conditional & Mixture Models  
+Let X ~ Exp(1/10) be the waiting time for a bus.
+```{r}
+rate = 1/10
+```
+
+(1) Compute P(X > 20 | X > 10) using the memoryless property.  
+```{r}
+# memoryless property state that we don't care about what happened before
+t = 20 - 10 # we have already waited 10 min out of 20 without a bus to pass, we have to consider this but it would not change the prob it may pass faster or not
+1 - pexp(t, rate)
+```
+```{r}
+exp(-rate * 10) # solving with original formula: e^(-lambda * x)
+```
+
+(2) Suppose two buses arrive independently, one following Exp(1/10) and the other Exp(1/5). Compute the probability that the first bus to arrive takes more than 15 minutes.  
+```{r}
+rate1 = 1/10
+rate2 = 1/5
+rate = rate1+rate2
+x = 15
+1 - pexp(x, rate)
+```
+```{r}
+exp(-rate * x) # real formula for confirmation
+```
+
+(3) Compute the median waiting time for the bus.  
+```{r}
+rate = 1/10
+median = log(2) / rate
+median
+# just for context 
+mean = rate^(-1) # inverse of rate
+mean
+```
+The median is lower than the mean since the exponential distribution is right-skewed
+
+(4) If the bus arrival time is normally distributed with the same mean and variance as Exp(1/10), compare P(X > 20) for both distributions.  
+```{r}
+var = mean^2
+sd = sqrt(var)
+x = 20
+# for norm
+1 - pnorm(x, mean,sd)
+# for exp
+1 - pexp(x, rate)
+
+```
+The normal distribution assigns a slightly higher probability to large values than the exponential distribution
+
+(5) Suppose that with probability 0.3, the bus follows Exp(1/5) and with probability 0.7, it follows Exp(1/10). Compute the expected waiting time under this mixture model.
+```{r}
+p1 = 0.3
+p2 = 0.7
+rate1 = 1/5
+rate2 = 1/10
+EX1 = rate1^(-1)
+EX2 = rate2^(-1)
+# E[Y]
+EY = p1 * EX1 + p2 * EX2
+EY
+```
+
+##### 6. Gamma Distribution – Convergence & Bayesian Interpretation  
+Let X ~ Gamma(3, 2).
+```{r}
+shape = 3 # Alpha, also k
+rate = 2 #Beta
+```
+
+(1) Compute the mode of the distribution.  
+```{r}
+(shape-1)/rate
+```
+
+(2) Find P(X > 5) without using pgamma(), but instead by numerical integration of the Gamma PDF.  
+```{r}
+x = 5
+1 - pgamma(x, shape, rate)
+```
+```{r}
+# Define gamma PDF
+gamma_pdf <- function(x) {
+  (rate^shape * x^(shape - 1) * exp(-rate * x)) / gamma(shape)
+}
+integrate(gamma_pdf, lower = 5, upper = Inf)$value
+```
+
+(3) Compute E[X^2] using the moment formula.  
+```{r}
+#E[X^2] = var(X) + (E[X])^2 where:
+var = shape / rate
+EX_sq = shape / rate^2
+EX2 = var + EX_sq # here we apply formula
+```
+
+(4) Suppose we update a Poisson(λ) process where λ ~ Gamma(3,2) based on new observations. Compute the new expected value of λ after observing 5 events.  
+```{r}
+# Gamma is distributed as (shape + n, rate +1)
+n= 5
+n_shape = shape + n
+n_rate = rate +1
+EX = n_shape/n_rate
+EX
+```
+(5) Show that as k → ∞, the Gamma distribution Gamma(k, k) converges to a normal distribution, and approximate its mean and variance.
+```{r}
+# so we have shape = rate
+k = 1000
+m = 100000
+rg =rgamma(m, k, k)
+mean(rg) # should be close to 1 so is ok
+var(rg) # should be close to 0.001 so is ok
+mean = k/k # = 1
+var = k/(k^2)
+sd = sqrt(var)
+rn = rnorm(m, mean, var)
+```
+We can claim that in this case it converges to a normal
+
+7. General Mixed Problems  
+
+(1) Suppose you have three independent variables:  
+    - X ~ N(0,1)  
+    - Y ~ Exp(1)  
+    - Z ~ Poisson(5)  
+
+    Compute P(X + Y < Z).  
+```{r}
+mean = 0 #for norm
+var = 1 # for norm
+sd = sqrt(var) # for norm
+rate = 1 # for exp
+lambda = 5 #for poisson
+```
+
+```{r}
+# There is no close solution for this so we use Montecarlo Simulation aka Empirical demostration
+set.seed(42)
+
+m = 100000
+X = rnorm(m, mean, sd)
+Y = rexp(m, rate)
+Z =rpois(m, lambda)
+mean((X+Y)<Z)
+```
+
+(3) If X ~ N(5,4) and Y ~ U(2,8), find P(Y > X).  
+```{r}
+m = 5
+var = 4
+sd = 2
+min = 2
+max = 8
+m = 100000
+X = rnorm(m, m, sd)
+Y = runif(m, min, max)
+mean(Y>X)
+```
+# Advanced Probability and Distribution Challenges  
+
+(1) Let X ~ N(5,9) and Y ~ Gamma(3,2). Compute P(X^2 + Y < 20) using Monte Carlo simulation.  
+```{r}
+set.seed(42)
+mu = 5
+var = 9
+shape = 3
+rate = 2
+m = 100000
+# empirical tests
+X = rnorm(m, mu, sqrt(var))
+Y = rgamma(m,shape, rate)
+mean((X^2 + Y) <20)
+```
+
+(2) Suppose Z ~ Poisson(4). Compute the probability that the sum of Z independent Uniform(0,1) variables exceeds 3.  
+```{r}
+lambda = 4
+min = 0
+max = 1
+# P
+Z = rpois(m,lambda)
+U_sum <- sapply(Z, function(z) sum(runif(z, min, max))) # for each value of Z we apply uniform, this is possible thanks to sapply that iterate over all the value
+mean(U_sum >3)
+
+```
+
+(3) Given that X ~ Exp(1) and Y ~ Exp(2), compute P(X > Y) analytically and verify with simulation.  
+```{r}
+rate1 = 1
+rate2 = 2
+# analitically P(X>Y) = rate2 / (rate1 + rate2)
+rate2 / (rate1 + rate2)
+r1 = rexp(m, rate1)
+r2 = rexp(m, rate2)
+mean(r1>r2)
+# they match
+```
+
+(4) Suppose X follows a mixture model where X ~ N(0,1) with probability 0.7 and X ~ Exp(1) with probability 0.3. Compute E[X] and Var(X).  
+```{r}
+mu = 0
+var = 1
+p= 0.7
+rate=1
+#E[X] for normal is mu, for exp is 1/rate
+EX = mu * p + (1/rate)*(1-p)
+EX
+#var(X) for normal is var, for exp is 1 - (E[X])^2
+varX= var * p + (1-(EX^2)) * (1-p)
+varX
+# idk about parenthesis here
+```
+
+(6) Consider two independent normal variables X ~ N(0,1) and Y ~ N(0,1). Compute the probability that the maximum of X and Y is greater than 1.5.  
+
+```{r}
+mu = 0
+var = 1
+# is the prob that at least one is >1.5
+# This is obtained with product, for pnorm remember it consider <=
+1 - (pnorm(1.5, mu, var)*pnorm(1.5, mu, var))
+```
+
+(7) A company monitors system failures that follow a Poisson(2) process per month. The repair time follows Exp(1/4). Compute the probability that at least one system remains broken at the end of a 12-month period.  
+```{r}
+lambda = 2
+rate = 1/4
+lambda_tot = 2*12 #to consider all the time period
+months = 12
+# We know that sum of exponential follows a gamma distribution
+1 - pgamma(months, shape = lambda_tot, rate = rate)
+```
+
+
+(9) Let X follow a Beta(2,5) distribution. Compute P(0.3 < X < 0.7) using both numerical integration and simulation.  
+```{r}
+pbeta(0.7, shape1 = 2, shape2 = 5) - pbeta(0.3, shape1 = 2, shape2 = 5)
+```
+
+(10) A server processes jobs where the number of jobs per minute follows Poisson(3). Each job takes an Exp(1) amount of time. Compute the probability that the total job completion time exceeds 10 minutes.  
+
+```{r}
+# Same as ex n 7 to explain the use of gamma
+1 - pgamma(10, shape = 3, rate = 1)
+```
+

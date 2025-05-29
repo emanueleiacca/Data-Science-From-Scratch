@@ -1,0 +1,6 @@
+"0","prob_between_40_60 <- pnorm(60, mean = 50, sd = 10) - pnorm(40, mean = 50, sd = 10)"
+"0","prob_between_40_60"
+"1","[1]"
+"1"," 0.6826895"
+"1","
+"

@@ -1,0 +1,7 @@
+"0","# P(T_1|W) using Bayes Theorem"
+"0","PT1_W = P_W_given_T1 * p1 / PW"
+"0","PT1_W"
+"1","[1]"
+"1"," 0.4"
+"1","
+"

@@ -1,0 +1,134 @@
+---
+title: "SDS3"
+author: "Emanuele Iaccarino"
+date: "2024-10-17"
+output: html_document
+---
+
+# LAB 4: In class exercise | My options 
+
+```{r}
+# Alternative definition with boolean masks
+myF <- function(x, alpha = 2) (1 - 1/(x^(alpha)))*(x >= 1)
+curve(myF(x), 0, 10)
+
+
+# More general stepfunctions in R
+?stepfun # output is a <function> obj >> ECDF
+
+
+# Alternative definition with boolean masks
+myQ <- function(u, alpha = 2) ((1/(1-u))^(1/alpha))*(u >= 0)*(u <= 1)
+curve(myQ(x), -4, 4)
+myQ(-4)
+
+
+# Basic input check and warning
+myQv2 <- function(u, alpha = 2){
+  if ( (u < 0) | (u > 1) ){
+    warning("Out-of-bound input!")
+  }
+  ((1/(1-u))^(1/alpha))*(u >= 0)*(u <= 1)
+}
+myQv2(-4)
+```
+### LCG but also...
+```{r}
+?runif
+n <- 500
+
+set.seed(41234) # for reproducibility
+myrnd <- runif(n)
+head(myrnd)
+tail(myrnd)
+```
+
+### Vectorization
+```{r}
+head(myrnd)
+mysamp <- myQ(myrnd, alpha = 2.5) # vectorized in the input <u>, for-loop not needed
+
+# In general, you can vectorize wrt specific input
+?Vectorize
+```
+
+### Algoritm/Estimator
+```{r}
+# Define the density of a Pareto
+mydens <- function(x, alpha = 2) (alpha/(x^(alpha+1)))*(x >= 1)
+
+
+# Check on the density
+hist(mysamp, prob = T, breaks = 50) ## << transform of the data "capture" the "density" | ESTIMATOR/ALGORITHM
+curve(mydens(x, alpha = 2.5), add = T, col = "blue", lwd = 4)
+
+# Check on the CDF???
+# What is the "equivalent" algorithm that try to learn the underlying CDF from data?
+# Histogram <> ECDF > place mass 1/n over each datapoint >> consider the CDF of THAT 
+#                     discrete distribution
+plot(sort(mysamp), rep(1/n, n), type = "h", lty = 3, col = gray(.75))
+points(sort(mysamp), rep(1/n, n), pch = 19)
+rug(mysamp)
+
+
+?ecdf
+myecdf <- ecdf(mysamp)
+class(myecdf)
+myecdf(7)
+myecdf(1.6)
+
+
+# Some "methods" for the S3 <ecdf> class
+?plot.ecdf
+?print.ecdf
+
+
+# Check | Not bad!
+plot(myecdf, cex = .15)
+curve(myF(x, alpha = 2.5), add = T, lwd = 5, 
+      col = rgb(1,0,0,.4))
+
+```
+
+
+# LAB 5: Transformation Example 
+
+```{r}
+
+Fy <- function(y) 
+  suppressWarnings(ifelse( y < 0, 0, sqrt(y)*(y<1)*(y>0) + (y > 1) ))
+curve(Fy(x), -5, 5, lwd = 5, col = "pink",
+      n = 500)
+
+
+fy <- function(y) 
+  suppressWarnings(ifelse( y < 0, 0, (1/(2*sqrt(y)))*(y<1)*(y>0) ))
+curve(fy(x), -1, 2, lwd = 5, col = "orchid",
+      n = 500)
+
+
+# Case of a density whose values are blowing to infinity...
+# Reinforce: density values are NOT probabilities!
+
+
+# Study the transformation via simulation
+# Requirement: be able to simualte from the orginal r.v. X
+
+
+set.seed(31543) # for reproducibility
+M <- 1000
+xsamp <- runif(M, -1, +1)
+hist(xsamp, prob = T, breaks = 25)
+
+
+# Just apply the transformation to the OG samples
+ysamp <- xsamp^2
+
+
+hist(ysamp, prob = T)
+curve(fy(x), add = TRUE, 
+      lwd = 5, col = "orchid",
+      n = 500)
+
+```
+

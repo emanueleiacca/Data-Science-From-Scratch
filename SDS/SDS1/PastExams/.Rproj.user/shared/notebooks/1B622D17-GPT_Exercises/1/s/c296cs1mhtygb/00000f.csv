@@ -1,0 +1,7 @@
+"0","lambda_purch = 3 * lambda"
+"0","x = 10"
+"0","dpois(x,lambda_purch)"
+"1","[1]"
+"1"," 0.1048373"
+"1","
+"

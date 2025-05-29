@@ -1,0 +1,4 @@
+"0","W_samp <- rnorm(M) # random generation for the normal distribution"
+"0","Z_samp <- Y_samp * W_samp"
+"0","hist(Z_samp, breaks = 30)"
+"0",""

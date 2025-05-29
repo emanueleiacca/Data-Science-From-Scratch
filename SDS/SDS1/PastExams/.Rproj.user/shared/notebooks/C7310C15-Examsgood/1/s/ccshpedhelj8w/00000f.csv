@@ -1,0 +1,6 @@
+"0","# Sampling"
+"0","rquest <- function(n, alpha){"
+"0","u <- runif(n)"
+"0","out <- ((u)^(1/alpha))^(-1)"
+"0","return(out)"
+"0","}"

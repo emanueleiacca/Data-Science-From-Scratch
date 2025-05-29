@@ -1,0 +1,6 @@
+"0","L <- function(alpha, x){"
+"0","n <- length(x)"
+"0","jnk <- prod(1/x) # productoria"
+"0","out <- (alpha^n)*(jnk)^(alpha+1)"
+"0","return(out)"
+"0","}"

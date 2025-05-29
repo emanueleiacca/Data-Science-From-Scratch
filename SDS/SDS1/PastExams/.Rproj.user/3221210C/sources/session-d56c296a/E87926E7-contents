@@ -1,0 +1,384 @@
+# SMDS-2 2024-2025 # Lecture week #02 -----------------------------------------
+# last update: 2025-03-07
+
+rm(list=ls())
+
+# Example in 1.2.1 p.3 PH Book (Binomial Model) --------------------------------------------
+# 20 individuals have been tested for infection in a remote village
+# How rare is the disease?
+
+# Binomial conditional statistical model with a uniform prior distribution
+# Binomial conditional statistical model with a Beta prior distribution
+
+# 1) LET US START WITH A SIMPLE UNIFORM PRIOR ELICITATION  ---------------------
+# indeed it is a particular case 
+# WITHIN A CONJUGATE CLASS OF PRIORS FOR THE BINOMIAL MODEL
+
+# We will extend the prior elicitation in order to 
+# find suitable hyper-parameters for our 
+# prior distribution within the conjugate class of priors for the binomial model
+# so that
+# our prior belief can reflect the following statements:
+
+# - a priori the expected success probability (theta) is 0.1
+# - our a priori distribution concentrates roughly 0.70 of its mass
+#   in the interval [0.05,0.20]
+
+
+# Let us start with a "starting" uniform prior not necessarily satisfying the previous prior assessments
+
+my_prior_a <- 1
+my_prior_b <- 1
+
+# Perhaps we can the ask later what happens if we elicit a different prior 
+# my_prior_a <- 3
+# my_prior_b <- 3
+
+#my_prior_a <- 2
+#my_prior_b <- 18
+
+h_prior <- c(a=my_prior_a,b=my_prior_b)
+h_prior
+
+curve(dbeta(x,shape1=my_prior_a,shape2=my_prior_b), ylim=c(0,2), xlab=expression(theta),ylab=expression(pi[h]~(theta)))
+title(main="prior distribution")
+
+# Let us evaluate  the corresponding prior statements in terms of expected value and probability content of a specific interval of theta values
+
+my_prior_a /(my_prior_b+my_prior_a)
+# expected value a priori
+mu_prior <- my_prior_a /(my_prior_b+my_prior_a)
+
+# prior prob of [0.05,0.2]
+pbeta(0.2,shape1=my_prior_a,shape2 = my_prior_b)-pbeta(0.05,shape1=my_prior_a,shape2 = my_prior_b)
+
+# abline(h=1, lty=3)
+
+
+
+
+
+# 2) POSTERIOR ANALYSIS ---------------------------------------------------
+
+# suppose we have observed y_obs=0 successes
+# in a binomial trial out of N=20 attempts (tests)
+
+y_obs <- 0
+N <- 20
+
+
+# a. derive the posterior distribution (conjugate updating formula) -------
+
+# we know the analytic formula for the 
+# posterior distribution if the prior is conveniently chosen 
+# within the Beta family of distributions
+
+# compute the updated hypeparameter h_post=(a_post,b_post)
+my_posterior_a <- my_prior_a + y_obs
+my_posterior_b <- my_prior_b + (N-y_obs)
+
+
+h_posterior <- c(a=my_posterior_a,b=my_posterior_b)
+h_posterior
+
+mu_posterior <- (my_prior_a+y_obs)/(my_prior_a+my_prior_b+N)
+
+mu_posterior
+
+#    graphical display: prior, posterior, (likelihood) -----------------------
+
+
+# plot the prior
+par(mfrow=c(1,1))
+curve(dbeta(x,shape1=my_prior_a,shape2=my_prior_b),from=0,to=1,col="blue",lwd=2,ylim=c(0,25),xlab=expression(theta),ylab=expression(paste(pi(theta),"",~~~"(prior or posterior)")),n=10000)
+# plot the posterior
+curve(dbeta(x,shape1=my_posterior_a,shape2=my_posterior_b),from=0,to=1,add=TRUE,col="orange",lwd=2,n=10000)
+
+likelihood <- function(theta){
+  choose(N,y_obs)*theta^y_obs*(1-theta)^(N-y_obs)
+}
+
+# is it a vectorized likelihood in this example? 
+
+curve(20*likelihood(x),add=TRUE,col="red",lwd=2,lty=5)
+
+# constant <- ??? 20
+# curve(constant*likelihood(x),add=TRUE,col="red",lwd=2)
+
+legend("topright",legend=c("prior","posterior"),col=c("blue","orange"),lty=c(1,1))
+
+points(mu_prior,0,pch=16,cex=1.5,col="blue")
+points(mu_posterior,0,pch=16,cex=1.5,col="orange")
+
+theta_hat_MLE <- y_obs/N
+points(theta_hat_MLE,0,pch=16,cex=1.5,col="red")
+
+title(main="from-prior-to-posterior in a conjugate Bayesian analysis of a Binomial example")
+
+# prior probability attached to the original 
+# [0.05,0.20]
+pbeta(0.20,shape1=my_prior_a,shape2=my_prior_b)-
+  pbeta(0.05,shape1=my_prior_a,shape2=my_prior_b)
+
+# new updated posterior probability attached to the original 
+# [0.05,0.20]
+
+pbeta(0.20,shape1=my_prior_a+0,shape2=my_prior_b+20)-
+  pbeta(0.05,shape1=my_prior_a+0,shape2=my_prior_b+20)
+
+# what if we elicited a different prior guess (say of prior prob 0.7)?
+# we should compare the posterior prob of the interval with the elicited prior guess 
+
+# while if I want to see how much my prior beliefs have been updated about the claim that the spread of the disease is lower that 10% i.e. theta<0.1 ...
+
+pbeta(0.1,shape1=my_prior_a,shape2 = my_prior_b)
+pbeta(0.1,shape1=my_posterior_a,shape2 = my_posterior_b)
+
+
+# b. POINT ESTIMATE -------------------------------------------------------
+#    provide basic posterior summaries ---------------------------------------
+
+
+
+# POSTERIOR DISTRIBUTION: 
+# point-estimate ===> synthetic summaries
+
+# new updated posterior mean
+
+
+# can you report the posterior mean? [exact or approximate]
+
+# can you report the posterior median? [exact or approximate]
+
+my_posterior_a/(my_posterior_a+my_posterior_b)
+
+qbeta(p=0.5,shape1 = my_posterior_a, shape2=my_posterior_b)
+
+points(qbeta(p=0.5,shape1 = my_posterior_a, shape2=my_posterior_b),0,pch=17,cex=1,col="cyan")
+
+# can you report the posterior mode? [exact or approximate]
+
+
+# Indeed there is an explicit closed-form formula for the mode of a beta density (see below)
+
+# However, if you don't remember you can find a numerical solution by means of the optim(...)  function
+?optim
+uu <- optim(fn=dbeta,par = 0.1,control=list(fnscale=-1),shape1=my_posterior_a,shape2=my_posterior_b,method="BFGS")
+
+str(uu)
+uu$par
+
+bayes_point_estimate_mode <- uu$par
+bayes_point_estimate_mode
+
+
+
+# closed-form formula for the mode of a beta density (subject to a>1 and b>1)
+(my_posterior_a-1)/(my_posterior_a+my_posterior_b-2)
+# abline(v=bayes_point_estimate_mode)
+
+
+bayes_point_estimate <- my_posterior_a/(my_posterior_a+my_posterior_b)
+bayes_point_estimate
+
+bayes_point_estimate_median <-qbeta(0.5,shape1=my_posterior_a,shape2 = my_posterior_b)
+bayes_point_estimate_median
+
+
+# to be compared to the original guess (center of the prior distribution)
+mu_prior <- my_prior_a /(my_prior_b+my_prior_a)
+mu_prior
+
+
+# c. INTERVAL  ESTIMATE ---------------------------------------------------
+#    compute ET and HPD interval estimates -----------------------------------
+
+
+posterior_cdf <- function(x){
+  pbeta(x,shape1=my_prior_a+0,shape2=my_prior_b+20)
+}
+
+posterior_qf <- function(x){
+  qbeta(x,shape1=my_posterior_a,shape2=my_posterior_b)
+}
+
+posterior_icdf <- function(x){
+  qbeta(x,shape1=my_posterior_a,shape2=my_posterior_b)
+}
+
+# POSTERIOR DISTRIBUTION: 
+# interval-estimate ===> equal tail 
+# corresponding to posterior probability 1-alpha
+
+alpha=0.05
+1-alpha
+posterior_qf(alpha/2)
+posterior_qf(1-alpha/2)
+
+interval_estimate_equal_tail <- c(posterior_qf(alpha/2),posterior_qf(1-alpha/2))
+interval_estimate_equal_tail
+# let us check its posterior probability content
+pbeta(posterior_qf(1-alpha/2),shape1=my_posterior_a,shape2=my_posterior_b) - pbeta(posterior_qf(alpha/2),shape1=my_posterior_a,shape2=my_posterior_b)
+
+interval_estimate_equal_tail <- c(posterior_qf(alpha/2),posterior_qf(1-alpha/2))
+
+# ET credible interval bounds
+interval_estimate_equal_tail
+
+# ET credible interval width
+diff(interval_estimate_equal_tail)
+
+# I can claim that also in the following intervals there is 0.95 posterior mass 
+
+c(0,posterior_qf(0.95))
+diff(c(0,posterior_qf(0.95))) 
+
+c(posterior_qf(0.05),1)
+diff(c(posterior_qf(0.05),1)) 
+# ... but this would be an inefficient way of reporting a 0.95 credible interval ...
+
+# we will now see the HPD credible interval 
+
+
+# POSTERIOR DISTRIBUTION: 
+# iterval-estimate ===> HPD
+
+# if we need to report an interval estimal our best answer is 
+# an alpha-level [posterior proabbility] HPD interval 
+# HPD = Highest Posterior Density
+#install.packages("TeachingDemos")
+library(TeachingDemos)
+?hpd
+
+hpd(posterior.icdf=posterior_qf, conf=0.95, tol=0.00000001)
+
+interval_estimate_hpd <- TeachingDemos::hpd(posterior.icdf=posterior_qf, conf=0.95)
+# NOTE: conf corresponds to the posterior probability content 1-alpha
+
+diff(interval_estimate_hpd)  ### see code below 
+diff(interval_estimate_equal_tail)
+
+# if theta represent the disease prevalence in the population 
+# from which we have tested N=20 people and y_obs=0 resulted infected
+# how can we test whether the disease affects less than 10% of the population? 
+
+
+
+# d. HYPOTHESIS TESTING ---------------------------------------------------
+#    test whether or not the prevalence is larger than 10% -------------------
+
+
+
+
+# POSTERIOR DISTRIBUTION: 
+# hypothesis testing
+
+
+# for composite hypothesis [where H_0 corresponds to an interval of values of theta]
+# one need to look at its posterior probability content
+# and decide according to whether this is a sufficiently large probability 
+# value to support H_0 rather than H_1 
+# one can consider 0.5 as a minimal threshold for deciding in favor of that hypothesis
+
+# H_0 : theta <= 0.1     [0,0.1]= Theta_0 (null hypothesis)
+# H_1 : theta > 0.1      (0.1,1]= Theta_1 (alternative hypothesis)
+
+# Let us compute the posterior probability of the null hypothesis [0,0.1]= Theta_0
+pbeta(0.1,shape1 = my_posterior_a,shape2=my_posterior_b)
+
+# Let us compute the posterior probability of the alternative (0.1,1]= Theta_1
+1-pbeta(0.1,shape1 = my_posterior_a,shape2=my_posterior_b)
+
+# Note that, differently from the frequentist approach if we 
+# switch the null with the alternative in the hypothesis system
+
+# the conclusions must be the same!!
+
+# H_0: theta >= 0.1
+
+(1-pbeta(0.1,shape1 = my_prior_a,shape2=my_prior_b))
+
+# H_1: theta < 0.1
+
+pbeta(0.1,shape1 = my_prior_a,shape2=my_prior_b)
+
+# 
+# in order to discount the effect of the prior probability content? 
+
+# BF = (posterior odds) / (prior odds)
+
+prior_odds_01 <- (1-pbeta(0.1,shape1 = my_prior_a,shape2=my_prior_b))/pbeta(0.1,shape1 = my_prior_a,shape2=my_prior_b)
+prior_odds_01
+posterior_odds_01 <- (1-pbeta(0.1,shape1 = my_posterior_a,shape2=my_posterior_b))/(pbeta(0.1,shape1 = my_posterior_a,shape2=my_posterior_b)
+)
+posterior_odds_01
+
+(posterior_odds_01/prior_odds_01)
+# which is the conclusion according to the Bayes Factor? 
+# we conclude in favor of H_1: theta < 0.1
+
+# in order to calibrate a BF when BF<1 ....
+1/(posterior_odds_01/prior_odds_01)
+
+## if I want to test a point-null hypothesis 
+
+# H_0 : theta=0.1=theta_0=0.1
+#  against a composite (bidirectional) alternative
+# H_1 : theta != 0.1
+
+# we should look at the credible interval ad decide in favor of H_0 if theta_0 is inside the credible interval at a suitably large posterior probability content
+
+theta_0 <- 0.1
+(theta_0 >= interval_estimate_hpd[1]) & (theta_0 <= interval_estimate_hpd[2])
+
+
+
+# e. PREDICTION -----------------------------------------------------------
+#    predictive analysis -----------------------------------------------------
+
+# prior predictive? 
+# try to simulate from it
+# try to compare simulated relative frequencies with theoretical probabilities
+# try to compute approximate and exact expectation 
+# posterior predictive? 
+# try to simulate from it
+# try to compare simulated relative frequencies with theoretical probabilities
+
+
+# Talking about reparameterization have a look at the following
+# library(TailRank)
+# ? dbb
+
+# if you cannot install the TailRank try this: 
+# if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+# BiocManager::install("Biobase")
+
+
+
+library(rmutil)
+# ?dbetabinom
+library(TailRank)
+support <- 0:20
+dbb(support,N=20,u=my_prior_a,v=my_prior_b)
+sum(dbb(support,N=20,u=my_prior_a,v=my_prior_b))
+
+# prior predictive distribution representation
+
+plot(support,dbb(support,N=20,u=my_prior_a,v=my_prior_b),type="h",ylab="probability")
+points(support,dbb(support,N=20,u=my_prior_a,v=my_prior_b),col="red",pch=16)
+title(main="Beta binomial distribution")
+
+# posterior predictive distribution? 
+
+# ...
+
+theta_prior_sim <- rbeta(100000,my_prior_a,my_prior_b)
+y_cond_model_sim <- rbinom(n=100000,size=20,prob=theta_prior_sim)
+
+cbind(theta_prior_sim,y_cond_model_sim)
+table(y_cond_model_sim)
+prop.table(table(y_cond_model_sim))
+plot(prop.table(table(y_cond_model_sim)))
+points(support,dbb(support,N=20,u=my_prior_a,v=my_prior_b),col="red",pch=16)
+
+# try with different values of my_prior_a and my_prior_b 

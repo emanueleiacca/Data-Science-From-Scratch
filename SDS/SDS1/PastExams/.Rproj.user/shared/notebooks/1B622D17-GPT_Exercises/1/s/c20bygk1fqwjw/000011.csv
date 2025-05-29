@@ -1,0 +1,2 @@
+"0","freq_table = table(rp)"
+"0","barplot(freq_table)"

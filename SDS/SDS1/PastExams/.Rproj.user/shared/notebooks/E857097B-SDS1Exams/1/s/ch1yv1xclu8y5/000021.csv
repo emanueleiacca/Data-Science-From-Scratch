@@ -1,0 +1,6 @@
+"0","sum(sim$approval==""ok"" & sim_partner==""A"")/sum(sim$approval==""ok"")
+"
+"1","[1]"
+"1"," 0.3439153"
+"1","
+"

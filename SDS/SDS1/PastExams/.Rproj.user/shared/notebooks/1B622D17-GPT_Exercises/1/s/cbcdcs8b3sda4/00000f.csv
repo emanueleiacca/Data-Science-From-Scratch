@@ -1,0 +1,4 @@
+"0","E_wt = 2 #waiting time"
+"0","m = 1000"
+"0","lambda = 1/E_wt #rate parameter"
+"0","re = rexp(m, rate = lambda)"

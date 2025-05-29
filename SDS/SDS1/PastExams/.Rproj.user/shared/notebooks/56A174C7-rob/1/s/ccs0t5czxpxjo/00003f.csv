@@ -1,0 +1,8 @@
+"0","logistic_model = train(Group ~ Feature1 + Feature2, data = train_data, method = ""glm"", family = ""binomial"")"
+"0","test_probs_logistic = predict(logistic_model, test_data, type = ""prob"")[,2]"
+"0",""
+"0","# Plot"
+"0","ecdf_X_logistic = ecdf(test_probs_logistic[test_data$Group == ""X""])"
+"0","ecdf_Y_logistic = ecdf(test_probs_logistic[test_data$Group == ""Y""])"
+"0",""
+"0","plot(ecdf_X_logistic, col = ""blue"", lwd = 2, main = ""Empirical CDFs (Logistic Regression)"", xlab = ""Score"", ylab = ""Cumulative Probability"")"

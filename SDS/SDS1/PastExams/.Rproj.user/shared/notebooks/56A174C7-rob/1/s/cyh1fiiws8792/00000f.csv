@@ -1,0 +1,3 @@
+"0","set.seed(22) # my lucky number"
+"0","n_samples <- 500  # Number of Data points per group, not too many, not too little"
+"0","n_features <- 2   # Number of dimensions(aka features, variables)"

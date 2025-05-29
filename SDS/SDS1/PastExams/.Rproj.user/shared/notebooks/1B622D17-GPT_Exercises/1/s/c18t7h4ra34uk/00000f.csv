@@ -1,0 +1,3 @@
+"0","# so we have x = sqrt(y): derivate and we obtain 1/(2 * sqrt(y)) "
+"0","# 12 is obtained by 1/(b-a) that gives 1/6 multiplied by that 2 at denominator"
+"0","fy <- function(y) ifelse(y >= a^2 & y <= b^2, 1 / (12 * sqrt(y)), 0)"

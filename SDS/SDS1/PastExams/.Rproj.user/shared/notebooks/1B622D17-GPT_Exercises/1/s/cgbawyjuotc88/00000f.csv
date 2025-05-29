@@ -1,0 +1,6 @@
+"0","# Compute theoretical Poisson(8) probability"
+"0","dpois(8, lambda = lambda2)"
+"1","[1]"
+"1"," 0.1395865"
+"1","
+"

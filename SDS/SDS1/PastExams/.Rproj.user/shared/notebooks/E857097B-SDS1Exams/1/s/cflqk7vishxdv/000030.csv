@@ -1,0 +1,7 @@
+"0","alpha_vals <- seq(0.1, 8, length.out = 100)"
+"0",""
+"0","# Compute likelihood values"
+"0","L_vals <- sapply(alpha_vals, function(a) L(a, xx))"
+"0",""
+"0","# Plot"
+"0","plot(alpha_vals, L_vals)"

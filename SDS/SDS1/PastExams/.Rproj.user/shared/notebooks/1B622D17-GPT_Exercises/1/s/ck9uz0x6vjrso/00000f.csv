@@ -1,0 +1,6 @@
+"0","cdf12 = pnorm(12, mean = mu, sd = sd) # distribution function for CDF"
+"0","cdf12"
+"1","[1]"
+"1"," 0.8413447"
+"1","
+"

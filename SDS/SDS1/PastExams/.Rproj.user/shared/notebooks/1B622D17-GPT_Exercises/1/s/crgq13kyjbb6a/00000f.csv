@@ -1,0 +1,5 @@
+"0","mu = 10"
+"0","var = 4"
+"0","sd = sqrt(var)"
+"0","m = 1000"
+"0","rn = rnorm(m, mean = mu, sd = sd) # if I want to create random "

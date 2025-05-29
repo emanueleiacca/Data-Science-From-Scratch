@@ -1,0 +1,6 @@
+"0","lambda <- n * p  # Poisson mean"
+"0","1 - ppois(15, lambda = lambda)"
+"1","[1]"
+"1"," 0.0487404"
+"1","
+"

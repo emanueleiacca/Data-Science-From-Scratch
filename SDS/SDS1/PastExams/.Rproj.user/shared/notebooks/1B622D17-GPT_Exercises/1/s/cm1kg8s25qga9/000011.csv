@@ -1,0 +1,8 @@
+"0","sk = rnorm(100000, m, sd)"
+"0","skewness = mean((sk - m)^3 / sd^3)"
+"0","skewness # close to 0 cause it's a normal distribution"
+"1","[1]"
+"1"," 0.0008469839"
+"1","
+"
+"0","# for n -> to \inf it converge to 0"

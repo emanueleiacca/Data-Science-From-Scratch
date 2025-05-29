@@ -1,0 +1,3 @@
+"0",""
+"0","# Add MLE estimate as a vertical line"
+"0","abline(v = a_hat(xx), col = ""red"")"

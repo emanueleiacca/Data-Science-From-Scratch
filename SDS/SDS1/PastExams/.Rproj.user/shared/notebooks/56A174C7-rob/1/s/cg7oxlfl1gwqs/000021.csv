@@ -1,0 +1,5 @@
+"0","ggplot(df, aes(x = Group, y = Feature1, fill = Group)) +"
+"0","  geom_boxplot(alpha = 0.6) +"
+"0","  labs(title = ""Boxplot of Feature 1 by Group"", y = ""Feature 1"") +"
+"0","  theme_minimal()"
+"0",""

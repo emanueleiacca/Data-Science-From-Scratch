@@ -1,0 +1,21 @@
+{
+    "debugBreakpointsState": {
+        "breakpoints": [
+            {
+                "id": 1,
+                "path": "C:/Users/emanu/SDS1/Func10.10.R",
+                "line_number": 5,
+                "function_steps": "",
+                "function_name": "lcg",
+                "state": 2,
+                "editor_state": 2,
+                "editor_line_number": 5,
+                "is_pending_debug_completion": false,
+                "needs_updated_steps": false,
+                "type": 0,
+                "is_package_breakpoint": false,
+                "package_name": ""
+            }
+        ]
+    }
+}

@@ -1,0 +1,6 @@
+"0","ggplot(df, aes(x = Feature1, y = Feature2, color = Group)) +"
+"0","  stat_ellipse(level = 0.95, geom = ""polygon"", alpha = 0.2) +"
+"0","  geom_point(alpha = 0.6, size = 2) +"
+"0","  labs(title = ""Covariance Ellipses for X and Y"", x = ""Feature 1"", y = ""Feature 2"") +"
+"0","  theme_minimal()"
+"0",""

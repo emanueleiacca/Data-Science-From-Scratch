@@ -1,0 +1,7 @@
+"0","#PDF X = 12"
+"0","pdf12 = dnorm(12, mean = mu, sd = sd) # density for PDF"
+"0","pdf12"
+"1","[1]"
+"1"," 0.1209854"
+"1","
+"

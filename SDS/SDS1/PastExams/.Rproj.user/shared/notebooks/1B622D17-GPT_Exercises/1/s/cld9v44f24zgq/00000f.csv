@@ -1,0 +1,8 @@
+"0","# also like this"
+"0","CDF = pbinom(2,n, prob = p)  "
+"0","# pbinom take the cumulative (sum) of all the PMF <= x"
+"0","CDF"
+"1","[1]"
+"1"," 0.7752268"
+"1","
+"

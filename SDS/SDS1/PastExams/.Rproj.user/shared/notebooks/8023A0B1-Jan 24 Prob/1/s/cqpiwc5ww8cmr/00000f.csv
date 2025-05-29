@@ -1,0 +1,6 @@
+"0","P_10_15_normal <- pnorm(15, mean = 15, sd = sigma) - pnorm(10, mean = 15, sd = sigma)"
+"0","P_10_15_normal"
+"1","[1]"
+"1"," 0.2602499"
+"1","
+"

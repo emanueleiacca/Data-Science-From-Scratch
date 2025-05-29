@@ -1,0 +1,6 @@
+"0","P_X10_15_given_H <- pnorm(15, mean = mu_H, sd = sqrt(sigma2_H)) - pnorm(10, mean = mu_H, sd = sqrt(sigma2_H))"
+"0","P_X10_15_given_H"
+"1","[1]"
+"1"," 0.2602499"
+"1","
+"

@@ -1,0 +1,2 @@
+"0","test_data$Group = factor(test_data$Group, levels = c(""X"", ""Y""))"
+"0","test_probs = predict(tree_classifier, test_data, type = ""prob"")[,2]  # Probabilities for class X (1)"

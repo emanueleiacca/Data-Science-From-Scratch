@@ -1,0 +1,5 @@
+"0","ecdf_X = ecdf(scores_X)"
+"0","ecdf_Y = ecdf(scores_Y)"
+"0",""
+"0","# Plot "
+"0","plot(ecdf_X, col = ""blue"", lwd = 2, main = ""Empirical CDFs of Classification Scores"", xlab = ""Score"", ylab = ""Cumulative Probability"")"

@@ -1,0 +1,7 @@
+"0","#P(X <8) = (X-a)/b-a where a is lower and b is upper bound"
+"0","PX_smaller8 =(8 - lower)/(upper - lower)"
+"0","PX_smaller8"
+"1","[1]"
+"1"," 0.3"
+"1","
+"

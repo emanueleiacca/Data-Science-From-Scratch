@@ -1,0 +1,7 @@
+"0","# memoryless property state that we don't care about what happened before"
+"0","t = 20 - 10 # we have already waited 10 min out of 20 without a bus to pass, we have to consider this but it would not change the prob it may pass faster or not"
+"0","1 - pexp(t, rate)"
+"1","[1]"
+"1"," 0.3678794"
+"1","
+"

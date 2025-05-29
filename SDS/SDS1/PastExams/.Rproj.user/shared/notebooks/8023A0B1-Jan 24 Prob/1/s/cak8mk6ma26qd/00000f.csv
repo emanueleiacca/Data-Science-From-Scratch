@@ -1,0 +1,6 @@
+"0","z_values <- seq(0, 1, length.out = 1000)"
+"0",""
+"0","# Compute the PDF values for Z"
+"0","f_Z_values <- sapply(z_values, f_Z)"
+"2","Errore in 0 <= x && x <= 1 : 'length = 21' in coercion to 'logical(1)'
+"

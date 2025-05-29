@@ -1,0 +1,7 @@
+"0","# means vectors for X and Y (where both distribution are centered) on cartesian map"
+"0","mu_X <- c(2, 2)"
+"0","mu_Y <- c(0, 0)"
+"0","# covariance matrices"
+"0","Sigma_X <- matrix(c(1, 0.5, 0.5, 1), nrow=2)  # Correlated variables for X"
+"0","Sigma_Y <- matrix(c(1, -0.3, -0.3, 1), nrow=2)  # Slightly negatively correlated for Y"
+"0","# ensure different internal structures"

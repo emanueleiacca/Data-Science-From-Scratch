@@ -1,0 +1,8 @@
+"0","#P(\lambda = 3) = [\lambda ^ k * e^(-\lambda)] / k!"
+"0","k=3"
+"0","P_L3 = (lambda^k * exp(1)^(-lambda))/factorial(k)"
+"0","P_L3"
+"1","[1]"
+"1"," 0.1403739"
+"1","
+"

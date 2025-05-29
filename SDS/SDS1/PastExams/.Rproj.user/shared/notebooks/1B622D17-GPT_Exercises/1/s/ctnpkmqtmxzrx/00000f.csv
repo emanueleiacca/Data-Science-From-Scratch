@@ -1,0 +1,7 @@
+"0","prob_3_calls <- dpois(3, lambda = lambda)"
+"0","prob_3_calls"
+"1","[1]"
+"1"," 0.1403739"
+"1","
+"
+"0","# also like this"

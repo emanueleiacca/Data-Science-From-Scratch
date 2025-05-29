@@ -1,0 +1,9 @@
+"0","lambda = 2"
+"0","rate = 1/4"
+"0","lambda_tot = 2*12 #to consider all the time period"
+"0","failures = rpois(m, lambda_tot)"
+"0","time_to_repair = rexp(failures, rate)"
+"0","mean(tapply(time_to_repair, rep(1:m, failures), sum) > 12)"
+"2","Errore in tapply(time_to_repair, rep(1:m, failures), sum) : 
+  gli argomenti devono avere la stessa lunghezza
+"

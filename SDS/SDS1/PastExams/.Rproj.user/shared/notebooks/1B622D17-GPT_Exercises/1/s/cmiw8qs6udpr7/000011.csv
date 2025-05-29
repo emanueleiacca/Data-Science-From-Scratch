@@ -1,0 +1,7 @@
+"0","EXx2 = EX * 2 # Expected lifespan is mean value of x"
+"0","# 1 - cause we want to calc the prob that is >, remember CDF in R calculate =<"
+"0","1 - pgamma(EXx2, shape, rate)"
+"1","[1]"
+"1"," 0.04238011"
+"1","
+"

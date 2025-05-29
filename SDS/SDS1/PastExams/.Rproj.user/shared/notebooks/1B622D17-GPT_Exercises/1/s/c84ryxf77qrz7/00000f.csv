@@ -1,0 +1,7 @@
+"0","# P(4 ≤ X ≤ 6) = P(X<=6) - P(X<=4) = CDF(6) - CDF(4)"
+"0","uP4_6 = punif(6, min=lower, max = upper) - punif(4, min=lower, max = upper)"
+"0","uP4_6"
+"1","[1]"
+"1"," 0.3333333"
+"1","
+"

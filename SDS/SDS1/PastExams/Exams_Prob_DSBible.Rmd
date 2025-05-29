@@ -1,0 +1,218 @@
+---
+title: "Exams"
+author: "Emanuele Iaccarino"
+date: "2025-01-30"
+output: html_document
+---
+
+# Feb 2017
+
+#####A
+
+```{r}
+# Define probabilities for each girl
+P_A <- 2/9
+P_B <- 4/9
+P_C <- 2/9
+P_D <- 1/9
+
+# Define conditional probabilities for Tullia's approval
+P_T_given_A <- 0.3
+P_T_given_B <- 0.0
+P_T_given_C <- 0.3
+P_T_given_D <- 0.6
+
+# Compute P(T) using the Law of Total Probability
+P_T <- (P_T_given_A * P_A) + (P_T_given_B * P_B) + (P_T_given_C * P_C) + (P_T_given_D * P_D)
+
+# Compute P(A | T) using Bayes' Theorem
+P_A_given_T <- (P_T_given_A * P_A) / P_T
+
+P_T
+P_A_given_T
+```
+##### C
+
+
+```{r}
+# Data
+mu_A <- 85
+sigma_A <- 10
+mu_B <- 90
+sigma_B <- 16
+rho <- 0.8 #p coefficient
+X_A_given <- 80 #score given
+```
+
+If the student’s score on test A is 80, what is the probability that her score on test B will be higher than 90?
+```{r}
+# Compute conditional mean and variance using cond normal distribution formula
+mu_B_given_A <- mu_B + (sigma_B / sigma_A) * rho * (X_A_given - mu_A)
+sigma_B_given_A <- sqrt((1 - rho^2) * sigma_B^2)
+
+# Compute probability P(X_B > 90 | X_A = 80)
+p_xb_gt_90 <- 1 - pnorm(90, mean = mu_B_given_A, sd = sigma_B_given_A)
+
+mu_B_given_A
+sigma_B_given_A
+p_xb_gt_90
+```
+If a student is chosen at random, what is the probability that her score on test A will be higher than his score on test B?
+
+```{r}
+# Compute mean and variance of Delta
+mu_Delta <- mu_A - mu_B
+sigma_Delta <- sqrt(sigma_A^2 + sigma_B^2 - 2 * (sigma_A * sigma_B * rho))
+
+# Compute probability P(X_A > X_B)
+p_xa_gt_xb <- 1 - pnorm(0, mean = mu_Delta, sd = sigma_Delta)
+
+mu_Delta
+sigma_Delta
+p_xa_gt_xb
+
+```
+If a student is chosen at random, and her score on test B is 100, what predicted value of her score on test A has the smallest mse and what is the value of this minimum mse?
+
+```{r}
+X_B_given <- 100 # observed value
+
+# Compute conditional mean
+mu_A_given_B <- mu_A + (sigma_A / sigma_B) * rho * (X_B_given - mu_B)
+
+# Compute minimum MSE (Variance of conditional distribution)
+mse_min <- (1 - rho^2) * sigma_A^2
+
+mu_A_given_B
+mse_min
+
+```
+# Jan 2017
+
+##### A
+```{r}
+# Data
+coins = 3
+p1 = 0 # P(H|C_1)
+p2 = 3/4 # P(H|C_2)
+p3 = 1 # P(H|C_3)
+```
+
+Suppose that one coin is selected at random from the box and that, when it is tossed once, a Head is obtained. What is the posterior probability that the i^th coin was selected for i ∈ {1, 2, 3}?
+```{r}
+p = 1/3
+P_H = p1 * p + p2 * p + p3 * p # Law of total probabilities
+
+# Posterior probabilities using Bayes rule
+P_C1_given_H = p1 * p / P_H
+P_C2_given_H = p2 * p / P_H
+P_C3_given_H = p3 * p / P_H
+```
+If the same coin were tossed again, what would be the probability of obtaining another Head?
+```{r}
+# P(H_2|H_1) = ?
+P_H2_given_H1 =  P_C1_given_H * p1 + P_C2_given_H * p2 + P_C3_given_H * p3
+```
+3. If a Tail had been obtained on the first toss of the selected coin and the same coin were tossed again,
+what would be the probability of obtaining a Head on the second toss?
+```{r}
+#P(Ci|H_1c) = ?
+# p of obtaining Tail on the first throw
+P_Hc_given_C1 = 1 - p1
+P_Hc_given_C2 = 1 - p2
+P_Hc_given_C3 = 1 - p3
+P_C = P_Hc_given_C1 * p + P_Hc_given_C2 * p + P_Hc_given_C3 * p
+
+P_C1_given_Hc = P_Hc_given_C1 * p / P_C
+P_C2_given_Hc = P_Hc_given_C2 * p / P_C
+P_C3_given_Hc = P_Hc_given_C3 * p / P_C
+
+P_H2_given_H1c =  P_C1_given_Hc * p1 + P_C2_given_Hc * p2 + P_C3_given_Hc * p3
+```
+##### C
+
+```{r}
+n_Cs = 0.2
+E_Cs = 80
+n_Econ = 0.3
+E_Econ = 76
+n_Sts = 0.5
+E_Sts = 84
+```
+
+```{r}
+E_School = (n_Cs * E_Cs) + (n_Econ * E_Econ) + (n_Sts * E_Sts)
+E_School
+```
+
+# January 2024
+
+##### A
+
+```{r}
+P_H = 3/4
+P_Hc = 1/4
+
+P_X_given_H <- 0.08
+P_X_given_Hc <- 0.40
+
+# Compute P(X = 0)
+P_X0 <- (P_X_given_H * P_H) + (P_X_given_Hc * P_Hc)
+P_H_given_X0 <- (P_X_given_H * P_H) / P_X0
+P_H_given_X0
+```
+
+```{r}
+P_X16_given_H <- 0.20
+P_X16_given_Hc <- 0.08
+
+# Compute P(X = 16)
+P_X16 <- (P_X16_given_H * P_H) + (P_X16_given_Hc * P_Hc)
+
+P_H_given_X16 <- (P_X16_given_H * P_H) / P_X16
+P_H_given_X16
+```
+
+```{r}
+mu_H <- 15
+sigma2_H <- 50
+
+mu_Hc <- 8
+sigma2_Hc <- 50
+
+# Compute Normal PDFs at X = 0
+P_X0_given_H <- dnorm(0, mean = mu_H, sd = sqrt(sigma2_H))
+P_X0_given_Hc <- dnorm(0, mean = mu_Hc, sd = sqrt(sigma2_Hc))
+
+P_H_given_X0_norm <- (P_X0_given_H * P_H) / ((P_X0_given_H * P_H) + (P_X0_given_Hc * P_Hc))
+P_H_given_X0_norm
+# on denominator we use Law of total probabilities to retrieve P(X=0)
+
+```
+
+```{r}
+P_X10_15_given_H <- pnorm(15, mean = mu_H, sd = sqrt(sigma2_H)) - pnorm(10, mean = mu_H, sd = sqrt(sigma2_H))
+P_X10_15_given_H
+# From table is 0.35 so it doesn't match, Normal assumption is not reasonable
+```
+##### C
+
+```{r}
+# Y_1 = X_1 + X_2
+# Y_2 = X_1 - X_2
+n <- 10000
+
+# Generate random X1 and X2
+X1 <- sample(c(-1,1), n, replace = TRUE)
+X2 <- sample(c(-1,1), n, replace = TRUE)
+
+# Compute Y1 and Y2
+Y1 <- X1 + X2
+Y2 <- X1 - X2
+
+# Compute Pearson correlation
+correlation <- cor(Y1, Y2)
+# Close to 0 since they are uncorrelated
+
+```
+

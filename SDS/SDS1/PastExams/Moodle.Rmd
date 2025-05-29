@@ -1,0 +1,152 @@
+---
+title: "Moodle Ex"
+author: "Emanuele Iaccarino"
+date: "2025-01-29"
+output: html_document
+---
+
+# 1
+
+A new computer virus can enter the system through e-mail or through the internet. 
+
+- There is a 30% chance of receiving this virus through e-mail. 
+
+- There is a 40% chance of receiving it through the internet. 
+
+- Also, the virus enters the system simultaneously through e-mail and the internet with probability 0.15. 
+
+What is the probability that the virus does not enter the system at all?
+
+```{r}
+P_E = 0.3
+P_I = 0.4
+P_I_I_E = 0.15
+P_U_I_E = 0.3 + 0.4 - 0.15
+P_U_I_Ec = 1 - P_U_I_E
+P_U_I_Ec
+```
+# 2
+
+If at least one child in a family with 2 children is a boy, what is the probability that both children are boys?
+
+```{r}
+# we know at least one is a boy
+P1B = 1- (1/2 * 1/2) # 1 - all girls by both draw
+P2B = 1/2 * 1/2 # both boys
+P2B_I_1B = P2B # intersection (if both are boys ofc also only one is)
+
+P_2B_given_1B = P2B_I_1B / P1B # bayes theorem
+P_2B_given_1B
+```
+# 3
+
+A standard [*XOR* logic gate](https://en.wikipedia.org/wiki/Exclusive_or) is given by the table below 
+where $C = A \; XOR \; B$:
+
+  $A$  |  $B$  |  $C$ 
+-------|-------|-------
+    0  |    0  |   0
+    0  |    1  |   1
+    1  |    0  |   1
+    1  |    1  |   0
+
+If we observe that the output of the *XOR* gate is $0$, 
+what can we say about $A$ and $B$? In this case, either $A$ and $B$ were both $0$, or $A$ and $B$ were both $1$. This means we don’t know which state $A$ was in -- it could equally likely have been $1$ or $0$.
+
+Now consider the following "soft" version of the *XOR* gate table
+
+|   $A$  |  $B$  |  $\mathbb{P}\big(C = 1 \, | \, (A = a) \cap (B = b)\big)$ |
+|:------:|:-----:|:---------------------------------------------------------:|
+|    0   |   0   |                      0.10                                 |
+|    0   |   1   |                      0.99                                 |
+|    1   |   0   |                      0.80                                 |
+|    1   |   1   |                      0.25                                 |
+
+where, for example, 
+
+\[
+0.10 = \mathbb{P}\big(C = 1 \, \big | \, (A = 0) \cap (B = 0) \big).
+\]
+
+The question is: can you *already* evalute the following probability
+\[
+\mathbb{P}(A = 1 \, | \, C = 0) = \, ?
+\]
+or do you need other information/assumptions?
+
+```{r}
+# P(A=1∣C=0)
+P_A1_given_C0 = P_C0_givenA1 * P_A1 / P_C0
+```
+
+# Last
+
+
+- Simulate $M = 1000$ samples from the distribution of a "mysterious" random variable $Y$ as follow:
+
+```{r, results='hide', eval = FALSE}
+set.seed(34243) # for reproducibility
+M   = 1000 
+lam = 0.287
+X_samp = runif(M) # Uniform distribution Random deviates X distributed has a U(0,1)
+Y_samp = -lam * log(X_samp) 
+```
+
+Plot the histogram of the simulated values. Prove that the theoretical distribution of $Y$ is exponential with a suitable rate and then plot this theoretical PDF. What is the relation between the theoretical curve of the density of $Y$ and the graph of the histogram?
+
+```{r}
+hist(Y_samp, breaks = 30)
+```
+```{r}
+# Teorical PDF
+# fy(y) = Beta * e^(-Beta * x)
+Beta = 1/lam
+curve(Beta * exp(-Beta * x))
+```
+The histogram of the simulated value is a approximation of the theorical PDF, it approximate the density of Y as M (# of samples) increase.
+
+
+- Suppose now that our $Y$ is part of a bivariate random vector $(Z,Y)$. First of all, what does the joint density $f_{Z,Y}(z,y)$ represent and what properties does it satisfy? Then, how can you derive (in formula) the distribution of $Z$ from the joint?
+
+```{r}
+
+```
+
+
+- Now suppose that, conditionally on each simulated $(Y_i = y_i)$ $i \in \{1,2,\ldots,M\}$, we set $Z_i = y_i \cdot W_i$ where $W_i$ is distributed as a standard Normal and it is *independent* of $Y_i$. What is the conditional distribution of $(Z\,|\,Y = y)$? 
+
+
+- Under the same setup of the previous part, can you provide a simulation from the marginal distribution of $Z$? And what about an approximation of the marginal distribution of $Z$? Can you figure out how to get it? Finally, how could you derive/write the joint distribution of $(Z,Y)$?
+
+```{r}
+W_samp <- rnorm(M) # random generation for the normal distribution
+Z_samp <- Y_samp * W_samp
+hist(Z_samp, breaks = 30
+```
+
+```{r}
+learnr::run_tutorial("ex-data-basics", package = "learnr")
+```
+
+```{r}
+install.packages("r4ds.tutorials")
+```
+
+```{r}
+library(r4ds)
+r4ds.tutorials
+```
+```{r}
+
+learnr::available_tutorials(package = "r4ds.tutorials")
+```
+
+```{r}
+install.packages("xfun", dependencies = TRUE)
+install.packages("bookdown")
+```
+
+```{r}
+bookdown::serve_book("https://r4ds.had.co.nz/")
+```
+

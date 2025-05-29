@@ -1,0 +1,6 @@
+"0","L = function(psi, x){"
+"0","  n = length(x)"
+"0","  s = prod(1-x)"
+"0","  out = psi^n * s^(psi-1)"
+"0","}"
+"0","curve(L(x,xx), from=0, to= 4)"

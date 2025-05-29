@@ -1,0 +1,5 @@
+"0","set.seed(34243) # for reproducibility"
+"0","M   = 1000 "
+"0","lam = 0.287"
+"0","X_samp = runif(M)"
+"0","Y_samp = -lam * log(X_samp)"

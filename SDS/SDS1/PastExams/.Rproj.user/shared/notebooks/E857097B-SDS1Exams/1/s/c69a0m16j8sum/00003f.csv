@@ -1,0 +1,3 @@
+"0","rmy = function(n, psi) { psi * sqrt(- 2*log(1- runif(n)))}"
+"0","M = 10000"
+"0","hist(rmy(M,psi.seq[1]), col=""pink"", prob = T)"

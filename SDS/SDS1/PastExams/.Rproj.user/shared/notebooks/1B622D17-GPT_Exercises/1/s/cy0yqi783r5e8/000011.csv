@@ -1,0 +1,8 @@
+"0","t = 3"
+"0","defects = 5"
+"0","new_lambda = lambda * t"
+"0","ppois(defects, new_lambda)"
+"1","[1]"
+"1"," 0.4456796"
+"1","
+"

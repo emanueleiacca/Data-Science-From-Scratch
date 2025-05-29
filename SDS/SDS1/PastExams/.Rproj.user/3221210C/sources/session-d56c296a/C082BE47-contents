@@ -1,0 +1,652 @@
+---
+title: "Past Exams"
+author: "Emanuele Iaccarino"
+date: "2025-03-16"
+output: html_document
+---
+# December 2016 v1
+Evaluate the ci you’ve just build on the following dataset and briefly comment on its reliability
+```{r}
+xx <- c(2.2, 2.7, 1.0, 1.4, 1.1)
+a_hat = function(x) {length(x)/sum(log(x))}
+se_hat = function(x) {(length(x)/sum(log(x))) / sqrt(length(x))}
+
+a_hat(xx)
+se_hat(xx)
+# lower
+alpha = 0.1
+z = qnorm(1 - alpha/2)
+a_hat(xx) - z * se_hat(xx)
+# upper
+a_hat(xx) + z * se_hat(xx)
+```
+Since we have a small number of data points the reliability is low
+
+Plot the likelihood function L(α | x5) highlithing the mle.
+```{r}
+L <- function(alpha, x){
+n <- length(x)
+jnk <- prod(1/x) # productoria
+out <- (alpha^n)*(jnk)^(alpha+1)
+return(out)
+}
+```
+
+```{r}
+alpha_vals <- seq(0.1, 8, length.out = 100)
+
+# Compute likelihood values
+L_vals <- sapply(alpha_vals, function(a) L(a, xx))
+
+# Plot
+plot(alpha_vals, L_vals)
+
+# Add MLE estimate as a vertical line
+abline(v = a_hat(xx), col = "red")
+```
+```{r}
+f = function(x) {1 / (2*(1 - x)^(1/2))}
+res = integrate(f, lower = 0, upper = 1/2)
+res
+```
+# Jan 26 2017 Stats
+
+```{r}
+# The data
+dat <- c(10.2, 10.0, 8.0, 1.8, 6.5, 4.4, 9.3, 7.6, 10.1, 7.8)
+# The parameter <tau> as a function of <psi>
+tau <- function(psi) (2 - pi/2)*(psi)
+# The MLE for <psi>
+mle <- function(x) (sum(x^2)/(2*length(x)))
+# Evaluate the MLE's & take a look
+psi_squared.ML <- mle(dat)
+tau.ML <- tau(psi_squared.ML)
+c(psi_squared.ML = psi_squared.ML, tau.ML = tau.ML)
+```
+```{r}
+# Density function
+dmy <- function(x, psi) (x/psi^2)*exp(-x^2/(2*psi^2))*(x >= 0)
+# Plot
+psi.seq = c(1, 5, 10)
+curve(dmy(x,psi.seq[1]), from = 0, to = 30, n = 300, col="red")
+curve(dmy(x,psi.seq[2]),add = TRUE, col = "purple")
+curve(dmy(x,psi.seq[3]), add = TRUE, col = "blue")
+# The curves reach the peak at its psi value, anyway the greater, more flat is the curvature
+```
+
+```{r}
+rmy = function(n, psi) { psi * sqrt(- 2*log(1- runif(n)))}
+M = 10000
+hist(rmy(M,psi.seq[1]), col="pink", prob = T)
+curve(dmy(x,psi.seq[1]),add = TRUE, col="red")
+hist(rmy(M,psi.seq[2]), col="pink", prob = T)
+curve(dmy(x,psi.seq[2]),add = TRUE, col = "purple")
+hist(rmy(M,psi.seq[3]), col="pink", prob = T)
+curve(dmy(x,psi.seq[3]), add = TRUE, col = "blue")
+
+```
+```{r}
+psi0 = 5.911721
+tau0 <- 15
+n <- 100
+a <- 0.05
+z = qnorm(1 -a/2)
+M = 1000
+
+# Define functions
+tau <- function(psi) (2 - pi/2) * (psi^2) # defined as population variance
+mle <- function(x) sqrt(sum(x^2) / (2 * length(x)))
+se.tau <- function(x) (abs(2 * (2 - pi/2) * mle(x))) * (abs(mle(x))) / (2 * sqrt(length(x))) # it uses delta method
+
+# Generate M samples and compute statistics iteratively
+psi.mle.vec <- numeric(M)  # Store MLEs
+tau.mle.vec <- numeric(M)  # Store tau estimates
+tau.se.vec <- numeric(M)   # Store SEs
+
+for (i in 1:M) {
+  X <- rmy(n, psi = psi0)  # Generate a single sample
+  psi.mle.vec[i] <- mle(X)  # Compute MLE
+  tau.mle.vec[i] <- tau(psi.mle.vec[i])  # Compute tau
+  tau.se.vec[i] <- se.tau(X)  # Compute standard error
+}
+
+# Compute test statistics
+W <- abs((tau.mle.vec - tau0) / tau.se.vec)
+mean(abs(W) > z)
+```
+# Feb 2017 Stats
+
+```{r}
+xx = c(0.65, 0.48, 0.08, 0.11, 0.80, 0.67, 0.38, 0.63, 0.10, 0.03)
+psi = function(x) {- length(x)/sum(log(1-x))}
+tau = function(x) {1 / (1+psi(x))}
+psi(xx)
+tau(xx)
+```
+
+```{r}
+tau0 = 1
+z = qnorm(1-0.05/2)
+se.tau = function(x) ( 1/((1 + psi(x))^2) )*(abs(psi(x)))/(sqrt(length(x)))
+W = abs((tau(xx) - tau0)/se.tau(xx))
+W > z
+# We reject the null at \alpha = 0.05
+```
+Plot the likelihood function L(ψ | x10) highlithing the mle
+```{r}
+L = function(psi, x){
+  n = length(x)
+  s = prod(1-x)
+  out = psi^n * s^(psi-1)
+}
+curve(L(x,xx), from=0, to= 4)
+segments(psi(xx),0,psi(xx),L(psi(xx),xx)) # MLE
+# we start do draw at x = MLE and y = 0 and we draw a straight line since x1 remains the same(MLE) while we extend y until the end of the Likehood function (until it touches)
+```
+
+```{r}
+# Parametric Bootstrap
+# we assumed that data follows a distribution Beta(1, mle)
+n = length(xx)
+B = 1000
+tau.boot <- rep(NA, B) # Init
+for(b in 1:B){
+x.boot <- rbeta(n, 1, psi(xx)) # bootstrap samples
+tau.boot[b] <- 1/(1 + psi(x.boot))
+}
+bias = mean(tau.boot) - tau(xx)
+bias
+se = sd(tau.boot)
+se
+lower = tau(xx) - z *se
+lower
+upper = tau(xx) + z *se
+upper
+```
+```{r}
+# Non parametric Bootstrap
+# we do not assume any probabilistic distribution, we rely on empirical resampling from the observed dataset
+for (b in 1:B){
+  idx <- sample(1:n, replace = T) # resample data with replacement
+  x.boot <- xx[idx]
+  tau.boot[b] <- 1/(1 + psi(x.boot))
+}
+bias = mean(tau.boot) - tau(xx)
+bias
+se = sd(tau.boot)
+se
+lower = tau(xx) - z *se
+lower
+upper = tau(xx) + z *se
+upper
+```
+
+Since both methods produce similar results, we can claim that assuming a beta distribution do not introduce significant bias into our estimates. Since non parametric provided a lower Standard error, the estimates might be slightly more precise.
+
+# Nov 2017 Prob 
+
+```{r}
+exact_cov = function(n,k) {- (n/k^2) }
+game = function(n,k) {sample(x = 1:k, size = n, replace = T)}
+n = 100
+print("K=6")
+k = 6
+M = 10000
+games_1 = replicate(M,sum(game(n = 100, k = 6)==1))
+games_2 = replicate(M,sum(game(n = 100, k = 6)==2))
+s1 = sum(games_1)/M
+s2 = sum(games_2)/M
+cov(s1,s1)  #aprox
+exact_cov(n = 100, k = 6) #est
+print("K=12")
+k = 12
+games = replicate(M,game(n = 100, k = 12))
+games_1 = replicate(M,sum(game(n = 100, k = 12)==1))
+games_2 = replicate(M,sum(game(n = 100, k = 12)==2))
+s1 = sum(games_1)/M
+s2 = sum(games_2)/M
+cov(s1,s1) #aprox
+exact_cov(n = 100, k = 12) #est
+
+```
+I surrender
+
+# 20 Dec 2017 Prob
+
+```{r}
+# Tried diff value of s, n1, n2
+s = 5
+n1 =10
+n2 = 20
+s^2/4 * (1/n1 + 1/n2)
+s^2 / (n1+n2)
+```
+
+```{r}
+x1 = c(0.65, 0.48, 0.08, 0.11, 0.80, 0.67, 0.38, 0.63, 0.10, 0.03)
+x2 = c(0.10, 0.86, 0.64, 0.38, 0.57, 0.60, 0.50, 0.08, 0.10, 0.07)
+
+psi = function(x) {-length(x)/sum(log(1-x))}
+tau = function(x) {1/(1+(-length(x)/sum(log(1-x))))}
+print("x'")
+psi(x1)
+tau(x1)
+print("x''")
+psi(x2)
+tau(x2)
+```
+```{r}
+se_tau = function(x) {
+  psi_ml = -length(x) / sum(log(1 - x))  # MLE for psi
+  se_psi_ml = psi_ml / sqrt(length(x))  # Standard error of psi
+  se_tau_ml = abs(-1 / (1 + psi_ml)^2) * se_psi_ml  # Delta method
+  return(se_tau_ml)
+}
+alpha1 = 0.1
+alpha2 = 0.01
+z1 <- qnorm(1 - alpha1/2)
+z2 <- qnorm(1 - alpha2/2)
+print("x1, z1")
+tau(x1) - z1 * se_tau(x1)
+tau(x1) + z1 * se_tau(x1)
+print("x2, z1")
+tau(x2) - z1 * se_tau(x2)
+tau(x2) + z1 * se_tau(x2)
+print("x1, z2")
+tau(x1) - z2 * se_tau(x1)
+tau(x1) + z2 * se_tau(x1)
+print("x2, z2")
+tau(x2) - z2 * se_tau(x2)
+tau(x2) + z2 * se_tau(x2)
+```
+Parametric bootstrap
+```{r}
+n = length(x1)
+B = 1000
+tau.boot <- rep(NA, B) # Init
+for(b in 1:B){
+x.boot <- rbeta(n, 1, psi(x1)) # bootstrap samples
+tau.boot[b] <- 1/(1 + psi(x.boot))
+}
+bias = mean(tau.boot - tau(x1))
+print("Boot bias")
+bias
+se = sd(tau.boot)
+print("Boot se")
+se
+print("Asymptotical se")
+se_tau(x1)
+print("lower Ci")
+lower = tau(x1) - qnorm(1 - alpha2/2)*se
+lower
+print("upper Ci")
+upper = tau(x1) + qnorm(1 - alpha2/2)*se
+upper
+```
+```{r}
+n = length(x2)
+B = 1000
+tau.boot <- rep(NA, B) # Init
+for(b in 1:B){
+x.boot <- rbeta(n, 1, psi(x2)) # bootstrap samples
+tau.boot[b] <- 1/(1 + psi(x.boot))
+}
+bias = mean(tau.boot - tau(x2))
+print("Boot bias")
+bias
+se = sd(tau.boot)
+print("Boot se")
+se
+print("Asymptotical se")
+se_tau(x2)
+print("lower Ci")
+lower = tau(x2) - qnorm(1 - alpha2/2)*se
+lower
+print("upper Ci")
+upper = tau(x2) + qnorm(1 - alpha2/2)*se
+upper
+```
+Non parametric Bootstrap
+```{r}
+tau.nboot <- rep(NA, B) # Init
+for (b in 1:B){
+idx <- sample(x = 1:n, replace = T)
+x.boot <- x1[idx]
+tau.nboot[b] <- 1/(1 + psi(x.boot))
+}
+bias = mean(tau.nboot - tau(x1))
+bias
+se = sd(tau.nboot)
+se
+lower = tau(x1) - qnorm(1 - alpha2/2)*se
+lower
+upper = tau(x1) + qnorm(1 - alpha2/2)*se
+upper
+```
+# January 2018 Prob
+```{r}
+# Probs of selecting each district
+di = c(1/3,1/3,1/3) # prob inside sample must be vector, not scalar
+L = c(0.21,0.45,0.75) # same here
+
+M <- 10000
+dis <- sample(1:3, M, replace = T, prob = di)
+# get the voters
+lib_vec <- rbinom(M, 1, L[dis]) # 1 = Liberals, 0 = Others
+mean(lib_vec)
+# True is 0.47
+```
+```{r}
+s =sqrt(20 - (16*0.68))
+m = -8
+1 - pnorm(0,m,s)
+```
+```{r}
+p = 0.52
+n = 990
+z= qnorm(1 - 0.05/2)
+se = sqrt(p * (1 - p) / n)
+lower = p - z * se
+lower
+upper = p + z * se
+upper
+```
+
+```{r}
+x = c(-1, -1, 0)
+teta_ml = sum(abs(x))/length(x)
+teta_ml
+tau_ml = sqrt(teta_ml)/2
+tau_ml
+# CI
+se = sqrt(teta_ml * (1 - teta_ml)/length(x))
+se
+alpha = 0.1
+z = qnorm(1-alpha/2)
+lower = teta_ml - z*se
+lower 
+upper = teta_ml + z*se 
+upper
+```
+
+```{r}
+# Likehood func
+x <- c(-1, -1, 0)
+xx = c(-1, -1, 0)
+L = function(theta, x){
+  p1 <- (theta / 2)^sum(abs(x))  
+  p2 <- (1 - theta)^(length(x) - sum( abs(x))) 
+  return(p1 * p2)  
+}
+
+curve(L(x, xx), from = 0, to = 1)
+segments(teta_ml, 0, teta_ml, L(x,xx))
+```
+
+```{r}
+my.pmf= function(x, theta){
+  if (theta <= 0 || theta >= 1) stop("theta must be between 0 and 1")  # Check theta
+  if (x == -1) return((theta / 2))  # Case for x = -1
+  if (x == 0) return(1 - theta)      # Case for x = 0
+  if (x == 1) return((theta / 2))   # Case for x = 1
+  return(0)  # If x is not -1, 0, or 1, return 0 since it's discrete
+}
+
+# Parametrio Bootstrap
+n = length(x)
+B = 1000
+t.boot = rep(NA, B)
+for (b in 1:B){
+  x.boot = sample(c(-1,-1,0), n, replace = TRUE, prob = c(my.pmf(-1, teta_ml),my.pmf(0, teta_ml), my.pmf(1, teta_ml) ))
+  t.boot[b] = sum(abs(x.boot))/length(x.boot)
+}
+bias = mean(t.boot) - teta_ml 
+bias
+se = sd(t.boot) # se
+se
+a = 0.1
+z = qnorm(1-a/2)
+lower = teta_ml - z*se
+lower
+upper = teta_ml + z*se
+upper # the upper bound is larger that 1! we don't have enought data
+
+
+```
+
+```{r}
+(1.9 - (0.64 + 0.72)) * 1/1.9
+```
+# Jan 2018 Stats
+```{r}
+data = c(10.2, 10.0, 8.0, 1.8, 6.5, 4.4, 9.3, 7.6, 10.1, 7.8)
+psi = function(x){sqrt(sum(x^2)/(2*length(x)))}
+psi_ml = psi(data)
+psi_ml
+tau = function(x) {(2 - pi/2)*psi_ml^2}
+tau(data)
+```
+```{r}
+to = 15
+a = 0.05
+z = qnorm(1 -a/2)
+se_tau = function(tpsi_ml, x){
+  abs(psi_ml) / (2 * sqrt(length(x)))
+  
+}
+se_t = se_tau(psi_ml,data)
+se_t
+W = abs((tau(data) - to)/se_t)
+W
+W > z # we cannot reject null
+```
+```{r}
+func = function(x, psi) { (x/psi^2)*exp(-x^2/(2*psi^2))}
+
+rmy = function(n,psi) {psi * sqrt(-2*log(1-runif(n)))}
+M = 10000 # n
+# PSI = 1
+hist(rmy(M, 1), prob = TRUE)
+curve(func(x, 1), add = TRUE)
+
+# PSI = 10
+hist(rmy(M, 10), prob = TRUE)
+curve(func(x, 10), add = TRUE)
+```
+
+```{r}
+psi0 = sqrt(15 / (2 - pi/2)) #psi0
+# Wald test
+to = 15
+n = 100
+a = 0.05
+M = 1000
+matr = matrix(rmy(n*M, psi =psi0), nrow= M, ncol = n)
+#matr
+tau = function(psi){(2 - (pi/2))*psi^2}
+psi = function(x){sqrt(sum(x^2)/(2*length(x)))}
+se_tau = function(x){
+  ( abs(2*(2 - pi/2)*mle(x)) )*(abs(mle(x)))/(2*sqrt(length(x)))
+}
+psi_m = apply(matr,1,psi)
+se_t = apply(matr, 1, se_tau)
+tau_m = tau(psi_m)
+W = abs((tau_m - to)/se_t)
+mean(abs(W) > z) # we cannot reject null
+```
+# Prob 2018 Exam 3 Feb 14
+```{r}
+marginals = c(A=2/9, B = 4/9, C = 2/9, D=1/9)
+conditionals = c(A = 0.3, B = 0, C = 0.3, D = 0.6)
+part = names(marginals)
+approv = c("ok", "no ok")
+M = 1000
+sim_partner= character(M)
+sim_approval= character(M)
+
+sim = rep(NA, M)
+for (i in 1:M){
+  partner = sample(part, size = 1, prob = marginals)
+  tullia = sample(approv, size = 1, prob = c(conditionals[partner], 1-conditionals[partner]))
+  sim_partner[i] <- partner
+  sim_approval[i] <- tullia
+}
+sim <- data.frame(partner = sim_partner, approval = sim_approval)
+sum(sim$approval=="ok" & sim_partner=="A")/sum(sim$approval=="ok")
+```
+# Stats Feb 2018 
+
+```{r}
+mse_mm = function(n, theta){
+  theta^2/(3*n)
+}
+mse_mle = function(n, theta) {
+  2 * theta^2 / ((n+1)*(n+2))
+}
+# theta 0.1
+curve(mse_mm(x, 0.1), col = "red", from = 1, to = 15)
+curve(mse_mle(x, 0.1), col = "blue", add = TRUE)
+# theta 1
+curve(mse_mm(x, 1), col = "red", from = 1, to = 15)
+curve(mse_mle(x, 1), col = "blue", add = TRUE)
+# theta 10
+curve(mse_mm(x, 10), col = "red", from = 1, to = 15)
+curve(mse_mle(x, 10), col = "blue", add = TRUE)
+# MLE always better
+```
+
+```{r}
+se = sqrt((0.9*0.1/1000)+(0.85*0.15/1000)) 
+se
+print("Ci at 80%")
+# Ci at 80%
+a = 0.2
+z = qnorm(1-a/2)
+d = 0.9 - 0.85
+lower = d - z*se
+lower
+upper = d + z*se
+upper
+
+print("Ci at 95%")
+# Ci at 95%
+a = 0.05
+z = qnorm(1-a/2)
+d = 0.9 - 0.85
+lower = d - z*se
+lower
+upper = d + z*se
+upper
+```
+
+```{r}
+teta = 5
+n = 10
+r_tau = teta/2
+tau = function(x) {max(x)/2}
+M = 10000
+sim = matrix(runif(n*M, 0, teta), nrow = M, ncol = n)
+tau_ml = apply(sim,1,tau)
+mse = mean((tau_ml - r_tau )^2)
+mse
+```
+
+```{r}
+
+sqrt(0.54/1.04)
+```
+# Stats 2 2019
+```{r}
+x <- c(102, 97, 142, 117, 122, 128, 101, 133, 120, 117)
+mle = function(x) {sum(x)/length(x)}
+mle(x)
+```
+# Prob 3 2019
+```{r}
+n = 10
+m = 1/2
+sigma = 1/12
+var_th = n*(m - m^2) + n * (n-1)*sigma
+M = 1000
+Q = runif(M)
+Sn = rbinom(M, n, Q)
+var_th
+var(Sn)
+```
+# Stats 3 2019
+
+```{r}
+x <- c(102, 97, 142, 117, 122, 128, 101, 133, 120, 117)
+a = 0.1 # CI at 90%
+z = qnorm( 1- a/2)
+m = mean(x)
+se = sqrt(var(x)/length(x))
+l = m - z*se
+l
+u = m + z*se
+u
+```
+
+```{r}
+xx <- c(0.55, 0.45, 0.10, 0.15, 0.80, 0.65, 0.38, 0.63, 0.10, 0.03)
+psi = function(x){
+  -length(x)/(sum(log(1-x)))
+}
+psi_ml = psi(xx)
+
+L = function(psi,x){
+  p = prod(1-x)
+  psi^(length(x)) * p^(psi-1)
+}
+curve(L(x,xx), from = 0, to = 5)
+abline(v = psi_ml)
+```
+
+```{r}
+tau = function(x){
+  1/(1+psi(x))
+}
+tau_ml = tau(xx)
+# par bootstrap
+n = length(xx)
+B = 1000
+tau.boot = rep(NA, B)
+for (i in 1:B){
+  x_boot = rbeta(n, 1, psi_ml)
+  tau.boot[i] = tau(x_boot)
+}
+mean(tau.boot) -  tau_ml
+se = sd(tau.boot)
+se
+a = 0.1
+z = qnorm( 1 - a/2)
+
+l = tau(xx) - z*se
+l
+u = tau(xx) + z*se
+u
+```
+```{r}
+# non param bootstrap
+tau.nboot = rep(NA, B)
+for (i in 1:B){
+  idx = sample(1:n, replace = TRUE)
+  x_boot = xx[idx]
+  tau.nboot[i] = tau(x_boot)
+}
+
+mean(tau.nboot) -  tau_ml
+se = sd(tau.nboot)
+se
+a = 0.1
+z = qnorm( 1 - a/2)
+
+l = tau(xx) - z*se
+l
+u = tau(xx) + z*se
+u
+```
+```{r}
+(60 - 56.3)/20
+```
+

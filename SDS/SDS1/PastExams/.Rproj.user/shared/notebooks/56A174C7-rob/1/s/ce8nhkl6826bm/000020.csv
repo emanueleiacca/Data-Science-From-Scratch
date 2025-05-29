@@ -1,0 +1,4 @@
+"0","# Shuffle data to prevent order bias"
+"0","set.seed(2) # my second lucky number"
+"0","df = df[sample(nrow(df)), ]"
+"0","head(df)"

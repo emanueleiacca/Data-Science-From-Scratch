@@ -1,0 +1,6 @@
+"0","library(ggplot2)"
+"0","ggplot(df, aes(x = Feature1, y = Feature2, color = Group)) +"
+"0","  geom_point(alpha = 0.6, size = 2) +"
+"0","  labs(title = ""Scatter Plot of X and Y"", x = ""Feature 1"", y = ""Feature 2"") +"
+"0","  theme_minimal()"
+"0",""

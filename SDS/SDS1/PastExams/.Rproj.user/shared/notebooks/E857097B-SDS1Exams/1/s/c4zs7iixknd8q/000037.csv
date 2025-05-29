@@ -1,0 +1,6 @@
+"0","func = function(x, psi) { (x/psi^2)*exp(-x^2/(2*psi^2))}"
+"0",""
+"0","rmy = function(n,psi) {psi * sqrt(-2*log(1-runif(n)))}"
+"0","M = 10000 # n"
+"0","# PSI = 1"
+"0","hist(rmy(M, 1), prob = TRUE)"

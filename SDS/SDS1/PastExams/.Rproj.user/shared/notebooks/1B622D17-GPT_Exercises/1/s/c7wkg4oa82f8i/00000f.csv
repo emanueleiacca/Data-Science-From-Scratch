@@ -1,0 +1,7 @@
+"0","x = 4"
+"0","PX_greater_4 = 1 - pgamma(x, k, rate = lambda)"
+"0","PX_greater_4"
+"1","[1]"
+"1"," 0.01375397"
+"1","
+"

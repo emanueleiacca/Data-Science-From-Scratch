@@ -1,0 +1,8 @@
+"0","h = 24"
+"0","x = 0 # I calculate the prob to have exactly(dpois) 0 visitor, so 1 - ... is the prob of having at least one"
+"0","# This consider only one hour so we ^ by h"
+"0","(1 - dpois(x, lambda)) ^ h"
+"1","[1]"
+"1"," 0.998911"
+"1","
+"
