@@ -1,0 +1,5 @@
+"0","all(J >= 0) && abs(sum(J) - 1) < 1e-8 # Putting all together, this check if the final distribution is either valid (TRUE) or not (FALSE)"
+"1","[1]"
+"1"," TRUE"
+"1","
+"

@@ -1,0 +1,5 @@
+"0",""
+"0","# Legend"
+"0","legend(""topright"", legend = c(""Posterior"", ""Prior"", ""Posterior Mean""),"
+"0","       col = c(""blue"", ""darkgreen"", ""red""), lty = c(1, 1, 2), bty = ""n"")"
+"0",""

@@ -1,0 +1,3 @@
+"0",""
+"0","# Add posterior mean line"
+"0","abline(v = post_mean_theta, col = ""red"", lty = 2)"

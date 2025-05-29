@@ -1,0 +1,1969 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{transparent}
+\usepackage[utf8]{inputenx}
+\usepackage{iwona}
+\usepackage{tikz}
+\usepackage{dcolumn}
+\usepackage{color}
+\usepackage[italian]{babel}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{tocloft}
+\usepackage{eso-pic}
+\geometry{verbose,tmargin=5cm,bmargin=3.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Homework \#01},
+  pdfauthor={SMDS-2024-2025},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Homework \#01}
+\author{SMDS-2024-2025}
+\date{\textsc{\textbf{\Large Statstical Methods in Data Science II a.y. 2024-2025}}\\
+\strut \\
+M.Sc. in Data Science\\
+\strut \\
+\underline{deadline: April 26th, 2025}}
+
+\begin{document}
+\maketitle
+
+\subsection{Fixing R Markdown Setup
+Errors}\label{fixing-r-markdown-setup-errors}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Error:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# is.null(n = options$out.lines)}
+\end{Highlighting}
+\end{Shaded}
+
+This happens because \texttt{is.null()} does not accept named arguments.
+
+Substitute this at line 42:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# if (!is.null(n = options$out.lines)) \{}
+\end{Highlighting}
+\end{Shaded}
+
+With
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# if (!is.null(options$out.lines)) \{}
+\CommentTok{\#   n = options$out.lines}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Error:
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# tidy = TRUE requires \textasciigrave{}formatR\textasciigrave{}}
+\end{Highlighting}
+\end{Shaded}
+
+There is some kind of issue just installing the library, so to fix this
+error the best solution is to:
+
+disable auto-tidying:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# knitr::opts\_chunk$set(tidy = FALSE)}
+\end{Highlighting}
+\end{Shaded}
+
+Source that solved the error:
+
+\url{https://forum.posit.co/t/error-when-knitting-to-a-pdf/88372/3}
+
+\url{https://yihui.org/knitr/options/\#code-decoration}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{22}\NormalTok{) }\CommentTok{\# lucky number}
+\FunctionTok{load}\NormalTok{(}\StringTok{"Hmwk.RData"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{A. Simulation}\label{a.-simulation}
+
+\subsubsection{\texorpdfstring{1. Consider the following joint discrete
+distribution of a random vector \((Y,Z)\) taking values over the
+bi-variate
+space:}{1. Consider the following joint discrete distribution of a random vector (Y,Z) taking values over the bi-variate space:}}\label{consider-the-following-joint-discrete-distribution-of-a-random-vector-yz-taking-values-over-the-bi-variate-space}
+
+\begin{eqnarray*}
+{\cal S} = {\cal Y} \times {\cal Z} &=& \{(1,1);(1,2);(1,3);\\
+&& (2,1);(2,2);(2,3);\\
+&& (3,1);(3,2);(3,3)\}
+\end{eqnarray*} The joint probability distribution is provided as a
+matrix \(\texttt{J}\) whose generic entry
+\(\texttt{J[y,z]}=Pr \{Y=y,Z=z\}\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{J}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     1    2    3
+1 0.06 0.17 0.10
+2 0.10 0.12 0.11
+3 0.14 0.02 0.18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{S}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+      row col
+(1,1)   1   1
+(1,2)   1   2
+(1,3)   1   3
+(2,1)   2   1
+(2,2)   2   2
+(2,3)   2   3
+(3,1)   3   1
+(3,2)   3   2
+(3,3)   3   3
+\end{verbatim}
+
+You can load the matrix \texttt{S} of all the couples of the states in
+\({\cal S}\) and the matrix \texttt{J} containing the corresponding
+bivariate probability masses from the file ``Hmwk.RData''. How can you
+check that \(J\) is a probability distribution?
+
+\subsubsection{\texorpdfstring{A.1 --- How can you check that \(J\) is a
+probability
+distribution?}{A.1 --- How can you check that J is a probability distribution?}}\label{a.1-how-can-you-check-that-j-is-a-probability-distribution}
+
+To verify that the matrix \(J\) defines a valid \textbf{joint
+probability distribution}, two conditions must be met:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{All entries must be non-negative}: \[
+  J[y, z] \geq 0 \quad \text{for all } y, z
+  \]
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{all}\NormalTok{(J }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{) }\CommentTok{\# Checking they are all non{-}negative}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] TRUE
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{The total sum must be equal to 1}: \[
+  \sum_{y=1}^{3} \sum_{z=1}^{3} J[y, z] = 1
+  \]
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sum}\NormalTok{(J) }\CommentTok{\# Check that the sum is equal to 1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{all}\NormalTok{(J }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\&\&} \FunctionTok{abs}\NormalTok{(}\FunctionTok{sum}\NormalTok{(J) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\textless{}} \FloatTok{1e{-}8} \CommentTok{\# Putting all together, this check if the final distribution is either valid (TRUE) or not (FALSE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] TRUE
+\end{verbatim}
+
+If \texttt{is\_valid} returns \texttt{TRUE}, then \(J\) satisfies the
+definition of a joint probability distribution over the space
+\(\mathcal{S} = \mathcal{Y} \times \mathcal{Z}\).
+
+This follows directly from the axioms of probability in any standard
+probability theory
+
+\bigskip
+
+\subsubsection{\texorpdfstring{A.2 How many \emph{conditional
+distributions} can be derived from the joint distribution J? Please list
+and derive
+them.}{A.2 How many conditional distributions can be derived from the joint distribution J? Please list and derive them.}}\label{a.2-how-many-conditional-distributions-can-be-derived-from-the-joint-distribution-j-please-list-and-derive-them.}
+
+From the joint distribution \(J[y, z] = \Pr(Y = y, Z = z)\), we can
+derive two families of conditional distributions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Conditioning on \(Z = z\)} (for \(z = 1, 2, 3\)): \[
+  \Pr(Y = y \mid Z = z) = \frac{J[y, z]}{\sum_{y=1}^{3} J[y', z]}
+  \]
+\item
+  \textbf{Conditioning on \(Y = y\)} (for \(y = 1, 2, 3\)): \[
+  \Pr(Z = z \mid Y = y) = \frac{J[y, z]}{\sum_{z=1}^{3} J[y, z']}
+  \]
+\end{enumerate}
+
+Since \(Y\) and \(Z\) can each take 3 values, there are 3 + 3 = 6
+conditional distributions in total.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Conditionals Pr(Y | Z = z)}
+\NormalTok{cond\_y\_given\_z }\OtherTok{=} \FunctionTok{list}\NormalTok{() }\CommentTok{\# empty list to store the conditionals for each z = \{1,2,3\}}
+\ControlFlowTok{for}\NormalTok{ (z }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{) \{ }\CommentTok{\# Loop over each value of Z}
+\NormalTok{  denom }\OtherTok{=} \FunctionTok{sum}\NormalTok{(J[, z]) }\CommentTok{\# \# Compute marginal P(Z = z) by summing the z{-}th column}
+\NormalTok{  cond\_y\_given\_z[[z]] }\OtherTok{=}\NormalTok{ J[, z] }\SpecialCharTok{/}\NormalTok{ denom }\CommentTok{\# \# Divide each J[y, z] by P(Z = z) to get Pr(Y=y | Z=z)}
+\NormalTok{\}}
+\FunctionTok{names}\NormalTok{(cond\_y\_given\_z) }\OtherTok{=} \FunctionTok{paste0}\NormalTok{(}\StringTok{"Pr(Y | Z="}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\StringTok{")"}\NormalTok{) }\CommentTok{\# \# Name each element of the list to indicate which Z it corresponds to}
+\NormalTok{cond\_y\_given\_z}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+$`Pr(Y | Z=1)`
+        1         2         3 
+0.2000000 0.3333333 0.4666667 
+
+$`Pr(Y | Z=2)`
+         1          2          3 
+0.54838710 0.38709677 0.06451613 
+
+$`Pr(Y | Z=3)`
+        1         2         3 
+0.2564103 0.2820513 0.4615385 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Conditionals Pr(Z | Y = y)}
+\NormalTok{cond\_z\_given\_y }\OtherTok{=} \FunctionTok{list}\NormalTok{() }
+\ControlFlowTok{for}\NormalTok{ (y }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{) \{ }\CommentTok{\# \# Loop over each value of Y (rows of J)}
+\NormalTok{  denom }\OtherTok{=} \FunctionTok{sum}\NormalTok{(J[y, ]) }\CommentTok{\# \# Compute marginal P(Y = y) by summing the y{-}th row}
+\NormalTok{  cond\_z\_given\_y[[y]] }\OtherTok{=}\NormalTok{ J[y, ] }\SpecialCharTok{/}\NormalTok{ denom }\CommentTok{\# \# Divide each J[y, z] by P(Y = y) to get Pr(Z=z | Y=y)}
+\NormalTok{\}}
+\FunctionTok{names}\NormalTok{(cond\_z\_given\_y) }\OtherTok{=} \FunctionTok{paste0}\NormalTok{(}\StringTok{"Pr(Z | Y="}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\StringTok{")"}\NormalTok{)}
+\NormalTok{cond\_z\_given\_y}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+$`Pr(Z | Y=1)`
+        1         2         3 
+0.1818182 0.5151515 0.3030303 
+
+$`Pr(Z | Y=2)`
+        1         2         3 
+0.3030303 0.3636364 0.3333333 
+
+$`Pr(Z | Y=3)`
+         1          2          3 
+0.41176471 0.05882353 0.52941176 
+\end{verbatim}
+
+These formulas come directly from the definition of conditional
+probability:
+
+\[
+\Pr(A \mid B) = \dfrac{\Pr(A \cap B)}{\Pr(B)} \quad \text{provided } \Pr(B) > 0 
+\]
+
+\bigskip
+
+\subsubsection{A.3 --- Make sure they are probability
+distributions}\label{a.3-make-sure-they-are-probability-distributions}
+
+Each of the six conditional distributions derived in the previous
+question must satisfy the basic properties of a probability
+distribution:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{All values must be non-negative}: \[
+  \Pr(X = x \mid \cdot) \geq 0
+  \]
+\item
+  \textbf{They must sum to 1}: \[
+  \sum_x \Pr(X = x \mid \cdot) = 1
+  \]
+\end{enumerate}
+
+We check these two conditions for each conditional distribution we
+computed in A.2.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Check for Pr(Y | Z=z)}
+\NormalTok{valid\_cond\_y\_given\_z }\OtherTok{=} \FunctionTok{sapply}\NormalTok{(cond\_y\_given\_z, }\ControlFlowTok{function}\NormalTok{(p) \{}
+  \FunctionTok{all}\NormalTok{(p }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\&\&} \FunctionTok{abs}\NormalTok{(}\FunctionTok{sum}\NormalTok{(p) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\textless{}} \FloatTok{1e{-}8}
+\NormalTok{\})}
+\FunctionTok{print}\NormalTok{(}\StringTok{"Each Pr(Y | Z=z) is a valid probability distribution?"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "Each Pr(Y | Z=z) is a valid probability distribution?"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{valid\_cond\_y\_given\_z}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Pr(Y | Z=1) Pr(Y | Z=2) Pr(Y | Z=3) 
+       TRUE        TRUE        TRUE 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Check for Pr(Z | Y=y)}
+\NormalTok{valid\_cond\_z\_given\_y }\OtherTok{=} \FunctionTok{sapply}\NormalTok{(cond\_z\_given\_y, }\ControlFlowTok{function}\NormalTok{(p) \{}
+  \FunctionTok{all}\NormalTok{(p }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\&\&} \FunctionTok{abs}\NormalTok{(}\FunctionTok{sum}\NormalTok{(p) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\textless{}} \FloatTok{1e{-}8}
+\NormalTok{\})}
+\FunctionTok{print}\NormalTok{(}\StringTok{"Each Pr(Z | Y=y) is a valid probability distribution?"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "Each Pr(Z | Y=y) is a valid probability distribution?"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{valid\_cond\_z\_given\_y}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Pr(Z | Y=1) Pr(Z | Y=2) Pr(Z | Y=3) 
+       TRUE        TRUE        TRUE 
+\end{verbatim}
+
+Each output should return \texttt{TRUE}, indicating that all conditional
+distributions satisfy the axioms of probability: they are non-negative
+and sum to 1.
+
+This follows directly from the definition of a probability mass function
+(pmf). Once you condition on a known event (e.g.~\(Z = z\)), the
+resulting distribution over the other variable (e.g.~\(Y\)) must still
+be a proper probability distribution over its sample space.
+
+\bigskip
+
+\subsubsection{\texorpdfstring{A.4 Can you simulate from this \texttt{J}
+distribution? Please write down a working procedure with few lines of R
+code as an example. Can you conceive an alternative approach? In case
+write down an alternative working procedure with few lines of
+R}{A.4 Can you simulate from this J distribution? Please write down a working procedure with few lines of R code as an example. Can you conceive an alternative approach? In case write down an alternative working procedure with few lines of R}}\label{a.4-can-you-simulate-from-this-j-distribution-please-write-down-a-working-procedure-with-few-lines-of-r-code-as-an-example.-can-you-conceive-an-alternative-approach-in-case-write-down-an-alternative-working-procedure-with-few-lines-of-r}
+
+Since \(J\) is a joint discrete distribution over the space: \[
+{\cal S} = \{(1,1), (1,2), (1,3), (2,1), (2,2), (2,3), (3,1), (3,2), (3,3)\}
+\] we can simulate from it using two methods:
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{\texorpdfstring{\textbf{Method 1: direct sampling from a
+finite joint
+distribution}}{Method 1: direct sampling from a finite joint distribution}}\label{method-1-direct-sampling-from-a-finite-joint-distribution}
+
+We first flatten the matrix J into a probability vector and sample from
+the corresponding pairs in S.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Flatten J into a vector of probabilities in row{-}major order (matches how S is structured)}
+\NormalTok{joint\_probs }\OtherTok{=} \FunctionTok{as.vector}\NormalTok{(}\FunctionTok{t}\NormalTok{(J))  }\CommentTok{\# transpose ensures (1,1), (1,2), ..., (3,3) order}
+\NormalTok{joint\_probs}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.06 0.17 0.10 0.10 0.12 0.11 0.14 0.02 0.18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n\_samples }\OtherTok{=} \DecValTok{10}
+
+\NormalTok{sample\_indices }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{9}\NormalTok{, }\AttributeTok{size =}\NormalTok{ n\_samples, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ joint\_probs)}
+
+\CommentTok{\# Get the corresponding (Y,Z) pairs from S}
+\NormalTok{samples }\OtherTok{=}\NormalTok{ S[sample\_indices, ]}
+\NormalTok{samples}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+        row col
+(1,2)     1   2
+(3,1)     3   1
+(3,2)     3   2
+(2,2)     2   2
+(2,1)     2   1
+(1,3)     1   3
+(2,3)     2   3
+(1,3).1   1   3
+(3,1).1   3   1
+(3,1).2   3   1
+\end{verbatim}
+
+This is like drawing from a 9-outcome categorical distribution over
+\((Y,Z)\) pairs, with each outcome weighted by \(J[y,z]\).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{\texorpdfstring{\textbf{Method 2: sampling via conditional
+structure using the chain
+rule}}{Method 2: sampling via conditional structure using the chain rule}}\label{method-2-sampling-via-conditional-structure-using-the-chain-rule}
+
+Use the chain rule of probability
+
+\[
+\Pr(Y = y, Z = z) = \Pr(Z = z) \cdot \Pr(Y = y \mid Z = z)
+\] This approach samples in two steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sample \(Z\) from its marginal distribution:
+\end{enumerate}
+
+\[
+\Pr(Z = z) = \sum_y J[y, z]
+\]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Given each sampled \(Z = z\), sample \(Y\) from \(\Pr(Y \mid Z = z)\)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pz }\OtherTok{=} \FunctionTok{colSums}\NormalTok{(J) }\CommentTok{\# Compute marginal distribution of Z}
+\NormalTok{n\_samples }\OtherTok{=} \DecValTok{1000}
+
+\CommentTok{\# Step 1}
+\NormalTok{sample\_z }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{size =}\NormalTok{ n\_samples, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ pz) }\CommentTok{\# Sample Z values from the marginal}
+
+\CommentTok{\# Step 2}
+\NormalTok{sample\_y }\OtherTok{=} \FunctionTok{numeric}\NormalTok{(n\_samples)}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_samples) \{ }\CommentTok{\# For each sampled Z}
+\NormalTok{  z }\OtherTok{=}\NormalTok{ sample\_z[i]}
+\NormalTok{  cond\_y\_given\_z\_current }\OtherTok{=}\NormalTok{ J[, z] }\SpecialCharTok{/} \FunctionTok{sum}\NormalTok{(J[, z])  }\CommentTok{\# Pr(Y | Z=z)}
+\NormalTok{  sample\_y[i] }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ cond\_y\_given\_z\_current) }\CommentTok{\# sample Y using the conditional}
+\NormalTok{\}}
+
+\NormalTok{samples\_alt }\OtherTok{=} \FunctionTok{cbind}\NormalTok{(}\AttributeTok{Y =}\NormalTok{ sample\_y, }\AttributeTok{Z =}\NormalTok{ sample\_z) }\CommentTok{\# combine into a matrix}
+\FunctionTok{head}\NormalTok{(samples\_alt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     Y Z
+[1,] 3 1
+[2,] 2 2
+[3,] 2 2
+[4,] 2 1
+[5,] 1 2
+[6,] 1 3
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{A.4.extra1 --- Comparing simulated vs original
+distribution}\label{a.4.extra1-comparing-simulated-vs-original-distribution}
+
+After simulating from the joint distribution \(J\) using both methods,
+we can compare the \textbf{empirical frequencies} to the original matrix
+J.
+
+\subparagraph{Method 1}\label{method-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# \textasciigrave{}table()\textasciigrave{} to count occurrences}
+\NormalTok{empirical\_freq1 }\OtherTok{=} \FunctionTok{table}\NormalTok{(samples}\SpecialCharTok{$}\NormalTok{row, samples}\SpecialCharTok{$}\NormalTok{col)}
+
+\CommentTok{\# \textasciigrave{}prop.table()\textasciigrave{} to convert them into empirical probabilities.}
+\NormalTok{empirical\_probs1 }\OtherTok{=} \FunctionTok{prop.table}\NormalTok{(empirical\_freq1)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Original J:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Original J:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{round}\NormalTok{(J, }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     1    2    3
+1 0.06 0.17 0.10
+2 0.10 0.12 0.11
+3 0.14 0.02 0.18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Empirical probabilities from Method 1:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Empirical probabilities from Method 1:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{round}\NormalTok{(empirical\_probs1, }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+   
+      1   2   3
+  1 0.0 0.1 0.2
+  2 0.1 0.1 0.1
+  3 0.3 0.1 0.0
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subparagraph{Method 2}\label{method-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{empirical\_freq2 }\OtherTok{=} \FunctionTok{table}\NormalTok{(samples\_alt[, }\StringTok{"Y"}\NormalTok{], samples\_alt[, }\StringTok{"Z"}\NormalTok{])}
+\NormalTok{empirical\_probs2 }\OtherTok{=} \FunctionTok{prop.table}\NormalTok{(empirical\_freq2)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Original J:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Original J:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{round}\NormalTok{(J, }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     1    2    3
+1 0.06 0.17 0.10
+2 0.10 0.12 0.11
+3 0.14 0.02 0.18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Empirical probabilities from Method 2:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Empirical probabilities from Method 2:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{round}\NormalTok{(empirical\_probs2, }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+   
+        1     2     3
+  1 0.060 0.174 0.111
+  2 0.094 0.117 0.121
+  3 0.118 0.018 0.187
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+These tables allow to visually inspect how well the simulation
+reproduces the original distribution \(J\).
+
+\subparagraph{A.4.extra2 --- Quantifying accuracy using L1 and L2
+distances}\label{a.4.extra2-quantifying-accuracy-using-l1-and-l2-distances}
+
+To measure how close the simulated distributions are to the true joint
+distribution \(J\), we can compute:
+
+\begin{itemize}
+\item
+  \textbf{L1 distance} (Manhattan norm):\\
+  \[
+  \|P_{\text{emp}} - J\|_1 = \sum_{y,z} |P_{\text{emp}}(y,z) - J[y,z]|
+  \]
+\item
+  \textbf{L2 distance} (Euclidean norm):\\
+  \[
+  \|P_{\text{emp}} - J\|_2 = \left( \sum_{y,z} (P_{\text{emp}}(y,z) - J[y,z])^2 \right)^{1/2}
+  \]
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{J\_matrix }\OtherTok{=}\NormalTok{ J}
+
+\CommentTok{\# For Method 1}
+\NormalTok{l1\_dist1 }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{abs}\NormalTok{(empirical\_probs1 }\SpecialCharTok{{-}}\NormalTok{ J\_matrix))}
+\NormalTok{l2\_dist1 }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{((empirical\_probs1 }\SpecialCharTok{{-}}\NormalTok{ J\_matrix)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Method 1 — L1 distance:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(l1\_dist1, }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Method 1 — L1 distance: 0.68 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Method 1 — L2 distance:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(l2\_dist1, }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Method 1 — L2 distance: 0.28879 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# For Method 2}
+\NormalTok{l1\_dist2 }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{abs}\NormalTok{(empirical\_probs2 }\SpecialCharTok{{-}}\NormalTok{ J\_matrix))}
+\NormalTok{l2\_dist2 }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{((empirical\_probs2 }\SpecialCharTok{{-}}\NormalTok{ J\_matrix)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Method 2 — L1 distance:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(l1\_dist2, }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Method 2 — L1 distance: 0.066 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Method 2 — L2 distance:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(l2\_dist2, }\DecValTok{5}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Method 2 — L2 distance: 0.02898 
+\end{verbatim}
+
+Lower values of these distances indicate that the empirical frequencies
+from your simulation are \textbf{very close to the theoretical
+distribution} \(J\).
+
+In our case, both L1 and L2 distances are small, which means:
+
+\begin{itemize}
+\item
+  Simulated distributions are very close to the true distribution \(J\).
+\item
+  There is no systematic bias introduced by either simulation method.
+\end{itemize}
+
+Method 2 (marginal + conditional sampling) performs slightly better,
+with lower L1 and L2 distances: This is likely due to using structure in
+the distribution (conditioning) rather than direct sampling over a flat
+space.
+
+\bigskip
+
+\newpage
+
+\subsection{B. Bulb lifetime: a conjugate Bayesian analysis of
+exponential
+data}\label{b.-bulb-lifetime-a-conjugate-bayesian-analysis-of-exponential-data}
+
+You work for Light Bulbs International. You have developed an innovative
+bulb, and you are interested in characterizing it statistically. You
+test 20 innovative bulbs to determine their lifetimes, and you observe
+the following data (in hours), which have been sorted from smallest to
+largest.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{l}
+1, 13, 27, 43, 73, 75, 154, 196, 220, 297,\\
+344, 610, 734, 783, 796, 845, 859, 992, 1066, 1471
+\end{tabular}
+\end{table}
+
+Based on your experience with light bulbs, you believe that their
+lifetimes \(Y_i\) can be modeled using an exponential distribution
+conditionally on \(\theta\) where \(\psi = 1/\theta\) is the average
+bulb lifetime.
+
+\subsubsection{B.1 Main Ingredients of the Bayesian
+Model}\label{b.1-main-ingredients-of-the-bayesian-model}
+
+The Bayesian model consists of three key components:
+
+\begin{itemize}
+\item
+  \textbf{Likelihood} \(Y \mid \theta\)\\
+  This defines the statistical model, describing the conditional
+  distribution of the observed data \(Y = y\) given the unknown
+  parameter \(\theta\), i.e.:
+
+  \[
+  f(y \mid \theta)
+  \]
+\item
+  \textbf{Prior Distribution} \(\pi(\theta)\)\\
+  This encodes the prior belief about the parameter \(\theta\) before
+  observing any data.
+\item
+  \textbf{Posterior Distribution} \(\pi(\theta \mid y)\)\\
+  This is the updated belief about \(\theta\) after observing the data,
+  obtained using Bayes' theorem:
+
+  \[
+  \pi(\theta \mid y) = \frac{f(y \mid \theta)\pi(\theta)}{m(y)}
+  \]
+
+  where the \textbf{marginal likelihood} \(m(y)\) serves as the
+  normalizing constant:
+
+  \[
+  m(y) = \int f(y \mid \theta)\pi(\theta)\,d\theta
+  \]
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Example: Modeling Light Bulb
+Lifetimes}\label{example-modeling-light-bulb-lifetimes}
+
+Assume the lifetime of each bulb \(Y_i\) follows an exponential
+distribution, conditional on \(\theta\):
+
+\[
+Y_i \mid \theta \sim \text{Exp}(\theta), \quad i = 1, \dots, n
+\]
+
+The corresponding density is:
+
+\[
+f(y_i \mid \theta) = \theta e^{-\theta y_i}
+\]
+
+Given independent observations, the likelihood function becomes:
+
+\[
+L(\theta \mid \mathbf{y}) = \prod_{i=1}^{n} \theta e^{-\theta y_i} = \theta^n e^{-\theta \sum_{i=1}^n y_i}
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Prior: Gamma Distribution}\label{prior-gamma-distribution}
+
+To obtain a conjugate prior, choose a Gamma distribution for \(\theta\):
+
+\[
+\pi(\theta) = \frac{r^s}{\Gamma(s)} \theta^{s - 1} e^{-r \theta}, \quad \theta > 0,\ s, r > 0
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Posterior: Updated Gamma
+Distribution}\label{posterior-updated-gamma-distribution}
+
+Combining the likelihood with the prior yields a posterior distribution
+that is also Gamma, with updated parameters:
+
+\[
+s_{\text{post}} = s_{\text{prior}} + n
+\]
+
+\[
+r_{\text{post}} = r_{\text{prior}} + \sum_{i=1}^{n} y_i
+\]
+
+\subsubsection{\texorpdfstring{B.2 Choose a conjugate prior distribution
+\(\pi(\theta)\) with mean equal to 0.003 and standard deviation
+0.00173.}{B.2 Choose a conjugate prior distribution \textbackslash pi(\textbackslash theta) with mean equal to 0.003 and standard deviation 0.00173.}}\label{b.2-choose-a-conjugate-prior-distribution-pitheta-with-mean-equal-to-0.003-and-standard-deviation-0.00173.}
+
+We assume a \textbf{Gamma prior} for \(\theta\):
+
+\[
+\theta \sim \text{Gamma}(\alpha, \beta)
+\]
+
+The \textbf{mean} and \textbf{standard deviation} of a Gamma
+distribution are given by:
+
+\begin{itemize}
+\item
+  Mean:\\
+  \[
+  \mathbb{E}[\theta] = \frac{\alpha}{\beta}
+  \]
+\item
+  Variance:\\
+  \[
+  \text{Var}(\theta) = \frac{\alpha}{\beta^2}
+  \quad \Rightarrow \quad
+  \text{SD}(\theta) = \sqrt{\frac{\alpha}{\beta^2}}
+  \]
+\end{itemize}
+
+We are given:
+
+\begin{itemize}
+\item
+  \[\mathbb{E}[\theta] = 0.003\]
+\item
+  \[\text{SD}(\theta) = 0.00173\]
+\end{itemize}
+
+We solve the following system of equations:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \[\frac{\alpha}{\beta} = 0.003\]
+\item
+  \[\sqrt{\frac{\alpha}{\beta^2}} = 0.00173\]
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean\_theta }\OtherTok{=} \FloatTok{0.003}
+\NormalTok{sd\_theta }\OtherTok{=} \FloatTok{0.00173}
+
+\NormalTok{beta\_prior }\OtherTok{=}\NormalTok{ mean\_theta }\SpecialCharTok{/}\NormalTok{ (sd\_theta}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{alpha\_prior }\OtherTok{=}\NormalTok{ mean\_theta }\SpecialCharTok{*}\NormalTok{ beta\_prior}
+
+\NormalTok{alpha\_prior }\CommentTok{\# Shape}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 3.007117
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta\_prior }\CommentTok{\# Rate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1002.372
+\end{verbatim}
+
+The prior is: \[
+\theta \sim \text{Gamma}(3.007, 1002.372)
+\] where the rate parameter is \(\beta\), so the density is: \[
+\pi(\theta) = \frac{1002.372^{3.007}}{\Gamma(3.007)} \theta^{2.007} e^{-1002.327\theta}
+\]
+
+\subsubsection{B.3 Argue why with this choice you are providing only a
+vague prior opinion on the average lifetime of the
+bulb.}\label{b.3-argue-why-with-this-choice-you-are-providing-only-a-vague-prior-opinion-on-the-average-lifetime-of-the-bulb.}
+
+We assume the exponential lifetime model: \[
+Y_i \sim \text{Exp}(\theta), \quad \text{where } \psi = \frac{1}{\theta}
+\]
+
+Our prior for the rate parameter is: \[
+\theta \sim \text{Gamma}(\alpha = 3.007, \beta = 1002.372)
+\]
+
+\subparagraph{Plot}\label{plot}
+
+We illustrate the uncertainty in the prior by plotting:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The prior density for \(\theta\)
+\item
+  The \textbf{transformed prior} for \(\psi = 1/\theta\), which is our
+  actual parameter of interest (average lifetime)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alpha }\OtherTok{=} \FloatTok{3.007}
+\NormalTok{beta }\OtherTok{=} \FloatTok{1002.372}
+
+\NormalTok{theta\_vals }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.01}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{1000}\NormalTok{)}
+\NormalTok{prior\_theta }\OtherTok{=} \FunctionTok{dgamma}\NormalTok{(theta\_vals, }\AttributeTok{shape =}\NormalTok{ alpha, }\AttributeTok{rate =}\NormalTok{ beta)}
+
+\FunctionTok{plot}\NormalTok{(theta\_vals, prior\_theta, }\AttributeTok{type =} \StringTok{"l"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{,}
+     \AttributeTok{main =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Prior Density for "}\NormalTok{, theta)),}
+     \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(theta), }\AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkblue"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =}\NormalTok{ alpha }\SpecialCharTok{/}\NormalTok{ beta, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Prior density"}\NormalTok{, }\StringTok{"Prior mean"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"darkblue"}\NormalTok{, }\StringTok{"red"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Homework-01-rmd-for-SMDS-2023-2024_files/figure-latex/unnamed-chunk-21-1} \end{center}
+
+The \textbf{prior on \(\theta\)} is quite spread out with a long tail
+--- it shows \textbf{high uncertainty} around the rate.
+
+\subparagraph{Why is this prior vague?}\label{why-is-this-prior-vague}
+
+\begin{itemize}
+\tightlist
+\item
+  The \textbf{coefficient of variation} is large: \[
+  \text{CV} = \frac{\text{SD}}{\text{Mean}} = \frac{0.00173}{0.003} \approx 0.577
+  \]
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sd\_theta }\SpecialCharTok{/}\NormalTok{ mean\_theta}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.5766667
+\end{verbatim}
+
+A CV of \textasciitilde0.58 implies a \textbf{high relative
+uncertainty}, meaning we are not very confident about the actual value
+of \(\theta\).
+
+\begin{itemize}
+\tightlist
+\item
+  The prior is based on \textbf{only a small equivalent sample size}.\\
+  For a Gamma prior, the shape parameter \(\alpha\) can be interpreted
+  as \textbf{prior pseudo-observations}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Here, \(\alpha \approx 3\), so the prior is equivalent to just 3
+    prior data points.
+  \item
+    Compared to the actual data size \(n = 20\), this means the
+    \textbf{data will dominate the posterior}.
+  \end{itemize}
+\item
+  Also, we are \textbf{placing the prior on the rate \(\theta\)}, but
+  our real interest lies in the \textbf{average lifetime}: \[
+  \psi = \frac{1}{\theta}
+  \]
+\end{itemize}
+
+The distribution of \(\psi\) is \textbf{not conjugate}, and due to the
+inverse relationship, it becomes \textbf{skewed} and heavy-tailed ---
+further suggesting that our prior on \(\psi\) is highly uncertain.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Transform to psi = 1/theta}
+\NormalTok{psi\_vals }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{2000}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{1000}\NormalTok{)}
+\NormalTok{theta\_vals\_from\_psi }\OtherTok{=} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ psi\_vals}
+\CommentTok{\# change of variable formula: f\_psi(psi) = f\_theta(1/psi) * (1 / psi\^{}2)}
+\NormalTok{prior\_psi }\OtherTok{=} \FunctionTok{dgamma}\NormalTok{(theta\_vals\_from\_psi, }\AttributeTok{shape =}\NormalTok{ alpha, }\AttributeTok{rate =}\NormalTok{ beta) }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{/}\NormalTok{ psi\_vals}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# Plot}
+\FunctionTok{plot}\NormalTok{(psi\_vals, prior\_psi, }\AttributeTok{type =} \StringTok{"l"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{,}
+     \AttributeTok{main =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Induced Prior on "}\NormalTok{, psi, }\StringTok{" = 1/"}\NormalTok{, theta)),}
+     \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(psi), }\AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ (alpha }\SpecialCharTok{/}\NormalTok{ beta), }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Induced prior"}\NormalTok{, }\StringTok{"Prior mean of psi"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\StringTok{"red"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Homework-01-rmd-for-SMDS-2023-2024_files/figure-latex/unnamed-chunk-23-1} \end{center}
+
+The \textbf{induced prior on \(\psi = 1/\theta\)} is \textbf{very
+right-skewed}, reflecting even more uncertainty on the mean lifetime.
+This confirms that the prior is \textbf{vague and weakly informative},
+especially on \(\psi\), which is what really interests the boss.
+
+\subsubsection{B.4 Conjugate Bayesian Analysis
+Framework}\label{b.4-conjugate-bayesian-analysis-framework}
+
+A Bayesian model is said to be \textbf{conjugate} if the posterior
+distribution belongs to the same family as the prior distribution.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Likelihood Function}\label{likelihood-function}
+
+As previously shown, the likelihood based on \(n\) i.i.d. exponential
+observations is:
+
+\[
+L(\theta \mid y_1, \dots, y_n) = \theta^n e^{-\theta \sum_{i=1}^n y_i}
+\]
+
+This can be written in the generic exponential family form:
+
+\[
+L(\theta) = \theta^a e^{-\theta b} = g(\theta; h = (a, b))
+\]
+
+for:
+
+\begin{itemize}
+\tightlist
+\item
+  \(a = n\)\\
+\item
+  \(b = \sum_{i=1}^n y_i\)
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Conjugate Prior Structure}\label{conjugate-prior-structure}
+
+We now select a prior that matches the structure of the likelihood:
+
+\[
+\pi(\theta) \propto g(\theta; h_{\text{prior}} = (a_{\text{prior}}, b_{\text{prior}}))
+\]
+
+After observing data, the posterior becomes:
+
+\[
+\pi(\theta \mid \mathbf{y}) \propto g(\theta; h_{\text{post}} = (a_{\text{post}}, b_{\text{post}}))
+\]
+
+To connect this with the Gamma distribution, observe:
+
+\[
+\theta^a e^{-\theta b} = \theta^{s - 1} e^{-\theta r}
+\]
+
+if we define:
+
+\begin{itemize}
+\tightlist
+\item
+  \(s = a + 1\)\\
+\item
+  \(r = b\)
+\end{itemize}
+
+Hence, this is the kernel of a \textbf{Gamma distribution} with shape
+\(s\) and rate \(r\).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Prior in Gamma Family}\label{prior-in-gamma-family}
+
+The prior is assumed to be:
+
+\[
+\pi(\theta) \propto \theta^{s_{\text{prior}} - 1} e^{-r_{\text{prior}} \theta}
+\]
+
+i.e., a Gamma\((s_{\text{prior}}, r_{\text{prior}})\) distribution.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\paragraph{Posterior Distribution}\label{posterior-distribution}
+
+Applying Bayes' Rule:
+
+\[
+\pi(\theta \mid \mathbf{y}) \propto \pi(\theta) \cdot L(\theta \mid \mathbf{y})
+\]
+
+Combining prior and likelihood:
+
+\[
+\pi(\theta \mid \mathbf{y}) \propto \theta^{s_{\text{prior}} - 1} e^{-r_{\text{prior}} \theta} \cdot \theta^n e^{-\theta \sum_{i=1}^n y_i}
+\]
+
+\[
+\pi(\theta \mid \mathbf{y}) \propto \theta^{s_{\text{prior}} + n - 1} e^{-\theta(r_{\text{prior}} + \sum_{i=1}^n y_i)}
+\]
+
+This is again the kernel of a \textbf{Gamma distribution}, confirming
+conjugacy, with updated parameters:
+
+\[
+s_{\text{post}} = s_{\text{prior}} + n
+\]
+
+\[
+r_{\text{post}} = r_{\text{prior}} + \sum_{i=1}^n y_i
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+Thus, this setup indeed fits within the \textbf{framework of conjugate
+Bayesian analysis}.
+
+\subsubsection{\texorpdfstring{B.5 Based on the information gathered on
+the 20 bulbs, what can you say about the main characteristics of the
+lifetime of your innovative bulb? Argue that we have learnt some
+relevant information about the \(\theta\) parameter and this can be
+converted into relevant information about the unknown average lifetime
+of the innovative bulb
+\(\psi=1/\theta\).}{B.5 Based on the information gathered on the 20 bulbs, what can you say about the main characteristics of the lifetime of your innovative bulb? Argue that we have learnt some relevant information about the \textbackslash theta parameter and this can be converted into relevant information about the unknown average lifetime of the innovative bulb \textbackslash psi=1/\textbackslash theta.}}\label{b.5-based-on-the-information-gathered-on-the-20-bulbs-what-can-you-say-about-the-main-characteristics-of-the-lifetime-of-your-innovative-bulb-argue-that-we-have-learnt-some-relevant-information-about-the-theta-parameter-and-this-can-be-converted-into-relevant-information-about-the-unknown-average-lifetime-of-the-innovative-bulb-psi1theta.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# observed bulb lifetimes (in hours) are our data}
+\NormalTok{bulb\_lifetimes }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{13}\NormalTok{, }\DecValTok{27}\NormalTok{, }\DecValTok{43}\NormalTok{, }\DecValTok{73}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{154}\NormalTok{, }\DecValTok{196}\NormalTok{, }\DecValTok{220}\NormalTok{, }\DecValTok{297}\NormalTok{,}
+                    \DecValTok{344}\NormalTok{, }\DecValTok{610}\NormalTok{, }\DecValTok{734}\NormalTok{, }\DecValTok{783}\NormalTok{, }\DecValTok{796}\NormalTok{, }\DecValTok{845}\NormalTok{, }\DecValTok{859}\NormalTok{, }\DecValTok{992}\NormalTok{, }\DecValTok{1066}\NormalTok{, }\DecValTok{1471}\NormalTok{)}
+
+\NormalTok{n }\OtherTok{=} \FunctionTok{length}\NormalTok{(bulb\_lifetimes)}
+\NormalTok{sum\_y }\OtherTok{=} \FunctionTok{sum}\NormalTok{(bulb\_lifetimes)}
+
+\NormalTok{alpha\_post }\OtherTok{=}\NormalTok{ alpha\_prior }\SpecialCharTok{+}\NormalTok{ n}
+\NormalTok{beta\_post }\OtherTok{=}\NormalTok{ beta\_prior }\SpecialCharTok{+}\NormalTok{ sum\_y}
+
+\NormalTok{alpha\_post }\CommentTok{\#shape}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 23.00712
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta\_post }\CommentTok{\# rate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 10601.37
+\end{verbatim}
+
+After observing the lifetimes of 20 bulbs, our posterior for the rate
+parameter is:
+
+\[
+\theta \mid \mathbf{y} \sim \text{Gamma}(\alpha^*, \beta^*) = \text{Gamma}(23.07, 10601.33)
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Posterior summaries for theta}
+\NormalTok{post\_mean\_theta }\OtherTok{=}\NormalTok{ alpha\_post }\SpecialCharTok{/}\NormalTok{ beta\_post}
+\NormalTok{post\_sd\_theta }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{(alpha\_post }\SpecialCharTok{/}\NormalTok{ beta\_post}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# 95\% credible interval for theta}
+\NormalTok{ci\_theta }\OtherTok{=} \FunctionTok{qgamma}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{), }\AttributeTok{shape =}\NormalTok{ alpha\_post, }\AttributeTok{rate =}\NormalTok{ beta\_post)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior mean of theta:"}\NormalTok{, post\_mean\_theta, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior mean of theta: 0.002170202 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior SD of theta:"}\NormalTok{, post\_sd\_theta, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior SD of theta: 0.0004524484 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"95\% credible interval for theta:"}\NormalTok{, ci\_theta, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+95% credible interval for theta: 0.00137583 0.003142691 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cv\_post }\OtherTok{\textless{}{-}}\NormalTok{ post\_sd\_theta }\SpecialCharTok{/}\NormalTok{ post\_mean\_theta}
+\NormalTok{cv\_post}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.2084822
+\end{verbatim}
+
+The smaller coefficient of variation proves that data has reduced the
+uncertainty about \(\theta\)
+
+Now we derive and summarize the \textbf{average bulb lifetime}:
+
+\[
+\psi = \frac{1}{\theta}
+\] we can calculate the mean and standard deviation of \(\psi\) as:
+
+\[
+\mathbb{E}[\psi] = \mathbb{E}\left[\frac{1}{\theta}\right] = \frac{r}{s-1} \quad s>1 
+\] \[
+SD[\psi] = \sqrt{Var[\psi]} = \sqrt{Var\left[\frac{1}{\theta}\right]} = \sqrt{\frac{r^2}{(s-1)^2(s-2)}} \quad s>2
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean\_psi\_post }\OtherTok{=}\NormalTok{ beta\_post}\SpecialCharTok{/}\NormalTok{(alpha\_post}\DecValTok{{-}1}\NormalTok{)}
+\NormalTok{sd\_psi\_prost }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{((beta\_post}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{((alpha\_post}\DecValTok{{-}2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{(alpha\_post}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{*}\NormalTok{(alpha\_post}\DecValTok{{-}1}\NormalTok{)))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior mean of psi (avg lifetime):"}\NormalTok{, mean\_psi\_post, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior mean of psi (avg lifetime): 481.7247 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior SD of psi:"}\NormalTok{, sd\_psi\_prost, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior SD of psi: 105.1031 
+\end{verbatim}
+
+but we can either approximate it via simulation.
+
+Btw his is a nonlinear transformation, so the posterior for \(\psi\) is
+not Gamma
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theta\_draws }\OtherTok{=} \FunctionTok{rgamma}\NormalTok{(}\DecValTok{10000}\NormalTok{, }\AttributeTok{shape =}\NormalTok{ alpha\_post, }\AttributeTok{rate =}\NormalTok{ beta\_post)}
+\NormalTok{psi\_draws }\OtherTok{=} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ theta\_draws }\CommentTok{\# Transform to psi = 1 / theta}
+
+\CommentTok{\# Posterior summaries for psi}
+\NormalTok{post\_mean\_psi }\OtherTok{=} \FunctionTok{mean}\NormalTok{(psi\_draws)}
+\NormalTok{post\_sd\_psi }\OtherTok{=} \FunctionTok{sd}\NormalTok{(psi\_draws)}
+\NormalTok{ci\_psi }\OtherTok{=} \FunctionTok{quantile}\NormalTok{(psi\_draws, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior mean of psi (avg lifetime) via Simulation:"}\NormalTok{, post\_mean\_psi, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior mean of psi (avg lifetime) via Simulation: 480.4885 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior SD of psi via Simulation:"}\NormalTok{, post\_sd\_psi, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior SD of psi via Simulation: 104.3871 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"95\% credible interval for psi:"}\NormalTok{, ci\_psi, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+95% credible interval for psi: 315.994 721.0593 
+\end{verbatim}
+
+I prefer to use this solution cause it follows the same method used
+previously, the results are more or less the same anyway
+
+Regarding the prior instead:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean\_psi\_prior }\OtherTok{=}\NormalTok{ beta\_prior}\SpecialCharTok{/}\NormalTok{(alpha\_prior}\DecValTok{{-}1}\NormalTok{)}
+\NormalTok{sd\_psi\_prior }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{((beta\_prior}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{((alpha\_prior}\DecValTok{{-}2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{(alpha\_prior}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Prior Lifetime Mean:"}\NormalTok{, mean\_psi\_prior, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Prior Lifetime Mean: 499.409 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Prior Lifetime Standard Deviation:"}\NormalTok{, sd\_psi\_prior)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Prior Lifetime Standard Deviation: 497.6414
+\end{verbatim}
+
+Let's plot to make everything more clear:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Prior and posterior draws}
+\NormalTok{x\_vals }\OtherTok{=} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(theta\_draws), }\AttributeTok{length.out =} \DecValTok{1000}\NormalTok{)}
+
+\NormalTok{prior\_density }\OtherTok{=} \FunctionTok{dgamma}\NormalTok{(x\_vals, }\AttributeTok{shape =}\NormalTok{ alpha\_prior, }\AttributeTok{rate =}\NormalTok{ beta\_prior)}
+\NormalTok{posterior\_density }\OtherTok{=} \FunctionTok{density}\NormalTok{(theta\_draws)}
+
+\CommentTok{\# Plot both densities}
+\FunctionTok{plot}\NormalTok{(posterior\_density, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{,}
+     \AttributeTok{main =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Prior vs Posterior Density of "}\NormalTok{, theta)),}
+     \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(theta), }\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(posterior\_density}\SpecialCharTok{$}\NormalTok{y, prior\_density)))}
+\FunctionTok{lines}\NormalTok{(x\_vals, prior\_density, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{)}
+
+\CommentTok{\# Add posterior mean line}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =}\NormalTok{ post\_mean\_theta, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# Legend}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Posterior"}\NormalTok{, }\StringTok{"Prior"}\NormalTok{, }\StringTok{"Posterior Mean"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{, }\StringTok{"darkgreen"}\NormalTok{, }\StringTok{"red"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Homework-01-rmd-for-SMDS-2023-2024_files/figure-latex/unnamed-chunk-30-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{theta\_prior\_draws }\OtherTok{=} \FunctionTok{rgamma}\NormalTok{(}\DecValTok{10000}\NormalTok{, }\AttributeTok{shape =}\NormalTok{ alpha\_prior, }\AttributeTok{rate =}\NormalTok{ beta\_prior)}
+\NormalTok{psi\_prior\_draws }\OtherTok{=} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ theta\_prior\_draws}
+
+\NormalTok{posterior\_density\_psi }\OtherTok{=} \FunctionTok{density}\NormalTok{(psi\_draws)}
+\NormalTok{prior\_density\_psi }\OtherTok{=} \FunctionTok{density}\NormalTok{(psi\_prior\_draws)}
+
+\CommentTok{\# Plot}
+\FunctionTok{plot}\NormalTok{(posterior\_density\_psi, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{,}
+     \AttributeTok{main =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Prior vs Posterior Density of "}\NormalTok{, psi, }\StringTok{" = 1/"}\NormalTok{, theta)),}
+     \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(psi),}
+     \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{max}\NormalTok{(posterior\_density\_psi}\SpecialCharTok{$}\NormalTok{y, prior\_density\_psi}\SpecialCharTok{$}\NormalTok{y)))}
+\FunctionTok{lines}\NormalTok{(prior\_density\_psi, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =}\NormalTok{ post\_mean\_psi, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Posterior"}\NormalTok{, }\StringTok{"Prior"}\NormalTok{, }\StringTok{"Posterior Mean"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\StringTok{"blue"}\NormalTok{, }\StringTok{"red"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Homework-01-rmd-for-SMDS-2023-2024_files/figure-latex/unnamed-chunk-31-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  The posterior distribution for \(\theta\) is now \textbf{more
+  concentrated}, indicating that we have learned from the data.
+\item
+  The induced posterior for \(\psi = 1/\theta\) shows that the
+  \textbf{average lifetime is likely between} the values in the 95\%
+  credible interval.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{B.6 However, your boss would be
+interested in the probability that the average bulb lifetime
+\(1/\theta\) exceeds 550 hours. What can you say about that after
+observing the data? Provide her with a meaningful Bayesian
+answer.}{B.6 However, your boss would be interested in the probability that the average bulb lifetime 1/\textbackslash theta exceeds 550 hours. What can you say about that after observing the data? Provide her with a meaningful Bayesian answer.}}\label{b.6-however-your-boss-would-be-interested-in-the-probability-that-the-average-bulb-lifetime-1theta-exceeds-550-hours.-what-can-you-say-about-that-after-observing-the-data-provide-her-with-a-meaningful-bayesian-answer.}
+
+The boss is interested in the probability that: \[
+\mathbb{P}\left(\psi = \frac{1}{\theta} > 550 \mid \mathbf{y}\right)
+\] In words: what is the probability, after seeing the data, that the
+average lifetime of the bulb exceeds 550 hours?
+
+\subparagraph{Method 1 --- Simulation-based
+approximation}\label{method-1-simulation-based-approximation}
+
+We draw samples from the posterior distribution:
+
+\[
+\theta \mid \mathbf{y} \sim \text{Gamma}(\alpha_{\text{post}}, \beta_{\text{post}})
+\]
+
+We transform each draw as \(\psi = \frac{1}{\theta}\) and estimate the
+probability via Monte Carlo approximation:
+
+\[
+\mathbb{P}(\psi > 550 \mid \mathbf{y}) \approx \frac{1}{N} \sum_{i=1}^{N} \mathbb{I}(\psi^{(i)} > 550)
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prob\_psi\_gt\_550 }\OtherTok{=} \FunctionTok{mean}\NormalTok{(psi\_draws }\SpecialCharTok{\textgreater{}} \DecValTok{550}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Posterior probability that average lifetime exceeds 550 hours:"}\NormalTok{, prob\_psi\_gt\_550, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Posterior probability that average lifetime exceeds 550 hours: 0.223 
+\end{verbatim}
+
+\subparagraph{Method 2 --- Gamma CDF}\label{method-2-gamma-cdf}
+
+We use the identity:
+
+\[
+\mathbb{P}\left( \psi > 550 \mid \mathbf{y} \right)
+= \mathbb{P}\left( \theta < \frac{1}{550} \mid \mathbf{y} \right)
+= F_{\text{Gamma}}\left( \frac{1}{550};\ \alpha_{\text{post}},\ \beta_{\text{post}} \right)
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute analytically}
+\NormalTok{prob\_psi\_gt\_550\_cdf }\OtherTok{=} \FunctionTok{pgamma}\NormalTok{(}\DecValTok{1} \SpecialCharTok{/} \DecValTok{550}\NormalTok{, }\AttributeTok{shape =}\NormalTok{ alpha\_post, }\AttributeTok{rate =}\NormalTok{ beta\_post)}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Analytical probability (Gamma CDF):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(prob\_psi\_gt\_550\_cdf, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Analytical probability (Gamma CDF): 0.2254 
+\end{verbatim}
+
+Both methods give nearly identical results and confirm the robustness of
+the posterior estimate.
+
+\subparagraph{Visualize}\label{visualize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plot the posterior of psi and shade area where psi \textgreater{} 550}
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{density}\NormalTok{(psi\_draws), }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{, }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{,}
+     \AttributeTok{main =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"Posterior of "}\NormalTok{, psi, }\StringTok{" = 1/"}\NormalTok{, theta)),}
+     \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(psi))}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v =} \DecValTok{550}\NormalTok{, }\AttributeTok{col =} \StringTok{"red"}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\StringTok{"topright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Posterior"}\NormalTok{, }\StringTok{"Threshold = 550"}\NormalTok{),}
+       \AttributeTok{col =} \FunctionTok{c}\NormalTok{(}\StringTok{"darkgreen"}\NormalTok{, }\StringTok{"red"}\NormalTok{), }\AttributeTok{lty =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\FunctionTok{text}\NormalTok{(}\DecValTok{900}\NormalTok{, }\FloatTok{0.002}\NormalTok{, }\FunctionTok{paste0}\NormalTok{(}\StringTok{"P(ψ \textgreater{} 550) ≈ "}\NormalTok{, }\FunctionTok{round}\NormalTok{(prob\_psi\_gt\_550, }\DecValTok{3}\NormalTok{)), }\AttributeTok{col =} \StringTok{"darkgreen"}\NormalTok{)}
+
+\CommentTok{\# Shade the area where psi \textgreater{} 550}
+\FunctionTok{polygon}\NormalTok{(}\FunctionTok{density}\NormalTok{(psi\_draws, }\AttributeTok{from =} \DecValTok{550}\NormalTok{)}\SpecialCharTok{$}\NormalTok{x,}
+        \FunctionTok{density}\NormalTok{(psi\_draws, }\AttributeTok{from =} \DecValTok{550}\NormalTok{)}\SpecialCharTok{$}\NormalTok{y,}
+        \AttributeTok{col =} \FunctionTok{rgb}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.2}\NormalTok{), }\AttributeTok{border =} \ConstantTok{NA}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Homework-01-rmd-for-SMDS-2023-2024_files/figure-latex/unnamed-chunk-34-1} \end{center}
+
+With \texttt{prob\_psi\_gt\_550} of 0.2259, then you can say:
+
+\begin{quote}
+\emph{``There is an 22.6\% posterior probability that the average
+lifetime of the bulb exceeds 550 hours.''}
+\end{quote}
+
+\newpage
+
+\subsection{C.1 Exchangeability}\label{c.1-exchangeability}
+
+Let us consider an infinitely exchangeable sequence of binary random
+variables \[X_1,...,X_n,...\]
+
+\subsubsection{\texorpdfstring{1. Provide the definition of the
+distributional properties characterizing an infinitely echangeable
+binary sequence of random variables \(X_1, ...,X_n, ....\). Consider the
+De Finetti representation theorem relying on a suitable distribution
+\(\pi(\theta)\) on \([0,1]\) and show
+that}{1. Provide the definition of the distributional properties characterizing an infinitely echangeable binary sequence of random variables X\_1, ...,X\_n, ..... Consider the De Finetti representation theorem relying on a suitable distribution \textbackslash pi(\textbackslash theta) on {[}0,1{]} and show that}}\label{provide-the-definition-of-the-distributional-properties-characterizing-an-infinitely-echangeable-binary-sequence-of-random-variables-x_1-...x_n-.....-consider-the-de-finetti-representation-theorem-relying-on-a-suitable-distribution-pitheta-on-01-and-show-that}
+
+\begin{eqnarray*} 
+E[X_i]&=&E_{\pi}[\theta]\\
+E[X_i X_j] &=& E_{\pi}[\theta^2]\\
+Cov[X_i X_j] &=& Var_{\pi}[\theta]
+\end{eqnarray*}
+
+\subparagraph{Definition: Infinite
+Exchangeability}\label{definition-infinite-exchangeability}
+
+A sequence \(X_1, X_2, \dots\) is said to be \textbf{infinitely
+exchangeable} if the joint distribution of any finite subset is
+\textbf{invariant under permutations}.
+
+Formally, for every \(n\) and every permutation \(\sigma\) of
+\(\{1, 2, \dots, n\}\):
+
+\[
+P(X_1 = x_1, \dots, X_n = x_n) = P(X_{\sigma(1)} = x_1, \dots, X_{\sigma(n)} = x_n)
+\]
+
+This means that the joint distribution depends \textbf{only on the
+number of successes}, not on the order.
+
+\subparagraph{De Finetti's Representation Theorem (Binary
+Case)}\label{de-finettis-representation-theorem-binary-case}
+
+If the sequence \(X_1, X_2, \dots\) is \textbf{infinitely exchangeable},
+then there exists a \textbf{random variable} \(\theta \in [0,1]\), such
+that conditionally on \(\theta\):
+
+\[
+X_i \mid \theta \overset{\text{i.i.d.}}{\sim} \text{Bernoulli}(\theta)
+\]
+
+and the \textbf{marginal distribution} of the sequence is:
+
+\[
+P(X_1 = x_1, \dots, X_n = x_n) = \int_0^1 \prod_{i=1}^n \theta^{x_i} (1 - \theta)^{1 - x_i} \, d\pi(\theta)
+\]
+
+where \(\pi(\theta)\) is the \textbf{prior distribution} over \([0,1]\).
+
+\subparagraph{Expectation and Covariance under De Finetti's
+theorem}\label{expectation-and-covariance-under-de-finettis-theorem}
+
+Let's compute the key moments under this hierarchical model.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Expectation of \(X_i\)}:
+\end{enumerate}
+
+Since \(X_i \mid \theta \sim \text{Bernoulli}(\theta)\),
+\(\mathbb{E}[X_i \mid \theta] = \theta\)
+
+Taking expectation over \(\theta\):
+
+\[
+\mathbb{E}[X_i] = \mathbb{E}_\pi\left[ \mathbb{E}[X_i \mid \theta] \right] = \mathbb{E}_\pi[\theta]
+\]
+
+This is a standard application of the law of total expectation.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{Joint expectation \(\mathbb{E}[X_i X_j]\)}:
+\end{enumerate}
+
+Since \(X_i\) and \(X_j\) are conditionally independent given \(\theta\)
+(i.i.d. Bernoulli):
+
+\[
+\mathbb{E}[X_i X_j \mid \theta] = \mathbb{E}[X_i \mid \theta] \cdot \mathbb{E}[X_j \mid \theta] = \theta \cdot \theta = \theta^2
+\]
+
+Taking expectation over \(\theta\):
+
+\[
+\mathbb{E}[X_i X_j] = \mathbb{E}_\pi[\theta^2]
+\]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  \textbf{Covariance \(\text{Cov}(X_i, X_j)\)}:
+\end{enumerate}
+
+Using the standard covariance identity:
+
+\[
+\text{Cov}(X_i, X_j) = \mathbb{E}[X_i X_j] - \mathbb{E}[X_i] \cdot \mathbb{E}[X_j]
+\]
+
+Substituting from above:
+
+\[
+= \mathbb{E}_\pi[\theta^2] - \left( \mathbb{E}_\pi[\theta] \right)^2 = \text{Var}_\pi(\theta)
+\]
+
+This shows that \textbf{dependence between variables arises entirely
+from the shared latent variable \(\theta\)}.
+
+\subsubsection{\texorpdfstring{C.2 Prove that \(Cor[X_i,X_j] \geq 0\)
+for any
+\(i \neq j\).}{C.2 Prove that Cor{[}X\_i,X\_j{]} \textbackslash geq 0 for any i \textbackslash neq j.}}\label{c.2-prove-that-corx_ix_j-geq-0-for-any-i-neq-j.}
+
+The correlation between two random variables is defined as:
+
+\[
+\text{Cor}[X_i, X_j] = \frac{\text{Cov}(X_i, X_j)}{\sqrt{\text{Var}(X_i)} \cdot \sqrt{\text{Var}(X_j)}}
+\]
+
+In this case, the variables \(X_i\) and \(X_j\) are identically
+distributed, so they share the same variance. From De Finetti's
+representation theorem, we know that:
+
+\[
+\text{Cov}(X_i, X_j) = \text{Var}_\pi(\theta)
+\]
+
+Substituting into the formula for correlation:
+
+\[
+\text{Cor}[X_i, X_j] = \frac{\text{Var}_\pi(\theta)}{\text{Var}(X_i)}
+\]
+
+Since both the numerator and denominator are variances --- and variances
+are always \textbf{non-negative} --- we conclude that:
+
+\[
+\text{Cor}[X_i, X_j] \geq 0 \quad \text{for any } i \neq j
+\]
+
+\begin{quote}
+\emph{The correlation between \(X_i\) and \(X_j\) is \textbf{always
+non-negative}, because the dependence between them arises entirely from
+the shared uncertainty in the latent parameter \(\theta\).}
+\end{quote}
+
+\subsubsection{\texorpdfstring{C.3 Find what are the conditions on the
+distribution \(\pi(\cdot)\) so that
+\(Cor[X_i X_j]=1\).}{C.3 Find what are the conditions on the distribution \textbackslash pi(\textbackslash cdot) so that Cor{[}X\_i X\_j{]}=1.}}\label{c.3-find-what-are-the-conditions-on-the-distribution-picdot-so-that-corx_i-x_j1.}
+
+We know that:
+
+\[
+\text{Corr}(X_i, X_j) = \frac{\text{Cov}(X_i, X_j)}{\sqrt{\text{Var}(X_i)} \cdot \sqrt{\text{Var}(X_j)}} = \frac{\text{Var}_\pi(\theta)}{\text{Var}(X_i)}
+\]
+
+So, for the correlation to be equal to 1:
+
+\[
+\text{Var}_\pi(\theta) = \text{Var}(X_i)
+\]
+
+From previous results:
+
+\[
+\text{Var}(X_i) = \mathbb{E}_\pi[\theta(1 - \theta)] + \text{Var}_\pi(\theta)
+\]
+
+Substitute into the equation:
+
+\[
+\text{Var}_\pi(\theta) = \mathbb{E}_\pi[\theta(1 - \theta)] + \text{Var}_\pi(\theta)
+\]
+
+Subtracting \(\text{Var}_\pi(\theta)\) from both sides:
+
+\[
+0 = \mathbb{E}_\pi[\theta(1 - \theta)]
+\]
+
+Since \(\theta(1 - \theta) > 0\) for all \(\theta \in (0, 1)\), the only
+way this expectation is zero is if:
+
+\[
+\Pr(\theta \in \{0, 1\}) = 1
+\]
+
+In other words, the distribution \(\pi(\theta)\) must be concentrated
+entirely on the endpoints of the interval \([0, 1]\).
+
+Formally, the condition is:
+
+\[
+\pi(\theta) = w \cdot \delta_0(\theta) + (1 - w) \cdot \delta_1(\theta), \quad \text{for some } w \in [0, 1]
+\] where \(\delta\) is the \textbf{Dirac delta function}
+
+This implies perfect correlation: in each realization, all variables are
+identically 0 or identically 1.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+To summarize:
+
+\begin{quote}
+The correlation \(\text{Cor}(X_i, X_j) = 1\) \textbf{if and only if} the
+prior \(\pi(\theta)\) is supported \textbf{entirely on \(\theta = 0\)
+and \(\theta = 1\)}.\\
+In that case, either all variables are always 0 (if \(\theta = 0\)) or
+always 1 (if \(\theta = 1\)) --- i.e., \textbf{perfect dependence}.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Single draw to illustrate perfect correlation}
+
+\CommentTok{\# Degenerate π(θ): θ ∈ \{0,1\} with equal probability}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2}\NormalTok{)  }\CommentTok{\# or change to 4 to get all 0s}
+\NormalTok{theta }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{prob =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{))}
+\NormalTok{X }\OtherTok{=} \FunctionTok{rbinom}\NormalTok{(}\DecValTok{10}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ theta)}
+\NormalTok{X}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+ [1] 1 1 1 1 1 1 1 1 1 1
+\end{verbatim}
+
+\subsubsection{\texorpdfstring{C.4 What do these conditions imply on the
+type and shape of \(\pi(\cdot)\)? (make an
+example).}{C.4 What do these conditions imply on the type and shape of \textbackslash pi(\textbackslash cdot)? (make an example).}}\label{c.4-what-do-these-conditions-imply-on-the-type-and-shape-of-picdot-make-an-example.}
+
+From Section C.3, we know that: \[
+\text{Corr}(X_i, X_j) = 1 \quad \Leftrightarrow \quad \mathbb{P}(\theta \in \{0, 1\}) = 1
+\]
+
+This means the prior \(\pi(\theta)\) must be:
+
+\begin{itemize}
+\tightlist
+\item
+  A \textbf{discrete distribution}, not continuous.
+\item
+  A \textbf{mixture of two point masses}: one at \(\theta = 0\), one at
+  \(\theta = 1\).
+\item
+  A \textbf{degenerate distribution} that allows no uncertainty beyond
+  the extremes.
+\end{itemize}
+
+Formally: \[
+\pi(\theta) = w \cdot \delta_0(\theta) + (1 - w) \cdot \delta_1(\theta), \quad \text{for some } w \in [0, 1]
+\]
+
+This is equivalent to a \textbf{Bernoulli prior} on \(\theta\).
+
+For example: \[
+\pi(\theta) = 0.5 \cdot \delta_0(\theta) + 0.5 \cdot \delta_1(\theta)
+\]
+
+Then: - With 50\% chance, \(\theta = 0\) ⟶ all \(\_i = 0\) - With 50\%
+chance, \(\theta = 1\) ⟶ all \(X_i = 1\)
+
+In both cases, all observations are identical, and: \[
+\text{Cov}(X_i, X_j) = \text{Var}(\theta) = 0.25, \quad 
+\text{Var}(X_i) = 0.25, \quad 
+\text{Corr}(X_i, X_j) = 1
+\]
+
+This contrasts with \textbf{Beta priors}, which spread belief over
+\((0,1)\) and induce \textbf{weaker correlations}.
+
+MonteCarlo verification
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{theta\_degenerate }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{size =} \DecValTok{10000}\NormalTok{, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{E\_theta\_deg }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(theta\_degenerate)}
+\NormalTok{E\_theta2\_deg }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(theta\_degenerate}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{Var\_theta\_deg }\OtherTok{\textless{}{-}}\NormalTok{ E\_theta2\_deg }\SpecialCharTok{{-}}\NormalTok{ E\_theta\_deg}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{Var\_Xi\_deg }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(theta\_degenerate }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ theta\_degenerate)) }\SpecialCharTok{+}\NormalTok{ Var\_theta\_deg}
+\NormalTok{Corr\_degenerate }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(Var\_Xi\_deg }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{, Var\_theta\_deg }\SpecialCharTok{/}\NormalTok{ Var\_Xi\_deg, }\DecValTok{1}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Degenerate π:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Degenerate π:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"E[θ]         ="}\NormalTok{, }\FunctionTok{round}\NormalTok{(E\_theta\_deg, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+E[θ]         = 0.4983 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Var(θ)       ="}\NormalTok{, }\FunctionTok{round}\NormalTok{(Var\_theta\_deg, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Var(θ)       = 0.25 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Corr(X\_i,X\_j)="}\NormalTok{, }\FunctionTok{round}\NormalTok{(Corr\_degenerate, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Corr(X_i,X_j)= 1 
+\end{verbatim}
+
+The induced prior on \(\theta\) leads to perfect correlation between all
+\(X_i\). Once \(\theta\) is known, there is no randomness left, and the
+sequence becomes deterministic
+
+\vspace{10.5cm}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+© 2024-2025 - Statistical Methods in Data Science and Laboratory II -
+2024-2025
+
+\begin{verbatim}
+Last update by LT: Mon May  5 21:58:07 2025
+\end{verbatim}
+
+\end{document}
