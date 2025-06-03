@@ -1,0 +1,110 @@
+---
+title: "Pt1"
+author: "Emanuele Iaccarino"
+date: "2025-06-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(expm)  # for matrix power
+
+# transition matrix
+P <- matrix(c(
+  0.135, 0.794, 0.071,
+  0.461, 0.470, 0.069,
+  0.485, 0.420, 0.095
+), nrow = 3, byrow = TRUE)
+
+# Compute the invariant distribution π
+# Solve π such that π %*% P = π and sum(π) = 1
+A <- t(P) - diag(3)
+A <- rbind(A, c(1, 1, 1))
+b <- c(0, 0, 0, 1)
+pi <- solve(t(A) %*% A) %*% t(A) %*% b  # least squares solution
+
+# Compute P^4
+P4 <- P %^% 4
+
+# Extract P^4[3,1] (from state 3 to state 1 in 4 steps)
+prob_3_to_1_in_4_steps <- P4[3, 1]
+
+cat("Invariant distribution π:\n")
+print(pi)
+cat("\nP^4:\n")
+print(P4)
+cat("\nP^4[3,1] (probability from state 3 to 1 in 4 steps):\n")
+print(prob_3_to_1_in_4_steps)
+
+```
+
+Invariant distribution π confirms the chain is ergodic and has a unique stationary distribution.
+
+Each row still sums to ~1, confirming it's a valid transition matrix even after multiple steps.
+
+The probability that the Markov chain is in state 1 at time t+4 given that it is in state 3 at time t is:
+
+0.3442953
+
+
+```{r}
+set.seed(22)
+n_steps <- 10000
+
+states <- numeric(n_steps)
+states[1] <- 1  # Start at state 1
+
+# Simulate the chain
+for (t in 2:n_steps) {
+  current_state <- states[t - 1]
+  probs <- P[current_state, ]
+  states[t] <- sample(1:3, size = 1, prob = probs)
+}
+
+# Approximate stationary distribution
+estimated_pi <- prop.table(table(factor(states, levels = 1:3)))
+
+cat("Estimated stationary distribution after 10,000 steps:\n")
+print(estimated_pi)
+
+```
+The empirical stationary distribution after 10,000 steps is very close to the theoretical invariant distribution:
+
+This confirms that:
+
+- The Markov chain converges to its stationary distribution.
+
+- The approximation is solid even starting from a non-stationary initial state (state 1), thanks to the long horizon (10,000 steps).
+
+```{r}
+# Approximate expected value under stationary distribution
+expected_value_estimate <- mean(states)
+cat("Estimated expected value under stationary distribution:\n")
+print(expected_value_estimate)
+```
+```{r}
+# Compute invariant distribution
+A <- t(P) - diag(3)
+A <- rbind(A, c(1, 1, 1))
+b <- c(0, 0, 0, 1)
+pi <- solve(t(A) %*% A) %*% t(A) %*% b
+
+least_state <- which.min(pi) # Least probable state
+least_prob <- min(pi) # its probability
+
+# Joint probability P(X_t = 1 and X_{t+1} = 1)
+# joint probability of observing state 1 at two consecutive time steps
+joint_prob <- pi[1] * P[1, 1]
+
+cat("Least probable state:\n")
+print(least_state)
+cat("Probability of least probable state:\n")
+print(least_prob)
+cat("P(X_t = 1 and X_{t+1} = 1):\n")
+print(joint_prob)
+
+```
+

@@ -1,0 +1,62 @@
+"0","# Load necessary library"
+"0","library(expm)  # for matrix power"
+"2","G2;H2;Avvertimentoh: il pacchetto ‘expm’ è stato creato con R versione 4.3.3g
+"
+"2","G3;Caricamento del pacchetto richiesto: Matrix
+g"
+"2","G3;
+Caricamento pacchetto: ‘expm’
+
+g"
+"2","G3;Il seguente oggetto è mascherato da ‘package:Matrix’:
+
+    expm
+
+g"
+"0","# Step 1: Define the transition matrix"
+"0","P <- matrix(c("
+"0","  0.135, 0.794, 0.071,"
+"0","  0.461, 0.470, 0.069,"
+"0","  0.485, 0.420, 0.095"
+"0","), nrow = 3, byrow = TRUE)"
+"0",""
+"0","# Step 2: Compute the invariant distribution π"
+"0","# Solve π such that π %*% P = π and sum(π) = 1"
+"0","A <- t(P) - diag(3)"
+"0","A <- rbind(A, c(1, 1, 1))"
+"0","b <- c(0, 0, 0, 1)"
+"0","pi <- solve(t(A) %*% A) %*% t(A) %*% b  # least squares solution"
+"0",""
+"0","# Step 3: Compute P^4"
+"0","P4 <- P %^% 4"
+"0",""
+"0","# Step 4: Extract P^4[3,1] (from state 3 to state 1 in 4 steps)"
+"0","prob_3_to_1_in_4_steps <- P4[3, 1]"
+"0",""
+"0","# Print results"
+"0","cat(""Invariant distribution π:\n"")"
+"1","Invariant distribution π:
+"
+"0","print(pi)"
+"1","           [,1]
+[1,] 0.34895732
+[2,] 0.57948425
+[3,] 0.07155843
+"
+"0","cat(""\nP^4:\n"")"
+"1","
+P^4:
+"
+"0","print(P4)"
+"1","          [,1]      [,2]       [,3]
+[1,] 0.3563752 0.5721085 0.07151627
+[2,] 0.3450661 0.5833534 0.07158050
+[3,] 0.3442953 0.5841193 0.07158534
+"
+"0","cat(""\nP^4[3,1] (probability from state 3 to 1 in 4 steps):\n"")"
+"1","
+P^4[3,1] (probability from state 3 to 1 in 4 steps):
+"
+"0","print(prob_3_to_1_in_4_steps)"
+"1","[1] 0.3442953
+"

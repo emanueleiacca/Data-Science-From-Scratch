@@ -1,0 +1,67 @@
+"0","mcmc_chains <- as.mcmc(loyn_mod1)  "
+"0","combined_matrix <- as.matrix(mcmc_chains)"
+"0",""
+"0","# Extract only the columns corresponding to beta[1] through beta[7]"
+"0","beta_columns <- grep(""^beta\\["", colnames(combined_matrix), value = TRUE)"
+"0","beta_samples <- combined_matrix[ , beta_columns ]"
+"0",""
+"0","# First, compute point estimates (posterior means) for each beta:"
+"0","beta_means <- apply(beta_samples, 2, mean)"
+"0",""
+"0","# Create the plot and save to PDF:"
+"0","pdf(""plot.pdf"", width = 6, height = 4)"
+"0","par(mar = c(5, 6, 4, 2))  # margin adjustments: (bottom, left, top, right)"
+"0",""
+"0","# Plot an empty canvas:"
+"0","plot("
+"0","  x = beta_means,"
+"0","  y = seq_along(beta_columns),"
+"0","  xlim = range(c(ci_lower, ci_upper)),"
+"0","  ylim = c(0.5, length(beta_columns) + 0.5),"
+"0","  yaxt = ""n"","
+"0","  xlab = ""Posterior Mean and 95% Credible Interval"","
+"0","  ylab = """","
+"0","  main = ""95% Credible Intervals for Beta Parameters"","
+"0","  pch = 16"
+"0",")"
+"2","G1;Errore: oggetto 'ci_lower' non trovato
+Errore durante wrapup: non così tanti frame nello stack
+Errore: nessun altro gestore di errore disponibile (errori ricorsivi?); invocare l'interruzione del riavvio
+g"
+"0","# Add custom y-axis labels:"
+"0","axis("
+"0","  side = 2,"
+"0","  at = seq_along(beta_columns),"
+"0","  labels = beta_columns,"
+"0","  las = 1"
+"0",")"
+"2","G1;Errore in axis(side = 2, at = seq_along(beta_columns), labels = beta_columns,  : 
+  plot.new has not been called yet
+Errore durante wrapup: non così tanti frame nello stack
+Errore: nessun altro gestore di errore disponibile (errori ricorsivi?); invocare l'interruzione del riavvio
+g"
+"0","# Add horizontal error bars for each beta:"
+"0","for (i in seq_along(beta_columns)) {"
+"0","  seg_x0 <- ci_lower[i]"
+"0","  seg_x1 <- ci_upper[i]"
+"0","  seg_y  <- i"
+"0","  segments(seg_x0, seg_y, seg_x1, seg_y, lwd = 2)"
+"0","}"
+"2","G1;Errore: oggetto 'ci_lower' non trovato
+Errore durante wrapup: non così tanti frame nello stack
+Errore: nessun altro gestore di errore disponibile (errori ricorsivi?); invocare l'interruzione del riavvio
+g"
+"0","# Add a vertical line at zero:"
+"0","abline(v = 0, lty = 2, col = ""darkgray"")"
+"2","G1;Errore in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...) : 
+  plot.new has not been called yet
+Errore durante wrapup: non così tanti frame nello stack
+Errore: nessun altro gestore di errore disponibile (errori ricorsivi?); invocare l'interruzione del riavvio
+g"
+"0","dev.off()"
+"1","null device 
+          1 
+"
+"0","cat(""Forest plot of 95% credible intervals saved as 'plot.pdf'.\n"")"
+"1","Forest plot of 95% credible intervals saved as 'plot.pdf'.
+"

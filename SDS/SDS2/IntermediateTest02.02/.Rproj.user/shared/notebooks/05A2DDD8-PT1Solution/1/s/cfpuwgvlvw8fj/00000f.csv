@@ -1,0 +1,8 @@
+"0","# Approximate expected value under stationary distribution"
+"0","expected_value_estimate <- mean(states)"
+"0","cat(""Estimated expected value under stationary distribution:\n"")"
+"1","Estimated expected value under stationary distribution:
+"
+"0","print(expected_value_estimate)"
+"1","[1] 1.7184
+"

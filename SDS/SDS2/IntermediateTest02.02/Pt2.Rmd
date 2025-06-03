@@ -1,0 +1,125 @@
+---
+title: "Pt2"
+author: "Emanuele Iaccarino"
+date: "2025-06-03"
+output: html_document
+---
+
+```{r}
+# Clean current environment and load workspace
+rm(list = ls())
+load("loyn_data_analysis.RData")
+
+# Summarize JAGS output
+summary_stats <- loyn_mod1$BUGSoutput$summary # matrix containing posterior summaries for all parameters
+
+# Extract effective sample sizes
+ess <- summary_stats[, "n.eff"] # for each parameter
+
+# Identify parameter with the lowest ESS
+lowest_ess_param <- names(which.min(ess)) # thhe function return index so we retrieve name
+lowest_ess_value <- min(ess)
+
+cat("Parameter with the lowest effective sample size:\n")
+print(lowest_ess_param)
+cat("Effective sample size:\n")
+print(lowest_ess_value)
+```
+There was no need actually cause the parameters and effective sample sizes were visible in the next question :(, anyway always worth to check and give robustness to our answer
+```{r}
+# Extract MCMC samples from the JAGS model
+samples_array <- loyn_mod1$BUGSoutput$sims.array
+
+# Check dimension: iterations × chains × parameters
+# dim(samples_array)
+
+# Extract samples for beta[3] from chain 1
+beta3_chain1 <- samples_array[, 1, "beta[3]"]
+
+# Compute MCSE as sd / sqrt(n)
+n <- length(beta3_chain1)
+mcse_beta3 <- sd(beta3_chain1) / sqrt(n)
+
+# Print result
+cat("Monte Carlo standard error for beta[3] (chain 1 only):\n")
+print(mcse_beta3)
+```
+The Monte Carlo standard error measures the uncertainty in the estimate of the posterior mean due to finite sampling
+This is the standard error of the estimate of the posterior mean of beta[3] using only the 3,000 draws from chain 1.
+A small MCSE implies that the posterior mean is estimated with high precision from that chain.
+
+To determine how many predictors have a significant effect on the outcome variable (ABUND), we check the 95% credible intervals (CI) for each beta[j]. If the 95% CI does not include 0, then the effect is considered statistically significant in the Bayesian sense.
+
+Only 1 predictor (AREA, beta[2]) has a 95% credible interval that does not contain 0 so it is the only significant predictor.
+
+
+
+The 95% credible interval (ET = equal-tail interval) for beta[2] (AREA) is:
+CI 95% =[0.222,0.551]
+
+This interval:
+
+- Does not include 0 
+
+- Both endpoints are positive 
+
+
+Forest plot shows the posterior means and 95% credible intervals for all parameters
+
+It allows to inspect which predictors are statistically significant:
+
+- If the credible interval does not include 0, the predictor is significant.
+
+- If the interval crosses 0, it is not significant.
+
+```{r}
+mcmc_chains <- as.mcmc(loyn_mod1)  
+combined_matrix <- as.matrix(mcmc_chains)
+
+# Extract only the columns corresponding to beta[1] through beta[7]
+beta_columns <- grep("^beta\\[", colnames(combined_matrix), value = TRUE)
+beta_samples <- combined_matrix[ , beta_columns ]
+
+# First, compute point estimates (posterior means) for each beta:
+beta_means <- apply(beta_samples, 2, mean)
+
+# Create the plot and save to PDF:
+pdf("plot.pdf", width = 6, height = 4)
+par(mar = c(5, 6, 4, 2))  # margin adjustments: (bottom, left, top, right)
+
+# Plot an empty canvas:
+plot(
+  x = beta_means,
+  y = seq_along(beta_columns),
+  xlim = range(c(ci_lower, ci_upper)),
+  ylim = c(0.5, length(beta_columns) + 0.5),
+  yaxt = "n",
+  xlab = "Posterior Mean and 95% Credible Interval",
+  ylab = "",
+  main = "95% Credible Intervals for Beta Parameters",
+  pch = 16
+)
+
+# Add custom y-axis labels:
+axis(
+  side = 2,
+  at = seq_along(beta_columns),
+  labels = beta_columns,
+  las = 1
+)
+
+# Add horizontal error bars for each beta:
+for (i in seq_along(beta_columns)) {
+  seg_x0 <- ci_lower[i]
+  seg_x1 <- ci_upper[i]
+  seg_y  <- i
+  segments(seg_x0, seg_y, seg_x1, seg_y, lwd = 2)
+}
+
+# Add a vertical line at zero:
+abline(v = 0, lty = 2, col = "darkgray")
+
+dev.off()
+
+cat("Forest plot of 95% credible intervals saved as 'plot.pdf'.\n")
+```
